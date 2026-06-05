@@ -1,0 +1,226 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #0c0b09;
+  --charcoal: #15110e;
+  --smoke: #211c17;
+  --cream: #f7efe3;
+  --muted: #c9bcaa;
+  --red: #d92d10;
+  --brass: #c59b5d;
+  --sage: #7f8d76;
+}
+
+@theme inline {
+  --color-background: #0c0b09;
+  --color-foreground: #f7efe3;
+  --color-ink: #0c0b09;
+  --color-charcoal: #15110e;
+  --color-smoke: #211c17;
+  --color-cream: #f7efe3;
+  --color-muted: #c9bcaa;
+  --color-red: #d92d10;
+  --color-brass: #c59b5d;
+  --color-sage: #7f8d76;
+  --shadow-soft: 0 24px 80px rgba(0, 0, 0, 0.24);
+  --font-sans: "Manrope", "Manrope Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--ink);
+  color: var(--cream);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  overflow-x: clip;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(217, 45, 16, 0.14), transparent 28rem),
+    linear-gradient(180deg, var(--ink), var(--charcoal));
+  color: var(--cream);
+  font-family: var(--font-body), "Manrope", ui-sans-serif, system-ui, sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+::selection {
+  background: var(--red);
+  color: white;
+}
+
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.shadow-soft {
+  box-shadow: var(--shadow-soft);
+}
+
+.surface-grid {
+  background-image:
+    linear-gradient(rgba(247, 239, 227, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(247, 239, 227, 0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.grain {
+  position: relative;
+}
+
+.grain::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  opacity: 0.22;
+  background-image:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.04), transparent 30%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.018),
+      rgba(255, 255, 255, 0.018) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 720ms ease both;
+}
+
+.motion-ready [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  transition:
+    opacity 700ms ease,
+    transform 700ms cubic-bezier(0.2, 0.75, 0.24, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.motion-ready [data-reveal="card"] {
+  transform: translate3d(0, 28px, 0) scale(0.98);
+}
+
+.motion-ready [data-reveal].is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+.parallax-media {
+  transform: translate3d(0, var(--parallax-y, 0px), 0) scale(1.03);
+  transition: transform 180ms linear;
+  will-change: transform;
+}
+
+.motion-sheen {
+  position: relative;
+  isolation: isolate;
+}
+
+.motion-sheen > * {
+  position: relative;
+  z-index: 1;
+}
+
+.motion-sheen::after {
+  position: absolute;
+  inset: -40% auto -40% -70%;
+  z-index: 0;
+  width: 52%;
+  content: "";
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.34),
+    transparent
+  );
+  transform: skewX(-16deg);
+  transition: left 620ms ease;
+}
+
+.motion-sheen:hover::after,
+.motion-sheen:focus-visible::after {
+  left: 120%;
+}
+
+.mobile-menu-panel {
+  transform-origin: top;
+  animation: menu-panel-in 240ms ease both;
+}
+
+.mobile-menu-link {
+  opacity: 0;
+  transform: translateY(-6px);
+  animation: menu-link-in 260ms ease both;
+}
+
+@keyframes menu-panel-in {
+  from {
+    opacity: 0;
+    transform: scaleY(0.96) translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scaleY(1) translateY(0);
+  }
+}
+
+@keyframes menu-link-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+
+  .motion-ready [data-reveal],
+  .motion-ready [data-reveal="card"],
+  .motion-ready [data-reveal].is-visible,
+  .parallax-media,
+  .mobile-menu-link,
+  .mobile-menu-panel {
+    opacity: 1;
+    transform: none;
+  }
+}
