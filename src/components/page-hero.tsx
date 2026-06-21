@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { SafeImage } from "./safe-image";
 import { ActionLink } from "./action-link";
 
 type PageHeroProps = {
@@ -20,7 +20,7 @@ export function PageHero({
 }: PageHeroProps) {
   return (
     <section className="relative isolate min-h-[520px] overflow-hidden bg-ink px-5 pt-32 text-cream md:px-8">
-      <Image
+      <SafeImage
         src={image}
         alt=""
         fill
@@ -38,7 +38,7 @@ export function PageHero({
           <h1 className="font-display text-5xl font-black leading-none text-balance md:text-7xl">
             {title}
           </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-cream/78 md:text-xl">
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-cream/82 md:text-xl">
             {body}
           </p>
           {primaryHref && primaryLabel ? (

@@ -15,7 +15,7 @@ export function SectionHeading({
 }: SectionHeadingProps) {
   const isCenter = align === "center";
   const titleColor = tone === "dark" ? "text-ink" : "text-cream";
-  const bodyColor = tone === "dark" ? "text-ink/68" : "text-cream/72";
+  const bodyColor = tone === "dark" ? "text-ink/82" : "text-cream/82";
   const eyebrowColor = tone === "dark" ? "text-red-700" : "text-red-500";
 
   return (

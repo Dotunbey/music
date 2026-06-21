@@ -9,6 +9,8 @@
   --red: #d92d10;
   --brass: #c59b5d;
   --sage: #7f8d76;
+  --font-body: "Manrope", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
 }
 
 @theme inline {

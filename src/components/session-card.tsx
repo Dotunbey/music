@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { SafeImage } from "./safe-image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { Session } from "@/lib/content";
@@ -17,7 +17,7 @@ export function SessionCard({ session }: SessionCardProps) {
       data-reveal="card"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-charcoal">
-        <Image
+        <SafeImage
           src={session.image}
           alt=""
           fill
@@ -37,7 +37,7 @@ export function SessionCard({ session }: SessionCardProps) {
         <h3 className="font-display text-3xl font-black leading-none">
           {session.title}
         </h3>
-        <p className="mt-3 min-h-20 leading-7 text-ink/68">{session.summary}</p>
+        <p className="mt-3 min-h-20 leading-7 text-ink/82">{session.summary}</p>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <ActionLink
             href={`/sessions/${session.slug}`}

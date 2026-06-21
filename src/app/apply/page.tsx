@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CalendarDays, Mail, MessageCircle } from "lucide-react";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { InquiryForm } from "@/components/inquiry-form";
 import { PageHero } from "@/components/page-hero";
 import { contact } from "@/lib/content";
@@ -12,6 +13,16 @@ export const metadata: Metadata = {
   title: "Apply",
   description:
     "Apply for Tami Bedford sessions or send a production service inquiry.",
+  openGraph: {
+    title: "Apply | Tami Bedford",
+    description:
+      "Apply for Tami Bedford sessions or send a production service inquiry.",
+  },
+  twitter: {
+    title: "Apply | Tami Bedford",
+    description:
+      "Apply for Tami Bedford sessions or send a production service inquiry.",
+  },
 };
 
 export default async function ApplyPage({ searchParams }: ApplyPageProps) {
@@ -22,7 +33,7 @@ export default async function ApplyPage({ searchParams }: ApplyPageProps) {
       <PageHero
         eyebrow="Apply"
         title="Start the conversation."
-        body="Share your current level, preferred schedule, and the session or service you need. The form prepares an email or WhatsApp message for review."
+        body="Share your current level, preferred schedule, and the session or service you need. We capture your inquiry and send it to the team."
         image="/images/hero-lesson.png"
       />
 
@@ -42,8 +53,8 @@ export default async function ApplyPage({ searchParams }: ApplyPageProps) {
               {[
                 {
                   icon: Mail,
-                  title: "Your message opens locally",
-                  text: "Your email app or WhatsApp opens with the details prepared for you to review and send.",
+                  title: "Your inquiry is captured",
+                  text: "Your inquiry is captured now, and we also provide quick follow-up links for email or WhatsApp if you want to continue there.",
                 },
                 {
                   icon: CalendarDays,
@@ -66,7 +77,7 @@ export default async function ApplyPage({ searchParams }: ApplyPageProps) {
                       <h2 className="font-display text-2xl font-black">
                         {item.title}
                       </h2>
-                      <p className="mt-2 leading-7 text-cream/68">
+                      <p className="mt-2 leading-7 text-cream/82">
                         {item.text}
                       </p>
                     </div>
@@ -83,12 +94,17 @@ export default async function ApplyPage({ searchParams }: ApplyPageProps) {
             <h2 className="font-display text-4xl font-black leading-none text-balance md:text-6xl">
               Tell us what you want to build.
             </h2>
-            <p className="mt-5 max-w-2xl leading-8 text-cream/72">
+            <p className="mt-5 max-w-2xl leading-8 text-cream/82">
               A few details help the team understand your goals, current level,
               and preferred timing before the first reply.
             </p>
             <div className="mt-8">
-              <InquiryForm initialTrack={track} />
+              <ErrorBoundary>
+                <InquiryForm
+                  initialTrack={track}
+                  sourcePath={`/apply${track ? `?track=${encodeURIComponent(track)}` : ""}`}
+                />
+              </ErrorBoundary>
             </div>
           </div>
         </div>

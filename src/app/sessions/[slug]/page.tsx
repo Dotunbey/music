@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { SafeImage } from "@/components/safe-image";
 import { notFound } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
 import { ActionLink } from "@/components/action-link";
@@ -28,6 +28,14 @@ export async function generateMetadata({
   return {
     title: session.title,
     description: session.summary,
+    openGraph: {
+      title: `${session.title} | Tami Bedford`,
+      description: session.summary,
+    },
+    twitter: {
+      title: `${session.title} | Tami Bedford`,
+      description: session.summary,
+    },
   };
 }
 
@@ -69,10 +77,10 @@ export default async function SessionDetailPage({
             <p className="mt-6 font-display text-5xl font-black text-red-700">
               {session.price}
             </p>
-            <p className="mt-1 text-sm font-bold uppercase text-ink/58">
+            <p className="mt-1 text-sm font-bold uppercase text-ink/82">
               {session.cadence}
             </p>
-            <p className="mt-5 leading-7 text-ink/70">{session.format}</p>
+            <p className="mt-5 leading-7 text-ink/82">{session.format}</p>
             <div className="mt-7">
               <ActionLink href={`/apply?track=${session.slug}`} className="w-full">
                 Apply Now
@@ -101,7 +109,7 @@ export default async function SessionDetailPage({
                     aria-hidden="true"
                     className="mt-1 h-5 w-5 shrink-0 text-red-700"
                   />
-                  <p className="font-bold leading-7 text-ink/78">{item}</p>
+                  <p className="font-bold leading-7 text-ink/82">{item}</p>
                 </div>
               ))}
             </div>
@@ -128,7 +136,7 @@ export default async function SessionDetailPage({
                     aria-hidden="true"
                     className="mt-1 h-5 w-5 shrink-0 text-brass"
                   />
-                  <p className="leading-7 text-cream/76">{outcome}</p>
+                  <p className="leading-7 text-cream/82">{outcome}</p>
                 </div>
               ))}
             </div>
@@ -139,19 +147,19 @@ export default async function SessionDetailPage({
             data-reveal="card"
           >
             <div className="relative aspect-[4/3]">
-              <Image
-                src={session.image}
-                alt=""
-                fill
-                sizes="(min-width: 1024px) 38vw, 100vw"
-                className="object-cover"
-              />
+              <SafeImage
+                  src={session.image}
+                  alt=""
+                  fill
+                  sizes="(min-width: 1024px) 38vw, 100vw"
+                  className="object-cover"
+                />
             </div>
             <div className="p-6">
               <h3 className="font-display text-3xl font-black">
                 Learning materials and guides
               </h3>
-              <p className="mt-4 leading-8 text-cream/72">
+              <p className="mt-4 leading-8 text-cream/82">
                 {session.materials}
               </p>
               <div className="mt-7 border-t border-cream/12 pt-6">
@@ -162,7 +170,7 @@ export default async function SessionDetailPage({
                   {session.requirements.map((requirement) => (
                     <li
                       key={requirement}
-                      className="flex gap-3 text-cream/72"
+                      className="flex gap-3 text-cream/82"
                     >
                       <CheckCircle2
                         aria-hidden="true"
@@ -196,7 +204,7 @@ export default async function SessionDetailPage({
                 <h3 className="font-display text-2xl font-black">
                   {faq.question}
                 </h3>
-                <p className="mt-3 leading-7 text-cream/70">{faq.answer}</p>
+                <p className="mt-3 leading-7 text-cream/82">{faq.answer}</p>
               </article>
             ))}
           </div>

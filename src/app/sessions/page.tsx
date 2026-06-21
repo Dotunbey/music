@@ -9,6 +9,16 @@ export const metadata: Metadata = {
   title: "Sessions",
   description:
     "Compare Tami Bedford piano, organ, and music production sessions.",
+  openGraph: {
+    title: "Sessions | Tami Bedford",
+    description:
+      "Compare Tami Bedford piano, organ, and music production sessions.",
+  },
+  twitter: {
+    title: "Sessions | Tami Bedford",
+    description:
+      "Compare Tami Bedford piano, organ, and music production sessions.",
+  },
 };
 
 export default function SessionsPage() {
@@ -64,7 +74,7 @@ export default function SessionsPage() {
                   aria-hidden="true"
                   className="mt-1 h-5 w-5 shrink-0 text-brass"
                 />
-                <p className="leading-7 text-cream/74">{item}</p>
+                <p className="leading-7 text-cream/82">{item}</p>
               </div>
             ))}
           </div>

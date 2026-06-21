@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { SafeImage } from "@/components/safe-image";
 import { MessageCircle, Music2 } from "lucide-react";
 import { ActionLink } from "@/components/action-link";
 import { PageHero } from "@/components/page-hero";
@@ -10,6 +10,16 @@ export const metadata: Metadata = {
   title: "Services",
   description:
     "Music arrangement, production, vocal arrangement, and recording support from Tami Bedford.",
+  openGraph: {
+    title: "Services | Tami Bedford",
+    description:
+      "Music arrangement, production, vocal arrangement, and recording support from Tami Bedford.",
+  },
+  twitter: {
+    title: "Services | Tami Bedford",
+    description:
+      "Music arrangement, production, vocal arrangement, and recording support from Tami Bedford.",
+  },
 };
 
 export default function ServicesPage() {
@@ -44,7 +54,7 @@ export default function ServicesPage() {
                   data-reveal="card"
                 >
                   <div className="relative aspect-[16/11]">
-                    <Image
+                    <SafeImage
                       src={service.image}
                       alt=""
                       fill
@@ -59,7 +69,7 @@ export default function ServicesPage() {
                     <h2 className="mt-6 font-display text-4xl font-black leading-none">
                       {service.title}
                     </h2>
-                    <p className="mt-5 leading-8 text-ink/68">
+                    <p className="mt-5 leading-8 text-ink/82">
                       {service.summary}
                     </p>
                     <ul className="mt-7 grid gap-3">
@@ -69,7 +79,7 @@ export default function ServicesPage() {
                             aria-hidden="true"
                             className="mt-1 h-4 w-4 shrink-0 text-red-700"
                           />
-                          <span className="leading-7 text-ink/72">
+                          <span className="leading-7 text-ink/82">
                             {deliverable}
                           </span>
                         </li>
@@ -121,7 +131,7 @@ export default function ServicesPage() {
                 <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-brass font-bold text-ink">
                   {index + 1}
                 </span>
-                <p className="leading-7 text-cream/76">{step}</p>
+                <p className="leading-7 text-cream/82">{step}</p>
               </div>
             ))}
           </div>

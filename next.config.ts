@@ -1,7 +1,14 @@
+import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  serverExternalPackages: ["postgres"],
+  turbopack: {
+    root: process.cwd(),
+  },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  telemetry: false,
+  widenClientFileUpload: true,
+});

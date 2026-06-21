@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, MessageCircle } from "lucide-react";
 import { ActionLink } from "@/components/action-link";
+import { SafeImage } from "@/components/safe-image";
 import { SectionHeading } from "@/components/section-heading";
 import { SessionCard } from "@/components/session-card";
 import { contact, proofPoints, services, sessions, values, workCategories } from "@/lib/content";
@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <>
       <section className="grain relative isolate min-h-[88svh] overflow-hidden bg-ink px-5 pt-28 text-cream md:px-8">
-        <Image
+        <SafeImage
           src="/images/hero-lesson.png"
           alt=""
           fill
@@ -53,7 +53,7 @@ export default function Home() {
               <p className="font-display text-5xl font-black text-red-700">
                 {point.value}
               </p>
-              <p className="mt-2 max-w-xs text-sm font-bold uppercase leading-6 text-ink/64">
+              <p className="mt-2 max-w-xs text-sm font-bold uppercase leading-6 text-ink/82">
                 {point.label}
               </p>
             </div>
@@ -90,10 +90,10 @@ export default function Home() {
             <h2 className="font-display text-4xl font-black leading-none text-balance md:text-6xl">
               Production support for songs that need direction.
             </h2>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-ink/68">
-              Arrangement, tracking, vocal production, and practical studio
-              direction for artists who need the music to move with intention.
-            </p>
+            <p className="mt-6 max-w-xl text-lg leading-8 text-ink/82">
+               Arrangement, tracking, vocal production, and practical studio
+               direction for artists who need the music to move with intention.
+             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <ActionLink href="/services">View Services</ActionLink>
               <a
@@ -118,7 +118,7 @@ export default function Home() {
                   data-reveal="card"
                 >
                   <div className="relative aspect-[4/3]">
-                    <Image
+                    <SafeImage
                       src={service.image}
                       alt=""
                       fill
@@ -147,7 +147,7 @@ export default function Home() {
             className="relative aspect-[4/3] overflow-hidden rounded-lg border border-cream/12"
             data-reveal="card"
           >
-            <Image
+            <SafeImage
               src="/images/work-creative.png"
               alt=""
               fill
@@ -177,7 +177,7 @@ export default function Home() {
                       <h3 className="font-display text-2xl font-black">
                         {category.title}
                       </h3>
-                      <p className="mt-1 leading-7 text-cream/68">
+                      <p className="mt-1 leading-7 text-cream/82">
                         {category.summary}
                       </p>
                     </div>
@@ -217,7 +217,7 @@ export default function Home() {
                   <h3 className="mt-6 font-display text-2xl font-black">
                     {value.title}
                   </h3>
-                  <p className="mt-3 leading-7 text-cream/68">{value.text}</p>
+                  <p className="mt-3 leading-7 text-cream/82">{value.text}</p>
                 </article>
               );
             })}
@@ -231,7 +231,7 @@ export default function Home() {
           data-reveal="card"
         >
           <div>
-            <p className="text-sm font-bold uppercase text-white/72">
+            <p className="text-sm font-bold uppercase text-white/82">
               Ready for structure?
             </p>
             <h2 className="mt-2 font-display text-4xl font-black leading-none md:text-5xl">

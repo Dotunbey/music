@@ -9,7 +9,7 @@ export function SiteFooter() {
       <div className="mx-auto grid w-full max-w-7xl gap-10 px-5 py-14 md:grid-cols-[1.2fr_0.8fr_0.8fr] md:px-8">
         <div>
           <p className="font-display text-3xl font-black">Tami Bedford</p>
-          <p className="mt-4 max-w-md leading-8 text-cream/68">
+          <p className="mt-4 max-w-md leading-8 text-cream/82">
             Premium music sessions and creative production support for musicians
             who want structure, clarity, and standards that carry into real work.
           </p>
@@ -28,7 +28,7 @@ export function SiteFooter() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-cream/72 transition hover:text-cream"
+                className="text-cream/82 transition hover:text-cream"
               >
                 {item.label}
               </Link>
@@ -38,7 +38,7 @@ export function SiteFooter() {
 
         <div>
           <p className="text-sm font-bold uppercase text-red-500">Contact</p>
-          <div className="mt-5 grid gap-4 text-cream/76">
+          <div className="mt-5 grid gap-4 text-cream/82">
             <a
               className="flex items-center gap-3 transition hover:text-cream"
               href={`tel:${contact.phone.replace(/\s/g, "")}`}
@@ -57,7 +57,7 @@ export function SiteFooter() {
               className="flex items-center gap-3 transition hover:text-cream"
               href={contact.instagram}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               <Camera aria-hidden="true" className="h-4 w-4 text-brass" />
               Instagram
@@ -66,7 +66,7 @@ export function SiteFooter() {
               className="flex items-center gap-3 transition hover:text-cream"
               href={contact.youtube}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               <Play aria-hidden="true" className="h-4 w-4 text-brass" />
               YouTube
@@ -74,8 +74,8 @@ export function SiteFooter() {
           </div>
         </div>
       </div>
-      <div className="border-t border-cream/10 px-5 py-5 text-center text-sm text-cream/54">
-        (c) 2026 Tami Bedford. Built for Sessions, services, and creative work.
+      <div className="border-t border-cream/10 px-5 py-5 text-center text-sm text-cream/70">
+        &copy; 2026 Tami Bedford. Built for Sessions, services, and creative work.
       </div>
     </footer>
   );

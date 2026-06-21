@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { SafeImage } from "@/components/safe-image";
 import { ArrowRight } from "lucide-react";
 import { ActionLink } from "@/components/action-link";
 import { PageHero } from "@/components/page-hero";
@@ -10,6 +10,16 @@ export const metadata: Metadata = {
   title: "Work",
   description:
     "A curated hub for Tami Bedford music, poetry, and short film work.",
+  openGraph: {
+    title: "Work | Tami Bedford",
+    description:
+      "A curated hub for Tami Bedford music, poetry, and short film work.",
+  },
+  twitter: {
+    title: "Work | Tami Bedford",
+    description:
+      "A curated hub for Tami Bedford music, poetry, and short film work.",
+  },
 };
 
 export default function WorkPage() {
@@ -43,7 +53,7 @@ export default function WorkPage() {
                   data-reveal="card"
                 >
                   <div className="relative aspect-[4/3]">
-                    <Image
+                    <SafeImage
                       src={category.image}
                       alt=""
                       fill
@@ -58,7 +68,7 @@ export default function WorkPage() {
                     <h2 className="mt-6 font-display text-3xl font-black">
                       {category.title}
                     </h2>
-                    <p className="mt-3 leading-7 text-ink/68">
+                    <p className="mt-3 leading-7 text-ink/82">
                       {category.summary}
                     </p>
                     <p className="mt-5 border-t border-ink/10 pt-5 text-sm font-bold uppercase leading-6 text-red-700">
@@ -94,7 +104,7 @@ export default function WorkPage() {
             data-reveal="card"
           >
             <div>
-              <p className="text-sm font-bold uppercase text-white/74">
+              <p className="text-sm font-bold uppercase text-white/82">
                 Contact
               </p>
               <p className="mt-3 font-display text-3xl font-black leading-none">

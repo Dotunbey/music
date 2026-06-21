@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { SafeImage } from "@/components/safe-image";
 import { Award, CircleCheck, Users } from "lucide-react";
 import { ActionLink } from "@/components/action-link";
 import { PageHero } from "@/components/page-hero";
@@ -10,6 +10,16 @@ export const metadata: Metadata = {
   title: "About",
   description:
     "Meet Tami Bedford and the session guides behind the music academy and creative studio.",
+  openGraph: {
+    title: "About | Tami Bedford",
+    description:
+      "Meet Tami Bedford and the session guides behind the music academy and creative studio.",
+  },
+  twitter: {
+    title: "About | Tami Bedford",
+    description:
+      "Meet Tami Bedford and the session guides behind the music academy and creative studio.",
+  },
 };
 
 export default function AboutPage() {
@@ -44,13 +54,13 @@ export default function AboutPage() {
                     index % 2 === 1 ? "lg:order-2" : ""
                   }`}
                 >
-                  <Image
-                    src={member.image}
-                    alt={member.name}
-                    fill
-                    sizes="(min-width: 1024px) 42vw, 100vw"
-                    className="object-cover object-top"
-                  />
+                  <SafeImage
+                      src={member.image}
+                      alt={member.name}
+                      fill
+                      sizes="(min-width: 1024px) 42vw, 100vw"
+                      className="object-cover object-top"
+                    />
                 </div>
                 <div className="flex flex-col justify-center p-6 md:p-10">
                   <p className="text-sm font-bold uppercase text-red-700">
@@ -59,7 +69,7 @@ export default function AboutPage() {
                   <h2 className="mt-3 font-display text-4xl font-black leading-none md:text-5xl">
                     {member.name}
                   </h2>
-                  <p className="mt-6 max-w-3xl leading-8 text-ink/70">
+                  <p className="mt-6 max-w-3xl leading-8 text-ink/82">
                     {member.bio}
                   </p>
                   <div className="mt-8 flex flex-wrap gap-3">
@@ -70,7 +80,7 @@ export default function AboutPage() {
                     ].map((item) => (
                       <span
                         key={item}
-                        className="inline-flex items-center gap-2 rounded-md border border-ink/12 px-3 py-2 text-sm font-bold text-ink/70"
+                        className="inline-flex items-center gap-2 rounded-md border border-ink/12 px-3 py-2 text-sm font-bold text-ink/82"
                       >
                         <CircleCheck
                           aria-hidden="true"
@@ -109,7 +119,7 @@ export default function AboutPage() {
                   <h3 className="mt-5 font-display text-2xl font-black">
                     {value.title}
                   </h3>
-                  <p className="mt-3 leading-7 text-cream/68">{value.text}</p>
+                  <p className="mt-3 leading-7 text-cream/82">{value.text}</p>
                 </article>
               );
             })}
@@ -123,7 +133,7 @@ export default function AboutPage() {
               <h3 className="mt-5 font-display text-2xl font-black">
                 MUSON-certified leadership
               </h3>
-              <p className="mt-3 leading-7 text-white/76">
+              <p className="mt-3 leading-7 text-white/84">
                 Tami brings formal theory and piano training into a practical,
                 artist-facing teaching environment.
               </p>
