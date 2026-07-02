@@ -59,7 +59,7 @@ export default function AboutPage() {
                       alt={member.name}
                       fill
                       sizes="(min-width: 1024px) 42vw, 100vw"
-                      className="object-cover object-top"
+                      className="object-cover object-[50%_24%]"
                     />
                 </div>
                 <div className="flex flex-col justify-center p-6 md:p-10">

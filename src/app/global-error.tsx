@@ -1,5 +1,7 @@
 "use client";
 
+import { interactiveStateClasses } from "@/lib/ui";
+
 type GlobalErrorProps = {
   error: Error & { digest?: string };
   unstable_retry: () => void;
@@ -20,7 +22,7 @@ export default function GlobalError({ error: _error, unstable_retry }: GlobalErr
           <div className="mt-8">
             <button
               onClick={() => unstable_retry()}
-              className="inline-flex min-h-12 items-center justify-center rounded-md bg-red-600 px-6 py-3 text-sm font-bold uppercase text-white transition hover:bg-red-500"
+              className={`inline-flex min-h-12 items-center justify-center rounded-md bg-red-600 px-6 py-3 text-sm font-bold uppercase text-white hover:bg-red-500 ${interactiveStateClasses}`}
             >
               Try Again
             </button>

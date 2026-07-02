@@ -5,6 +5,7 @@ import { ActionLink } from "@/components/action-link";
 import { PageHero } from "@/components/page-hero";
 import { SectionHeading } from "@/components/section-heading";
 import { contact, workCategories } from "@/lib/content";
+import { interactiveStateClasses } from "@/lib/ui";
 
 export const metadata: Metadata = {
   title: "Work",
@@ -86,13 +87,16 @@ export default function WorkPage() {
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div>
             <SectionHeading
-              eyebrow="Next"
-              title="Creative material has a place to land."
-              body="The Work hub can hold embeds, release notes, video trailers, poetry text, and project campaigns as each piece becomes ready."
+              eyebrow="Project inquiry"
+              title="Need production or creative direction?"
+              body="Send a short brief for arrangement, vocal production, studio support, release content, or a visual idea that needs structure."
             />
             <div className="mt-8">
-              <ActionLink href="/services" variant="secondary">
-                Build a Creative Project
+              <ActionLink
+                href="/apply?track=Music%20Arrangement%20%26%20Production"
+                variant="secondary"
+              >
+                Start a Project Inquiry
               </ActionLink>
             </div>
           </div>
@@ -100,20 +104,20 @@ export default function WorkPage() {
             href={`mailto:${contact.email}?subject=${encodeURIComponent(
               "Creative project inquiry",
             )}`}
-            className="motion-sheen group flex min-h-40 items-center justify-between gap-5 overflow-hidden rounded-lg border border-cream/12 bg-red-700 p-6 text-white transition hover:bg-red-600"
+            className={`motion-sheen group flex min-h-40 items-center justify-between gap-5 overflow-hidden rounded-lg border border-cream/12 bg-red-700 p-6 text-white hover:bg-red-600 ${interactiveStateClasses}`}
             data-reveal="card"
           >
             <div>
               <p className="text-sm font-bold uppercase text-white/82">
-                Contact
+                Prefer email?
               </p>
               <p className="mt-3 font-display text-3xl font-black leading-none">
-                Send a creative brief.
+                Send the team your brief.
               </p>
             </div>
             <ArrowRight
               aria-hidden="true"
-              className="h-8 w-8 shrink-0 transition group-hover:translate-x-1"
+              className="h-8 w-8 shrink-0 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1"
             />
           </a>
         </div>

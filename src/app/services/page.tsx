@@ -5,6 +5,7 @@ import { ActionLink } from "@/components/action-link";
 import { PageHero } from "@/components/page-hero";
 import { SectionHeading } from "@/components/section-heading";
 import { contact, services } from "@/lib/content";
+import { interactiveStateClasses } from "@/lib/ui";
 
 export const metadata: Metadata = {
   title: "Services",
@@ -95,7 +96,7 @@ export default function ServicesPage() {
                         href={`https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(
                           whatsappMessage,
                         )}`}
-                        className="motion-sheen inline-flex min-h-12 items-center justify-center gap-2 overflow-hidden rounded-md border border-ink/20 px-5 py-3 text-sm font-bold uppercase transition hover:border-red-600 hover:text-red-700"
+                        className={`motion-sheen inline-flex min-h-12 items-center justify-center gap-2 overflow-hidden rounded-md border border-ink/20 px-5 py-3 text-sm font-bold uppercase hover:border-red-600 hover:text-red-700 ${interactiveStateClasses}`}
                       >
                         <MessageCircle aria-hidden="true" className="h-4 w-4" />
                         Message Us

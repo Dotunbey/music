@@ -2,6 +2,7 @@
 
 import { createHash } from "node:crypto";
 import { headers } from "next/headers";
+import { and, count, eq, gt } from "drizzle-orm";
 import { Resend } from "resend";
 import { z, ZodError } from "zod";
 
@@ -24,6 +25,11 @@ const INQUIRY_STATUSES = [
   "closed",
   "spam",
 ] as const;
+
+// The in-memory limiter resets on every serverless cold start, so the
+// inquiries table itself is the durable limit: max rows per hashed IP per window.
+const DB_RATE_LIMIT_MAX = 5;
+const DB_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 
 const inquirySchema = z.object({
   name: z.string().trim().min(1, "Enter your full name.").max(120),
@@ -320,6 +326,30 @@ export async function submitInquiryAction(
   let inquiryId = "";
   try {
     const db = await getDbClient();
+
+    if (ipHash) {
+      const windowStart = new Date(Date.now() - DB_RATE_LIMIT_WINDOW_MS);
+      const [recent] = await db
+        .select({ value: count() })
+        .from(inquiries)
+        .where(
+          and(eq(inquiries.ipHash, ipHash), gt(inquiries.createdAt, windowStart)),
+        );
+
+      if ((recent?.value ?? 0) >= DB_RATE_LIMIT_MAX) {
+        logger.warn({
+          message: "Durable rate limit exceeded",
+          context: "submit-inquiry",
+          clientIp: ipHash,
+        });
+        return {
+          status: "error",
+          message: "Too many submissions from this connection. Please try again later.",
+          errors: {},
+        };
+      }
+    }
+
     const inserted = await db
       .insert(inquiries)
       .values({

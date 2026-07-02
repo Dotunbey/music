@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { Session } from "@/lib/content";
 import { ActionLink } from "./action-link";
+import { interactiveStateClasses } from "@/lib/ui";
 
 type SessionCardProps = {
   session: Session;
@@ -13,7 +14,7 @@ export function SessionCard({ session }: SessionCardProps) {
 
   return (
     <article
-      className="group overflow-hidden rounded-lg border border-ink/10 bg-cream text-ink shadow-soft"
+      className="card-lift group relative overflow-hidden rounded-lg border border-ink/10 bg-cream text-ink shadow-soft"
       data-reveal="card"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-charcoal">
@@ -48,7 +49,7 @@ export function SessionCard({ session }: SessionCardProps) {
           </ActionLink>
           <Link
             href={`/apply?track=${session.slug}`}
-            className="motion-sheen inline-flex min-h-12 w-full items-center justify-center gap-2 overflow-hidden rounded-md border border-ink/18 px-4 py-3 text-sm font-bold uppercase transition hover:border-red-600 hover:text-red-700"
+            className={`motion-sheen inline-flex min-h-12 w-full items-center justify-center gap-2 overflow-hidden rounded-md border border-ink/18 px-4 py-3 text-sm font-bold uppercase hover:border-red-600 hover:text-red-700 ${interactiveStateClasses}`}
           >
             Apply
             <ArrowRight aria-hidden="true" className="h-4 w-4" />

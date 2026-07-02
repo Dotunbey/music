@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SafeImage } from "@/components/safe-image";
 import { notFound } from "next/navigation";
-import { CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { ActionLink } from "@/components/action-link";
+import { GhostWord } from "@/components/brand-motifs";
+import { FaqAccordion } from "@/components/faq-accordion";
 import { PageHero } from "@/components/page-hero";
 import { SectionHeading } from "@/components/section-heading";
 import { getSession, sessions } from "@/lib/content";
+import { interactiveStateClasses } from "@/lib/ui";
 
 type SessionDetailPageProps = {
   params: Promise<{ slug: string }>;
@@ -68,7 +72,7 @@ export default async function SessionDetailPage({
           data-stagger
         >
           <aside
-            className="rounded-lg border border-ink/10 bg-white p-6 shadow-soft"
+            className="rounded-lg border border-ink/10 bg-white p-6 shadow-soft lg:sticky lg:top-28 lg:self-start"
             data-reveal="card"
           >
             <span className="grid h-12 w-12 place-items-center rounded-md bg-red-600 text-white">
@@ -86,6 +90,10 @@ export default async function SessionDetailPage({
                 Apply Now
               </ActionLink>
             </div>
+            <p className="mt-4 text-sm leading-6 text-ink/62">
+              Applying starts a conversation. No payment or schedule is locked
+              in until you agree with the team.
+            </p>
           </aside>
 
           <div
@@ -117,29 +125,35 @@ export default async function SessionDetailPage({
         </div>
       </section>
 
-      <section className="bg-charcoal px-5 py-20 md:px-8 md:py-28">
-        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_0.9fr] lg:items-start">
+      <section className="relative overflow-hidden bg-charcoal px-5 py-20 md:px-8 md:py-28">
+        <GhostWord word="Outcomes" className="-right-10 top-10 text-[14vw]" />
+        <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_0.9fr] lg:items-start">
           <div>
             <SectionHeading
               eyebrow="Outcomes"
               title="What you will learn."
               body="Each topic is taught for use, not just theory. The goal is confident repetition outside the lesson."
             />
-            <div className="mt-10 grid gap-4" data-stagger>
-              {session.outcomes.map((outcome) => (
-                <div
+            <ol className="mt-10 grid" data-stagger>
+              {session.outcomes.map((outcome, index) => (
+                <li
                   key={outcome}
-                  className="flex gap-4 rounded-lg border border-cream/12 bg-cream/[0.04] p-4"
+                  className="relative flex gap-5 pb-8 last:pb-0"
                   data-reveal="card"
                 >
-                  <CheckCircle2
-                    aria-hidden="true"
-                    className="mt-1 h-5 w-5 shrink-0 text-brass"
-                  />
-                  <p className="leading-7 text-cream/82">{outcome}</p>
-                </div>
+                  {index < session.outcomes.length - 1 ? (
+                    <span
+                      aria-hidden="true"
+                      className="absolute left-[22px] top-12 h-[calc(100%-3rem)] w-px bg-cream/14"
+                    />
+                  ) : null}
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-md border border-brass/40 bg-brass/10 font-display text-lg font-black text-brass">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <p className="pt-2 leading-7 text-cream/82">{outcome}</p>
+                </li>
               ))}
-            </div>
+            </ol>
           </div>
 
           <div
@@ -187,26 +201,15 @@ export default async function SessionDetailPage({
       </section>
 
       <section className="bg-ink px-5 py-20 md:px-8 md:py-28">
-        <div className="mx-auto max-w-5xl">
+        <div className="mx-auto max-w-4xl">
           <SectionHeading
             eyebrow="Questions"
             title="Before you apply."
             body="The application starts the conversation. It does not lock you into payment or a schedule."
             align="center"
           />
-          <div className="mt-10 grid gap-4 md:grid-cols-2" data-stagger>
-            {session.faqs.map((faq) => (
-              <article
-                key={faq.question}
-                className="rounded-lg border border-cream/12 bg-cream/[0.04] p-6"
-                data-reveal="card"
-              >
-                <h3 className="font-display text-2xl font-black">
-                  {faq.question}
-                </h3>
-                <p className="mt-3 leading-7 text-cream/82">{faq.answer}</p>
-              </article>
-            ))}
+          <div className="mt-10">
+            <FaqAccordion items={session.faqs} />
           </div>
           <div className="mt-10 text-center">
             <ActionLink href={`/apply?track=${session.slug}`}>
@@ -215,6 +218,27 @@ export default async function SessionDetailPage({
           </div>
         </div>
       </section>
+
+      <div className="h-20 md:hidden" aria-hidden="true" />
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-cream/12 bg-ink/92 px-5 py-3 backdrop-blur-xl md:hidden">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <p className="text-sm font-bold uppercase text-cream">
+              {session.title}
+            </p>
+            <p className="text-sm text-brass">
+              {session.price} {session.cadence}
+            </p>
+          </div>
+          <Link
+            href={`/apply?track=${session.slug}`}
+            className={`motion-sheen inline-flex min-h-11 items-center justify-center gap-2 overflow-hidden rounded-md bg-red-600 px-4 py-2 text-sm font-bold uppercase text-white hover:bg-red-500 ${interactiveStateClasses}`}
+          >
+            Apply
+            <ArrowRight aria-hidden="true" className="h-4 w-4" />
+          </Link>
+        </div>
+      </div>
     </>
   );
 }

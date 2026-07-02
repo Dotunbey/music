@@ -4,7 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { navItems } from "@/lib/content";
+import { interactiveStateClasses } from "@/lib/ui";
 
 function isActive(pathname: string, href: string) {
   if (href === "/") {
@@ -19,6 +21,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const reduceMotion = useReducedMotion();
 
   const close = useCallback(() => setOpen(false), []);
 
@@ -59,7 +62,7 @@ export function SiteHeader() {
       <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-5 md:px-8">
         <Link
           href="/"
-          className="flex items-center gap-3 text-cream"
+          className={`flex items-center gap-3 rounded-md text-cream ${interactiveStateClasses}`}
           onClick={close}
         >
           <span className="grid h-10 w-10 place-items-center rounded-md border border-cream/20 bg-cream/8 font-display text-xl font-black">
@@ -75,7 +78,7 @@ export function SiteHeader() {
             <Link
               key={item.href}
               href={item.href}
-              className={`rounded-md px-4 py-3 text-sm font-bold uppercase transition ${
+              className={`rounded-md px-4 py-3 text-sm font-bold uppercase ${interactiveStateClasses} ${
                 isActive(pathname, item.href)
                   ? "bg-cream text-ink"
                   : "text-cream/82 hover:bg-cream/10 hover:text-cream"
@@ -89,7 +92,7 @@ export function SiteHeader() {
         <button
           ref={buttonRef}
           type="button"
-          className="grid h-11 w-11 place-items-center rounded-md border border-cream/20 text-cream transition hover:border-red-500 hover:text-white md:hidden"
+          className={`grid h-11 w-11 place-items-center rounded-md border border-cream/20 text-cream hover:border-red-500 hover:text-white md:hidden ${interactiveStateClasses}`}
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
           aria-controls="mobile-navigation"
@@ -99,34 +102,49 @@ export function SiteHeader() {
         </button>
       </div>
 
-      {open ? (
-        <div
-          ref={menuRef}
-          id="mobile-navigation"
-          className="mobile-menu-panel border-t border-cream/10 bg-ink px-5 pb-6 pt-3 md:hidden"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Navigation menu"
-        >
-          <nav className="grid gap-2" aria-label="Mobile main">
-            {navItems.map((item, index) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={close}
-                style={{ animationDelay: `${index * 42}ms` }}
-                className={`mobile-menu-link rounded-md px-4 py-4 text-base font-bold uppercase ${
-                  isActive(pathname, item.href)
-                    ? "bg-cream text-ink"
-                    : "bg-cream/6 text-cream"
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      ) : null}
+      <AnimatePresence mode="wait">
+        {open ? (
+          <motion.div
+            ref={menuRef}
+            id="mobile-navigation"
+            className="border-t border-cream/10 bg-ink px-5 pb-6 pt-3 md:hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation menu"
+            initial={reduceMotion ? false : { opacity: 0, y: -8, scaleY: 0.97 }}
+            animate={{ opacity: 1, y: 0, scaleY: 1 }}
+            exit={reduceMotion ? undefined : { opacity: 0, y: -8, scaleY: 0.97 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          >
+            <nav className="grid gap-2" aria-label="Mobile main">
+              {navItems.map((item, index) => (
+                <motion.div
+                  key={item.href}
+                  initial={reduceMotion ? false : { opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.24,
+                    delay: reduceMotion ? 0 : index * 0.04,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                >
+                  <Link
+                    href={item.href}
+                    onClick={close}
+                    className={`block rounded-md px-4 py-4 text-base font-bold uppercase ${interactiveStateClasses} ${
+                      isActive(pathname, item.href)
+                        ? "bg-cream text-ink"
+                        : "bg-cream/6 text-cream"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                </motion.div>
+              ))}
+            </nav>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </header>
   );
 }

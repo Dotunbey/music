@@ -21,18 +21,6 @@ export function MotionRuntime() {
       document.querySelectorAll<HTMLElement>(revealSelector),
     );
 
-    document
-      .querySelectorAll<HTMLElement>("[data-stagger]")
-      .forEach((container) => {
-        Array.from(container.querySelectorAll<HTMLElement>(revealSelector)).forEach(
-          (element, index) => {
-            if (!element.style.getPropertyValue("--reveal-delay")) {
-              element.style.setProperty("--reveal-delay", `${index * 80}ms`);
-            }
-          },
-        );
-      });
-
     if (reduceMotion) {
       revealElements.forEach((element) => element.classList.add("is-visible"));
       return () => {

@@ -8,8 +8,10 @@ type DbClient = ReturnType<typeof drizzle>;
 
 let dbClient: DbClient | null = null;
 let connectionPool: ReturnType<typeof postgres> | null = null;
+let lastHealthCheckAt = 0;
 
 const MAX_RETRIES = 2;
+const HEALTH_CHECK_INTERVAL_MS = 30_000;
 
 function getDatabaseUrl(): string {
   const defaultUrl = process.env.DATABASE_URL;
@@ -46,18 +48,25 @@ async function healthCheck(): Promise<boolean> {
 
 export async function getDbClient(): Promise<DbClient> {
   if (dbClient && connectionPool) {
+    if (Date.now() - lastHealthCheckAt < HEALTH_CHECK_INTERVAL_MS) {
+      return dbClient;
+    }
     const healthy = await healthCheck();
-    if (healthy) return dbClient;
+    if (healthy) {
+      lastHealthCheckAt = Date.now();
+      return dbClient;
+    }
     logger.warn({
       message: "Database connection unhealthy, reconnecting",
       context: "db-client",
     });
+    await connectionPool.end({ timeout: 5 }).catch(() => {});
     dbClient = null;
     connectionPool = null;
   }
 
   const databaseUrl = getDatabaseUrl();
-  connectionPool = postgres(databaseUrl, {
+  const pool = postgres(databaseUrl, {
     prepare: false,
     max: 3,
     idle_timeout: 30,
@@ -65,9 +74,11 @@ export async function getDbClient(): Promise<DbClient> {
   });
 
   let lastError: Error | null = null;
+  let connected = false;
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
-      await connectionPool`SELECT 1`;
+      await pool`SELECT 1`;
+      connected = true;
       logger.info({
         message: "Database connected",
         context: "db-client",
@@ -88,10 +99,13 @@ export async function getDbClient(): Promise<DbClient> {
     }
   }
 
-  if (lastError && !connectionPool) {
-    throw lastError;
+  if (!connected) {
+    await pool.end({ timeout: 5 }).catch(() => {});
+    throw lastError ?? new Error("Database connection failed.");
   }
 
-  dbClient = drizzle(connectionPool, { schema, logger: false });
+  connectionPool = pool;
+  dbClient = drizzle(pool, { schema, logger: false });
+  lastHealthCheckAt = Date.now();
   return dbClient;
 }

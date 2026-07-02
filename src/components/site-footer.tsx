@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Camera, Mail, Phone, Play } from "lucide-react";
 import { contact, navItems } from "@/lib/content";
 import { ActionLink } from "./action-link";
+import { interactiveStateClasses } from "@/lib/ui";
 
 export function SiteFooter() {
   return (
@@ -28,7 +29,7 @@ export function SiteFooter() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-cream/82 transition hover:text-cream"
+                className={`rounded-md text-cream/82 hover:text-cream ${interactiveStateClasses}`}
               >
                 {item.label}
               </Link>
@@ -40,21 +41,21 @@ export function SiteFooter() {
           <p className="text-sm font-bold uppercase text-red-500">Contact</p>
           <div className="mt-5 grid gap-4 text-cream/82">
             <a
-              className="flex items-center gap-3 transition hover:text-cream"
+              className={`flex items-center gap-3 rounded-md hover:text-cream ${interactiveStateClasses}`}
               href={`tel:${contact.phone.replace(/\s/g, "")}`}
             >
               <Phone aria-hidden="true" className="h-4 w-4 text-brass" />
               {contact.phone}
             </a>
             <a
-              className="flex items-center gap-3 transition hover:text-cream"
+              className={`flex items-center gap-3 rounded-md hover:text-cream ${interactiveStateClasses}`}
               href={`mailto:${contact.email}`}
             >
               <Mail aria-hidden="true" className="h-4 w-4 text-brass" />
               {contact.email}
             </a>
             <a
-              className="flex items-center gap-3 transition hover:text-cream"
+              className={`flex items-center gap-3 rounded-md hover:text-cream ${interactiveStateClasses}`}
               href={contact.instagram}
               target="_blank"
               rel="noopener noreferrer"
@@ -63,7 +64,7 @@ export function SiteFooter() {
               Instagram
             </a>
             <a
-              className="flex items-center gap-3 transition hover:text-cream"
+              className={`flex items-center gap-3 rounded-md hover:text-cream ${interactiveStateClasses}`}
               href={contact.youtube}
               target="_blank"
               rel="noopener noreferrer"
