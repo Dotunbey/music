@@ -76,12 +76,6 @@ export type InquirySubmitState = {
   whatsappPreferred?: boolean;
 };
 
-export const initialInquiryState: InquirySubmitState = {
-  status: "idle",
-  message: "",
-  errors: {},
-};
-
 function safeDate(value?: string) {
   if (!value) {
     return new Date();

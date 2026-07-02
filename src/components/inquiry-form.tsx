@@ -6,8 +6,8 @@ import { Turnstile } from "@marsidev/react-turnstile";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { sessions, services } from "@/lib/content";
 import {
-  initialInquiryState,
   submitInquiryAction,
+  type InquirySubmitState,
 } from "@/actions/submit-inquiry";
 import {
   AnimatedError,
@@ -23,6 +23,12 @@ const deliveryOptions = [
 ] as const;
 
 const experienceLevels = ["Beginner", "Intermediate", "Advanced"] as const;
+
+const initialInquiryState: InquirySubmitState = {
+  status: "idle",
+  message: "",
+  errors: {},
+};
 
 type InquiryFormProps = {
   initialTrack?: string;
