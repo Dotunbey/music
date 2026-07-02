@@ -75,8 +75,17 @@ export function SiteFooter() {
           </div>
         </div>
       </div>
-      <div className="border-t border-cream/10 px-5 py-5 text-center text-sm text-cream/70">
-        &copy; 2026 Tami Bedford. Built for Sessions, services, and creative work.
+      <div className="flex flex-col items-center gap-2 border-t border-cream/10 px-5 py-5 text-center text-sm text-cream/70 sm:flex-row sm:justify-between md:px-8">
+        <p>
+          &copy; 2026 Tami Bedford. Built for Sessions, services, and creative
+          work.
+        </p>
+        <Link
+          href="/privacy"
+          className={`rounded-md text-cream/70 hover:text-cream ${interactiveStateClasses}`}
+        >
+          Privacy Policy
+        </Link>
       </div>
     </footer>
   );

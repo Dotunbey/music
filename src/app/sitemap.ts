@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/sessions/piano",
     "/sessions/organ",
     "/sessions/production",
+    "/privacy",
   ];
   return routes.map((route) => ({
     url: `${base}${route}`,
