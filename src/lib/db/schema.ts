@@ -60,7 +60,30 @@ export const inquiries = pgTable(
   }),
 );
 
+export const inquiryEvents = pgTable(
+  "inquiry_events",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    inquiryId: uuid("inquiry_id")
+      .notNull()
+      .references(() => inquiries.id, { onDelete: "cascade" }),
+    fromStatus: inquiryStatusEnum("from_status"),
+    toStatus: inquiryStatusEnum("to_status"),
+    note: text("note"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  ({ inquiryId, createdAt }) => ({
+    inquiryCreatedAtIndex: index("inquiry_events_inquiry_id_created_at_idx").on(
+      inquiryId,
+      createdAt,
+    ),
+  }),
+);
+
 export type Inquiry = typeof inquiries.$inferSelect;
 export type InquiryInsert = typeof inquiries.$inferInsert;
+export type InquiryEvent = typeof inquiryEvents.$inferSelect;
 export type InquiryStatus = (typeof inquiryStatusEnum.enumValues)[number];
 export type InquiryType = (typeof inquiryTypeEnum.enumValues)[number];

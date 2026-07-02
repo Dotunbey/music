@@ -37,7 +37,18 @@ RESEND_API_KEY=              # Resend API key
 RESEND_FROM_EMAIL=           # Verified sender in Resend
 ADMIN_NOTIFICATION_EMAIL=     # Team inbox for inquiry alerts
 NEXT_PUBLIC_SITE_URL=        # Optional public site URL for admin link in emails
+ADMIN_PASSWORD=              # Shared team password for the /admin panel
+ADMIN_SESSION_SECRET=        # Long random string signing admin session cookies (openssl rand -hex 32)
 ```
+
+## Admin Panel
+
+`/admin` is a password-protected dashboard for managing inquiries: a stats
+overview, a filterable queue, and per-inquiry detail pages with a status
+pipeline (new → reviewing → contacted → scheduled → enrolled → closed / spam)
+and internal notes. Set `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET`, then sign
+in at `/admin/login`. Sessions last 7 days; `/admin` is excluded from
+robots.txt.
 
 ## Database Migration
 

@@ -15,6 +15,13 @@
       "when": 1782957123653,
       "tag": "0001_purple_scarecrow",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782958129957,
+      "tag": "0002_blushing_medusa",
+      "breakpoints": true
     }
   ]
 }
