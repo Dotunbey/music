@@ -15,6 +15,9 @@ export const metadata: Metadata = {
 
 // Admin pages read cookies and query live data — never prerender them.
 export const dynamic = "force-dynamic";
+// Cold starts pay for function spin-up + DB connection before queries run;
+// give them headroom beyond the 10s platform default.
+export const maxDuration = 30;
 
 const navItems = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
