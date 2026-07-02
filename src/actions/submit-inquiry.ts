@@ -6,10 +6,13 @@ import { and, count, eq, gt } from "drizzle-orm";
 import { Resend } from "resend";
 import { z, ZodError } from "zod";
 
-import { contact } from "@/lib/content";
+import { contact, getSession } from "@/lib/content";
 import { getDbClient } from "@/lib/db/client";
 import { inquiries } from "@/lib/db/schema";
-import { escapeHtml } from "@/lib/html-escape";
+import {
+  renderApplicantConfirmationEmail,
+  renderTeamNotificationEmail,
+} from "@/lib/email-templates";
 import { isValidTrack, normalizeTrackLabel, resolveInquiryType } from "@/lib/inquiry-utils";
 import { logger } from "@/lib/logger";
 import { checkRateLimit, cleanupStore } from "@/lib/rate-limiter";
@@ -71,6 +74,7 @@ export type InquirySubmitState = {
   errors: Record<string, string>;
   inquiryId?: string;
   emailSent?: boolean;
+  confirmationSent?: boolean;
   whatsappLink?: string;
   emailLink?: string;
   whatsappPreferred?: boolean;
@@ -122,40 +126,6 @@ function readErrorMessages(error: ZodError) {
   );
 }
 
-function buildContactEmailHtml(params: {
-  inquiryId: string;
-  name: string;
-  email: string;
-  trackLabel: string;
-  track: string;
-  type: "session" | "service" | "general";
-  experience: string;
-  preferredTime: string;
-  message: string;
-  phone?: string;
-  sourcePath: string;
-}) {
-  const adminUrl = process.env.NEXT_PUBLIC_SITE_URL
-    ? `${process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "")}/admin/inquiries/${params.inquiryId}`
-    : "Admin URL not configured yet.";
-
-  const safeMessage = escapeHtml(params.message).replace(/\n/g, "<br/>");
-  return [
-    "<h2>New inquiry received</h2>",
-    `<p><strong>Name:</strong> ${escapeHtml(params.name)}</p>`,
-    `<p><strong>Email:</strong> ${escapeHtml(params.email)}</p>`,
-    `<p><strong>Track:</strong> ${escapeHtml(params.trackLabel)} (${escapeHtml(params.track)})</p>`,
-    `<p><strong>Inquiry Type:</strong> ${escapeHtml(params.type)}</p>`,
-    `<p><strong>Experience level:</strong> ${escapeHtml(params.experience)}</p>`,
-    `<p><strong>Preferred day/time:</strong> ${escapeHtml(params.preferredTime)}</p>`,
-    `<p><strong>Phone:</strong> ${escapeHtml(params.phone ?? "Not provided")}</p>`,
-    `<p><strong>Source:</strong> ${escapeHtml(params.sourcePath)}</p>`,
-    `<p><strong>Admin record:</strong> ${escapeHtml(adminUrl)}</p>`,
-    "<p><strong>Message:</strong></p>",
-    `<p>${safeMessage}</p>`,
-  ].join("");
-}
-
 function buildWhatsAppBody(params: {
   name: string;
   trackLabel: string;
@@ -178,15 +148,13 @@ function buildWhatsAppBody(params: {
   ].join("\n");
 }
 
-async function sendTeamNotification(
-  payload: {
-    from: string;
-    to: string;
-    subject: string;
-    html: string;
-    text: string;
-  },
-) {
+async function sendEmail(payload: {
+  to: string;
+  replyTo?: string;
+  subject: string;
+  html: string;
+  text: string;
+}) {
   const fromEmail = process.env.RESEND_FROM_EMAIL;
   const apiKey = process.env.RESEND_API_KEY;
 
@@ -198,46 +166,14 @@ async function sendTeamNotification(
     throw new Error("RESEND_FROM_EMAIL is not configured.");
   }
 
-  if (payload.from !== fromEmail) {
-    throw new Error("Unexpected sender configured in payload.");
-  }
-
   const resend = new Resend(apiKey);
-  const { error } = await resend.emails.send(payload);
+  const { error } = await resend.emails.send({
+    from: fromEmail,
+    ...payload,
+  });
   if (error) {
     throw new Error(error.message || "Email send failed.");
   }
-}
-
-function buildEmailPayload(values: InquiryFormValues, trackLabel: string, inquiryId: string) {
-  const body = buildContactEmailHtml({
-    inquiryId,
-    name: values.name,
-    email: values.email,
-    trackLabel,
-    track: values.track,
-    type: resolveInquiryType(values.track),
-    experience: values.experience,
-    preferredTime: values.preferredTime,
-    message: values.message,
-    phone: values.phone,
-    sourcePath: values.sourcePath ?? "/apply",
-  });
-
-  const fromEmail = process.env.RESEND_FROM_EMAIL;
-  const toEmail = process.env.ADMIN_NOTIFICATION_EMAIL ?? contact.email;
-
-  if (!fromEmail) {
-    throw new Error("RESEND_FROM_EMAIL is not configured.");
-  }
-
-  return {
-    from: fromEmail,
-    to: toEmail,
-    subject: `New ${trackLabel} inquiry`,
-    html: body,
-    text: `${values.name} (${values.email}): ${values.track} - ${values.message}`,
-  };
 }
 
 export async function submitInquiryAction(
@@ -395,17 +331,45 @@ export async function submitInquiryAction(
     };
   }
 
+  const followUpText = buildWhatsAppBody({
+    name: values.name,
+    trackLabel,
+    experience: values.experience,
+    preferredTime: values.preferredTime,
+    message: values.message,
+    email: values.email,
+  });
+  const encoded = encodeURIComponent(followUpText);
+  const whatsappLink = `https://wa.me/${contact.whatsapp}?text=${encoded}`;
+  const emailSubject = `Application inquiry: ${trackLabel}`;
+  const emailLink = `mailto:${contact.email}?subject=${encodeURIComponent(
+    emailSubject,
+  )}&body=${encodeURIComponent(followUpText)}`;
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
+
   let emailSent = true;
   let emailMessage =
     "Inquiry submitted and logged. The team has been notified by email.";
   try {
-    const emailPayload = buildEmailPayload(values, trackLabel, inquiryId);
-    await sendTeamNotification({
-      from: emailPayload.from,
-      to: emailPayload.to,
-      subject: emailPayload.subject,
-      html: emailPayload.html,
-      text: emailPayload.text,
+    const teamEmail = renderTeamNotificationEmail({
+      inquiryId,
+      name: values.name,
+      email: values.email,
+      phone: values.phone,
+      trackLabel,
+      type,
+      experience: values.experience,
+      preferredTime: values.preferredTime,
+      delivery: values.delivery,
+      message: values.message,
+      sourcePath,
+      adminUrl: siteUrl ? `${siteUrl}/admin/inquiries/${inquiryId}` : undefined,
+    });
+    await sendEmail({
+      to: process.env.ADMIN_NOTIFICATION_EMAIL ?? contact.email,
+      replyTo: values.email,
+      ...teamEmail,
     });
     logger.info({
       message: "Team notified by email",
@@ -426,20 +390,40 @@ export async function submitInquiryAction(
     });
   }
 
-  const followUpText = buildWhatsAppBody({
-    name: values.name,
-    trackLabel,
-    experience: values.experience,
-    preferredTime: values.preferredTime,
-    message: values.message,
-    email: values.email,
-  });
-  const encoded = encodeURIComponent(followUpText);
-  const whatsappLink = `https://wa.me/${contact.whatsapp}?text=${encoded}`;
-  const emailSubject = `Application inquiry: ${trackLabel}`;
-  const emailLink = `mailto:${contact.email}?subject=${encodeURIComponent(
-    emailSubject,
-  )}&body=${encodeURIComponent(followUpText)}`;
+  let confirmationSent = false;
+  try {
+    const session = getSession(values.track);
+    const confirmationEmail = renderApplicantConfirmationEmail({
+      firstName: values.name.trim().split(/\s+/)[0] ?? values.name,
+      trackLabel,
+      experience: values.experience,
+      preferredTime: values.preferredTime,
+      priceLine: session ? `${session.price} ${session.cadence}` : undefined,
+      whatsappUrl: whatsappLink,
+      siteUrl,
+    });
+    await sendEmail({
+      to: values.email,
+      ...confirmationEmail,
+    });
+    confirmationSent = true;
+    if (emailSent) {
+      emailMessage =
+        "Inquiry submitted and logged. The team has been notified, and a confirmation email is on its way to your inbox.";
+    }
+    logger.info({
+      message: "Applicant confirmation sent",
+      context: "submit-inquiry",
+      inquiryId,
+    });
+  } catch (error) {
+    logger.error({
+      message: "Failed to send applicant confirmation",
+      context: "submit-inquiry",
+      inquiryId,
+      error,
+    });
+  }
 
   return {
     status: "success",
@@ -447,6 +431,7 @@ export async function submitInquiryAction(
     errors: {},
     inquiryId,
     emailSent,
+    confirmationSent,
     whatsappLink,
     emailLink,
     whatsappPreferred: values.delivery === "whatsapp",
