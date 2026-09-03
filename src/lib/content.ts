@@ -24,12 +24,12 @@ export const navItems = [
   { href: "/", label: "Home" },
   { href: "/sessions", label: "Sessions" },
   { href: "/services", label: "Services" },
-  { href: "/work", label: "Work" },
+  { href: "/gallery", label: "Gallery" },
   { href: "/about", label: "About" },
   { href: "/apply", label: "Apply" },
 ] as const;
 
-export type SessionSlug = "piano" | "organ" | "production";
+export type SessionSlug = "piano" | "choral" | "organ" | "production";
 
 export type Session = {
   slug: SessionSlug;
@@ -90,6 +90,49 @@ export const sessions: Session[] = [
       {
         question: "Do I need advanced theory first?",
         answer: "No. The path starts from your current level and builds theory through practical playing.",
+      },
+    ],
+  },
+  {
+    slug: "choral",
+    title: "Choral Sessions",
+    eyebrow: "Choir blend, parts, harmony, and vocal discipline",
+    price: "₦50,000",
+    cadence: "per month",
+    format: "4 weekly online sessions + full access to materials",
+    image: "/images/service-vocal.jpg",
+    icon: Users,
+    summary:
+      "Develop practical choir musicianship through harmony, blend, part learning, and confident group vocal direction.",
+    promise:
+      "Choral Sessions help singers and choir leads build stronger ears, cleaner parts, better blend, and more confident musical leadership.",
+    outcomes: [
+      "Part learning for soprano, alto, tenor, and bass contexts",
+      "Harmony awareness and cleaner vocal movement",
+      "Blend, balance, diction, and ensemble discipline",
+      "Choir rehearsal habits and leadership cues",
+      "Practical Gospel and Contemporary choral application",
+    ],
+    materials:
+      "Access to curated choral guides, ear-training prompts, harmony references, and practice direction.",
+    requirements: [
+      "A voice recorder or phone for practice review",
+      "Stable internet access for online lessons",
+      "A willingness to sing and review between sessions",
+    ],
+    whoFor: [
+      "Choir singers who want stronger harmony and blend",
+      "Worship teams that need cleaner parts",
+      "Musicians who want better vocal leadership language",
+    ],
+    faqs: [
+      {
+        question: "Is this for solo singers or choirs?",
+        answer: "Both can benefit, but the path focuses on the habits and musical language needed for ensemble singing.",
+      },
+      {
+        question: "Do I need to read staff notation?",
+        answer: "No. Reading can help, but the sessions build practical part learning and harmony awareness from your current level.",
       },
     ],
   },
@@ -183,34 +226,62 @@ export const sessions: Session[] = [
 
 export const services = [
   {
-    title: "Music Arrangement & Production",
-    image: "/images/studio-production.png",
-    icon: Headphones,
-    summary:
-      "End-to-end arrangement and production support for artists, worship projects, and release-focused songs.",
+    title: "Vocal Production",
+    image: "/images/service-vocal.jpg",
+    icon: Mic2,
+    summary: "Recording direction, vocal takes, editing, and performance shaping.",
     deliverables: [
-      "Songs and instrumentals",
-      "Tracking and recording of keys",
-      "Arrangement direction for clearer musical movement",
-      "Production guidance from idea to export",
+      "Vocal recording",
+      "Performance direction",
+      "Editing and comping",
+      "Session vocal polish",
     ],
   },
   {
-    title: "Vocal Arrangement & Production",
-    image: "/images/service-vocal.jpg",
-    icon: Mic2,
-    summary:
-      "Vocal direction, background vocal planning, and recording support for cleaner, more intentional performances.",
+    title: "Vocal Arrangement",
+    image: "/images/creation-hands.jpg",
+    icon: Users,
+    summary: "Background parts, harmonies, stacks, and choir movement.",
     deliverables: [
       "Background vocal arrangements",
-      "Vocal recording and production",
-      "Harmony and stacking direction",
-      "Performance coaching inside the session",
+      "Harmony stacks",
+      "Choir-style parts",
+      "Vocal movement maps",
+    ],
+  },
+  {
+    title: "Music Production",
+    image: "/images/studio-production.png",
+    icon: Headphones,
+    summary: "Production, arrangement, keys, instrumentals, and song direction.",
+    deliverables: [
+      "Songs and instrumentals",
+      "Tracking and recording of keys",
+      "Arrangement direction",
+      "Production guidance",
     ],
   },
 ] as const;
 
-export const workCategories = [
+export const servicePortfolio = [
+  {
+    title: "Recorded vocals",
+    image: "/images/service-vocal.jpg",
+    status: "Selected songs and credits will be linked here.",
+  },
+  {
+    title: "Produced projects",
+    image: "/images/studio-production.png",
+    status: "Albums and artist projects are being curated.",
+  },
+  {
+    title: "Arranged work",
+    image: "/images/production-session.jpg",
+    status: "Streaming links and project notes will be added.",
+  },
+] as const;
+
+export const galleryCategories = [
   {
     title: "Music",
     icon: Music2,
@@ -218,6 +289,14 @@ export const workCategories = [
     status: "Curated releases and production notes are being prepared.",
     summary:
       "A focused home for released music, arrangements, instrumentals, and production credits.",
+  },
+  {
+    title: "Books",
+    icon: BookOpen,
+    image: "/images/tami-bedford.jpeg",
+    status: "Book projects and excerpts will be staged here.",
+    summary:
+      "Long-form writing, concepts, and personal creative projects beyond client-facing services.",
   },
   {
     title: "Poetry",
@@ -254,7 +333,7 @@ export const team = [
 
 export const proofPoints = [
   { value: "10+", label: "years of teaching and production experience" },
-  { value: "3", label: "structured session paths for musicians" },
+  { value: "4", label: "structured session paths for musicians" },
   { value: "4", label: "weekly sessions per month with materials" },
 ] as const;
 

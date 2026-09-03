@@ -4,7 +4,7 @@ import { useActionState, useMemo, useState } from "react";
 import { Mail, MessageCircle } from "lucide-react";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { sessions, services } from "@/lib/content";
+import { sessions } from "@/lib/content";
 import {
   submitInquiryAction,
   type InquirySubmitState,
@@ -72,16 +72,11 @@ export function InquiryForm({
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
   const trackOptions = useMemo(
-    () => [
-      ...sessions.map((session) => ({
+    () =>
+      sessions.map((session) => ({
         value: session.slug,
         label: session.title,
       })),
-      ...services.map((service) => ({
-        value: service.title,
-        label: service.title,
-      })),
-    ],
     [],
   );
 
@@ -237,7 +232,7 @@ export function InquiryForm({
           <div className="grid gap-5 md:grid-cols-2">
             <label className="grid gap-2">
               <span className="text-sm font-bold uppercase text-cream/82">
-                Course or service
+                Session path
               </span>
               <select
                 required
@@ -320,7 +315,7 @@ export function InquiryForm({
                 required
                 name="message"
                 rows={5}
-                placeholder="Share your goals, current skill level, or service brief."
+                placeholder="Share your goals, current skill level, or what you want to strengthen."
                 aria-invalid={Boolean(submitState?.errors.message)}
                 aria-describedby={
                   submitState?.errors.message ? "message-error" : undefined

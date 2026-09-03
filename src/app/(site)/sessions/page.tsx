@@ -11,16 +11,16 @@ import { interactiveStateClasses } from "@/lib/ui";
 export const metadata: Metadata = {
   title: "Sessions",
   description:
-    "Compare Tami Bedford piano, organ, and music production sessions.",
+    "Compare Tami Bedford piano, choral, organ, and music production sessions.",
   openGraph: {
     title: "Sessions | Tami Bedford",
     description:
-      "Compare Tami Bedford piano, organ, and music production sessions.",
+      "Compare Tami Bedford piano, choral, organ, and music production sessions.",
   },
   twitter: {
     title: "Sessions | Tami Bedford",
     description:
-      "Compare Tami Bedford piano, organ, and music production sessions.",
+      "Compare Tami Bedford piano, choral, organ, and music production sessions.",
   },
 };
 
@@ -63,11 +63,11 @@ export default function SessionsPage() {
         <div className="mx-auto max-w-7xl">
           <SectionHeading
             eyebrow="Compare"
-            title="Three focused ways to grow."
+            title="Four focused ways to grow."
             body="The sessions are built for different musical needs, but every path is structured, practical, and focused on real use."
             tone="dark"
           />
-          <div className="mt-12 grid gap-6 lg:grid-cols-3" data-stagger>
+          <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4" data-stagger>
             {sessions.map((session) => (
               <SessionCard key={session.slug} session={session} />
             ))}
@@ -87,7 +87,7 @@ export default function SessionsPage() {
             className="mt-12 overflow-x-auto rounded-lg border border-cream/12 bg-cream/[0.03]"
             data-reveal="card"
           >
-            <table className="w-full min-w-[760px] border-collapse text-left">
+            <table className="w-full min-w-[980px] border-collapse text-left">
               <thead>
                 <tr className="border-b border-cream/12">
                   <th scope="col" className="p-5 md:p-6">

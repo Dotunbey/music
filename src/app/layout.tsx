@@ -8,21 +8,21 @@ export const metadata: Metadata = {
     template: "%s | Tami Bedford",
   },
   description:
-    "Premium piano, organ, and music production sessions plus creative studio services from Tami Bedford.",
+    "Premium piano, choral, organ, and music production sessions plus creative studio services and gallery work from Tami Bedford.",
   openGraph: {
     type: "website",
     locale: "en_NG",
     siteName: "Tami Bedford",
     title: "Tami Bedford | Premium Music Sessions & Creative Studio",
     description:
-      "Premium piano, organ, and music production sessions plus creative studio services from Tami Bedford.",
+      "Premium piano, choral, organ, and music production sessions plus creative studio services and gallery work from Tami Bedford.",
     images: [{ url: "/images/tami-bedford.jpeg", width: 800, height: 800 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Tami Bedford | Premium Music Sessions & Creative Studio",
     description:
-      "Premium piano, organ, and music production sessions plus creative studio services from Tami Bedford.",
+      "Premium piano, choral, organ, and music production sessions plus creative studio services and gallery work from Tami Bedford.",
     images: ["/images/tami-bedford.jpeg"],
   },
   robots: process.env.NODE_ENV === "production"

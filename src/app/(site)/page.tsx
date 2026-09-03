@@ -6,12 +6,13 @@ import { CountUp, MotionHeadline, MotionImageFrame } from "@/components/motion-p
 import { SafeImage } from "@/components/safe-image";
 import { SectionHeading } from "@/components/section-heading";
 import { SessionCard } from "@/components/session-card";
-import { contact, proofPoints, services, sessions, values, workCategories } from "@/lib/content";
+import { contact, galleryCategories, proofPoints, services, sessions, values } from "@/lib/content";
 import { interactiveStateClasses } from "@/lib/ui";
 
 const marqueeItems = [
   "Piano",
   "Organ",
+  "Choral",
   "Music Production",
   "Gospel",
   "Contemporary",
@@ -55,7 +56,7 @@ export default function Home() {
               className="animate-fade-up mt-6 max-w-2xl text-lg leading-8 text-cream/80 md:text-xl"
               style={{ animationDelay: "480ms" }}
             >
-              Structured piano, organ, and music production training for
+              Structured piano, choral, organ, and music production training for
               musicians who want practical fluency, creative confidence, and
               professional standards.
             </p>
@@ -109,9 +110,9 @@ export default function Home() {
               Compare Sessions
             </ActionLink>
           </div>
-          <div className="grid gap-6 lg:grid-cols-3" data-stagger>
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4" data-stagger>
             {sessions.map((session, index) => (
-              <div key={session.slug} className={index === 1 ? "lg:-translate-y-6" : ""}>
+              <div key={session.slug} className={index % 2 === 1 ? "xl:-translate-y-6" : ""}>
                 <SessionCard session={session} />
               </div>
             ))}
@@ -199,12 +200,12 @@ export default function Home() {
           </div>
           <div>
             <SectionHeading
-              eyebrow="Work"
-              title="A creative archive with room to grow."
-              body="Music, poetry, and short-film material share one intentional hub for releases, writing, visual work, and process notes."
+              eyebrow="Gallery"
+              title="Personal projects in a quieter room."
+              body="Music, poetry, short films, books, and visual fragments share one gallery-style hub away from the client-facing portfolio."
             />
             <div className="mt-8 grid gap-4" data-stagger>
-              {workCategories.map((category) => {
+              {galleryCategories.slice(0, 3).map((category) => {
                 const Icon = category.icon;
                 return (
                   <div
@@ -228,8 +229,8 @@ export default function Home() {
               })}
             </div>
             <div className="mt-8">
-              <ActionLink href="/work" variant="secondary">
-                Visit Work Hub
+              <ActionLink href="/gallery" variant="secondary">
+                Visit Gallery
               </ActionLink>
             </div>
           </div>

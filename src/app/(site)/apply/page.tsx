@@ -5,7 +5,7 @@ import { ErrorBoundary } from "@/components/error-boundary";
 import { InquiryForm } from "@/components/inquiry-form";
 import { PageHero } from "@/components/page-hero";
 import { SafeImage } from "@/components/safe-image";
-import { contact, getSession, services } from "@/lib/content";
+import { contact, getSession } from "@/lib/content";
 import { interactiveStateClasses } from "@/lib/ui";
 
 type ApplyPageProps = {
@@ -15,32 +15,29 @@ type ApplyPageProps = {
 export const metadata: Metadata = {
   title: "Apply",
   description:
-    "Apply for Tami Bedford sessions or send a production service inquiry.",
+    "Apply for Tami Bedford piano, choral, organ, or music production sessions.",
   openGraph: {
     title: "Apply | Tami Bedford",
     description:
-      "Apply for Tami Bedford sessions or send a production service inquiry.",
+      "Apply for Tami Bedford piano, choral, organ, or music production sessions.",
   },
   twitter: {
     title: "Apply | Tami Bedford",
     description:
-      "Apply for Tami Bedford sessions or send a production service inquiry.",
+      "Apply for Tami Bedford piano, choral, organ, or music production sessions.",
   },
 };
 
 export default async function ApplyPage({ searchParams }: ApplyPageProps) {
   const { track } = await searchParams;
   const selectedSession = track ? getSession(track) : undefined;
-  const selectedService = track
-    ? services.find((service) => service.title === track)
-    : undefined;
 
   return (
     <>
       <PageHero
         eyebrow="Apply"
         title="Start the conversation."
-        body="Share your current level, preferred schedule, and the session or service you need. We capture your inquiry and send it to the team."
+        body="Share your current level, preferred schedule, and the session path you want. The team can review your fit before any payment conversation."
         image="/images/creation-hands.jpg"
       />
 
@@ -137,26 +134,6 @@ export default async function ApplyPage({ searchParams }: ApplyPageProps) {
                     <ArrowRight aria-hidden="true" className="h-4 w-4" />
                   </Link>
                 </div>
-              </div>
-            ) : null}
-
-            {selectedService ? (
-              <div className="mt-8 flex flex-col gap-3 rounded-lg border border-brass/40 bg-cream/[0.05] p-5 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wide text-brass">
-                    You are inquiring about
-                  </p>
-                  <p className="mt-1 font-display text-2xl font-black text-cream">
-                    {selectedService.title}
-                  </p>
-                </div>
-                <Link
-                  href="/services"
-                  className={`inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-md border border-cream/24 px-4 text-sm font-bold uppercase text-cream hover:border-red-500 hover:text-white ${interactiveStateClasses}`}
-                >
-                  View Services
-                  <ArrowRight aria-hidden="true" className="h-4 w-4" />
-                </Link>
               </div>
             ) : null}
 
