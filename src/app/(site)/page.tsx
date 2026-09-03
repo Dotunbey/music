@@ -120,20 +120,19 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="surface-grid relative overflow-hidden bg-cream px-5 py-20 text-ink md:px-8 md:py-28">
+      <section className="gallery-wall relative overflow-hidden px-5 py-24 text-ink md:px-8 md:py-36">
         <GhostWord word="Studio" tone="dark" className="-left-8 bottom-8 text-[17vw]" />
-        <div className="relative mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+        <div className="relative mx-auto grid max-w-7xl gap-16 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
           <div>
             <p className="mb-4 text-sm font-bold uppercase text-red-700">
               Services
             </p>
-            <h2 className="font-display text-4xl font-black leading-none text-balance md:text-6xl">
-              Production support for songs that need direction.
+            <h2 className="font-display text-5xl font-black leading-none text-balance md:text-7xl">
+              Three services. No clutter.
             </h2>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-ink/82">
-               Arrangement, tracking, vocal production, and practical studio
-               direction for artists who need the music to move with intention.
-             </p>
+            <p className="gallery-caption mt-8 max-w-md pt-5 text-xs font-bold uppercase leading-6 text-ink/62">
+              Vocal production / vocal arrangement / music production
+            </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <ActionLink href="/services">View Services</ActionLink>
               <a
@@ -148,31 +147,31 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2" data-stagger>
+          <div className="grid gap-8 sm:grid-cols-3" data-stagger>
             {services.map((service, index) => {
               const Icon = service.icon;
               return (
                 <article
                   key={service.title}
-                  className={`card-lift relative overflow-hidden rounded-lg border border-ink/10 bg-white shadow-soft ${
-                    index === 1 ? "sm:translate-y-8" : ""
+                  className={`gallery-frame card-lift relative overflow-hidden ${
+                    index === 1 ? "sm:translate-y-12" : ""
                   }`}
                   data-reveal="card"
                 >
-                  <div className="relative aspect-[4/3] overflow-hidden">
+                  <div className="relative aspect-[3/4] overflow-hidden">
                     <SafeImage
                       src={service.image}
                       alt=""
                       fill
-                      sizes="(min-width: 1024px) 25vw, 50vw"
+                      sizes="(min-width: 1024px) 22vw, 50vw"
                       className="object-cover transition duration-700 group-hover:scale-105"
                     />
                   </div>
-                  <div className="p-5">
-                    <span className="grid h-10 w-10 place-items-center rounded-md bg-ink text-cream">
+                  <div className="p-5 md:p-6">
+                    <span className="grid h-9 w-9 place-items-center rounded-md bg-ink text-cream">
                       <Icon aria-hidden="true" className="h-5 w-5" />
                     </span>
-                    <h3 className="mt-5 font-display text-2xl font-black leading-none">
+                    <h3 className="mt-5 font-display text-2xl font-black leading-none md:text-3xl">
                       {service.title}
                     </h3>
                   </div>
@@ -204,25 +203,31 @@ export default function Home() {
               title="Personal projects in a quieter room."
               body="Music, poetry, short films, books, and visual fragments share one gallery-style hub away from the client-facing portfolio."
             />
-            <div className="mt-8 grid gap-4" data-stagger>
+            <div className="mt-8 grid gap-5 sm:grid-cols-3" data-stagger>
               {galleryCategories.slice(0, 3).map((category) => {
                 const Icon = category.icon;
                 return (
                   <div
                     key={category.title}
-                    className="card-lift relative flex gap-4 overflow-hidden rounded-lg border border-cream/12 bg-cream/[0.04] p-4"
+                    className="card-lift relative overflow-hidden rounded-lg border border-cream/12 bg-cream/[0.04]"
                     data-reveal="card"
                   >
-                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-md bg-red-600 text-white">
-                      <Icon aria-hidden="true" className="h-5 w-5" />
-                    </span>
-                    <div>
+                    <div className="relative aspect-[4/5]">
+                      <SafeImage
+                        src={category.image}
+                        alt=""
+                        fill
+                        sizes="(min-width: 1024px) 18vw, 33vw"
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="p-5">
+                      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-red-600 text-white">
+                        <Icon aria-hidden="true" className="h-5 w-5" />
+                      </span>
                       <h3 className="font-display text-2xl font-black">
                         {category.title}
                       </h3>
-                      <p className="mt-1 leading-7 text-cream/82">
-                        {category.summary}
-                      </p>
                     </div>
                   </div>
                 );

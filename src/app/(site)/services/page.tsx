@@ -37,7 +37,7 @@ export default function ServicesPage() {
         primaryLabel="Message Us"
       />
 
-      <section className="relative overflow-hidden bg-cream px-5 py-20 text-ink md:px-8 md:py-28">
+      <section className="gallery-wall relative overflow-hidden px-5 py-24 text-ink md:px-8 md:py-36">
         <GhostWord word="Services" tone="dark" className="-right-10 top-10 text-[16vw]" />
         <div className="mx-auto max-w-7xl">
           <SectionHeading
@@ -46,7 +46,7 @@ export default function ServicesPage() {
             body="Simple cards, clear lanes, and one contact path. The conversation can carry the details."
             tone="dark"
           />
-          <div className="mt-12 grid gap-6 lg:grid-cols-3" data-stagger>
+          <div className="mt-16 grid gap-10 lg:grid-cols-3" data-stagger>
             {services.map((service) => {
               const Icon = service.icon;
               const whatsappMessage = `Hello Tami Bedford team, I would like to ask about ${service.title}.`;
@@ -54,7 +54,7 @@ export default function ServicesPage() {
               return (
                 <article
                   key={service.title}
-                  className="card-lift relative overflow-hidden rounded-lg border border-ink/10 bg-white shadow-soft"
+                  className="gallery-frame card-lift relative overflow-hidden"
                   data-reveal="card"
                 >
                   <div className="relative aspect-[4/5]">
@@ -66,13 +66,16 @@ export default function ServicesPage() {
                       className="object-cover"
                     />
                   </div>
-                  <div className="p-6">
+                  <div className="p-6 md:p-7">
                     <span className="grid h-11 w-11 place-items-center rounded-md bg-ink text-cream">
                       <Icon aria-hidden="true" className="h-5 w-5" />
                     </span>
                     <h2 className="mt-6 font-display text-3xl font-black leading-none">
                       {service.title}
                     </h2>
+                    <p className="gallery-caption mt-5 pt-4 text-xs font-bold uppercase leading-6 text-ink/62">
+                      {service.summary}
+                    </p>
                     <ul className="mt-6 grid gap-3">
                       {service.deliverables.map((deliverable) => (
                         <li key={deliverable} className="flex gap-3">
@@ -111,14 +114,14 @@ export default function ServicesPage() {
             title="Selected work will live under the service it proves."
             body="Songs, albums, recorded vocals, and arrangements can be linked here as Michael curates the credits."
           />
-          <div className="mt-12 grid gap-6 md:grid-cols-3" data-stagger>
+          <div className="mt-16 grid gap-8 md:grid-cols-3" data-stagger>
             {servicePortfolio.map((item) => (
               <article
                 key={item.title}
-                className="card-lift relative overflow-hidden rounded-lg border border-cream/12 bg-cream/[0.04]"
+                className="card-lift relative overflow-hidden border border-cream/12 bg-cream/[0.04]"
                 data-reveal="card"
               >
-                <div className="relative aspect-[4/3]">
+                <div className="relative aspect-[3/4]">
                   <SafeImage
                     src={item.image}
                     alt=""

@@ -98,6 +98,36 @@ textarea {
   background-size: 48px 48px;
 }
 
+.gallery-wall {
+  background:
+    linear-gradient(180deg, rgba(247, 239, 227, 0.92), rgba(255, 252, 247, 0.98)),
+    var(--cream);
+}
+
+.gallery-caption {
+  border-top: 1px solid rgba(12, 11, 9, 0.14);
+  letter-spacing: 0.08em;
+}
+
+.gallery-frame {
+  position: relative;
+  isolation: isolate;
+  background: white;
+}
+
+.gallery-frame::before {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  content: "";
+  border: 1px solid rgba(12, 11, 9, 0.1);
+}
+
+.gallery-rule {
+  border-top: 1px solid rgba(12, 11, 9, 0.14);
+}
+
 .grain {
   position: relative;
 }

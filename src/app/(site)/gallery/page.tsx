@@ -36,7 +36,7 @@ export default function GalleryPage() {
         primaryLabel="View Instagram"
       />
 
-      <section className="relative overflow-hidden bg-cream px-5 py-20 text-ink md:px-8 md:py-28">
+      <section className="gallery-wall relative overflow-hidden px-5 py-24 text-ink md:px-8 md:py-40">
         <GhostWord word="Gallery" tone="dark" className="-right-10 top-12 text-[17vw]" />
         <div className="relative mx-auto max-w-7xl">
           <SectionHeading
@@ -45,14 +45,14 @@ export default function GalleryPage() {
             body="The gallery is ready for links, embeds, stills, excerpts, and Instagram material as Michael releases each project."
             tone="dark"
           />
-          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4" data-stagger>
+          <div className="mt-16 grid gap-x-8 gap-y-16 md:grid-cols-2 lg:grid-cols-4" data-stagger>
             {galleryCategories.map((category, index) => {
               const Icon = category.icon;
 
               return (
                 <article
                   key={category.title}
-                  className={`card-lift relative overflow-hidden rounded-lg border border-ink/10 bg-white shadow-soft ${
+                  className={`gallery-frame card-lift relative overflow-hidden ${
                     index % 2 === 1 ? "lg:translate-y-10" : ""
                   }`}
                   data-reveal="card"
@@ -66,14 +66,14 @@ export default function GalleryPage() {
                       className="object-cover"
                     />
                   </div>
-                  <div className="p-5">
+                  <div className="p-5 md:p-6">
                     <span className="grid h-10 w-10 place-items-center rounded-md bg-ink text-cream">
                       <Icon aria-hidden="true" className="h-5 w-5" />
                     </span>
                     <h2 className="mt-5 font-display text-3xl font-black leading-none">
                       {category.title}
                     </h2>
-                    <p className="mt-5 border-t border-ink/10 pt-5 text-sm font-bold uppercase leading-6 text-red-700">
+                    <p className="gallery-caption mt-5 pt-5 text-xs font-bold uppercase leading-6 text-red-700">
                       {category.status}
                     </p>
                   </div>
