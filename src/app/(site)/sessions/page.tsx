@@ -28,12 +28,7 @@ export default function SessionsPage() {
 
       <section className="bg-cream px-5 py-20 text-ink md:px-8 md:py-28">
         <div className="mx-auto max-w-7xl">
-          <SectionHeading
-            eyebrow="Compare"
-            title="Four focused paths."
-            tone="dark"
-          />
-          <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4" data-stagger>
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4" data-stagger>
             {sessions.map((session) => (
               <SessionCard key={session.slug} session={session} />
             ))}

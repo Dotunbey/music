@@ -4,7 +4,6 @@ import { SafeImage } from "@/components/safe-image";
 import { notFound } from "next/navigation";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { ActionLink } from "@/components/action-link";
-import { GhostWord } from "@/components/brand-motifs";
 import { FaqAccordion } from "@/components/faq-accordion";
 import { PageHero } from "@/components/page-hero";
 import { SectionHeading } from "@/components/section-heading";
@@ -53,8 +52,6 @@ export default async function SessionDetailPage({
     notFound();
   }
 
-  const Icon = session.icon;
-
   return (
     <>
       <PageHero
@@ -75,10 +72,7 @@ export default async function SessionDetailPage({
             className="rounded-lg border border-ink/10 bg-white p-6 shadow-soft lg:sticky lg:top-28 lg:self-start"
             data-reveal="card"
           >
-            <span className="grid h-12 w-12 place-items-center rounded-md bg-red-600 text-white">
-              <Icon aria-hidden="true" className="h-5 w-5" />
-            </span>
-            <p className="mt-6 font-display text-5xl font-black text-red-700">
+            <p className="font-display text-5xl font-black text-red-700">
               {session.price}
             </p>
             <p className="mt-1 text-sm font-bold uppercase text-ink/82">
@@ -120,9 +114,8 @@ export default async function SessionDetailPage({
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-charcoal px-5 py-20 md:px-8 md:py-28">
-        <GhostWord word="Outcomes" className="-right-10 top-10 text-[14vw]" />
-        <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_0.9fr] lg:items-start">
+      <section className="bg-charcoal px-5 py-20 md:px-8 md:py-28">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_0.9fr] lg:items-start">
           <div>
             <SectionHeading eyebrow="Outcomes" title="What you will learn." />
             <ol className="mt-10 grid" data-stagger>

@@ -1,12 +1,63 @@
+import fs from "node:fs";
+import path from "node:path";
 import type { Metadata } from "next";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
-import { Flourish, GhostWord } from "@/components/brand-motifs";
 import { GalleryGrid } from "@/components/gallery-grid";
-import { SafeImage } from "@/components/safe-image";
 import { ScriptHero } from "@/components/script-hero";
-import { SectionHeading } from "@/components/section-heading";
-import { contact, galleryCategories } from "@/lib/content";
+import { contact, galleryCategories, type GalleryItem } from "@/lib/content";
 import { interactiveStateClasses } from "@/lib/ui";
+
+const VIDEO_EXT = /\.(mp4|webm|mov|m4v)$/i;
+const IMAGE_EXT = /\.(jpe?g|png|webp|gif)$/i;
+
+function toRoman(n: number): string {
+  const map: [number, string][] = [
+    [1000, "M"],
+    [900, "CM"],
+    [500, "D"],
+    [400, "CD"],
+    [100, "C"],
+    [90, "XC"],
+    [50, "L"],
+    [40, "XL"],
+    [10, "X"],
+    [9, "IX"],
+    [5, "V"],
+    [4, "IV"],
+    [1, "I"],
+  ];
+  let out = "";
+  for (const [value, symbol] of map) {
+    while (n >= value) {
+      out += symbol;
+      n -= value;
+    }
+  }
+  return out;
+}
+
+// Every media file dropped in /public/poetry becomes a numbered poem, ordered
+// by the timestamp in its filename. Videos play; images show.
+function readPoetryItems(): GalleryItem[] {
+  let files: string[];
+  try {
+    files = fs.readdirSync(path.join(process.cwd(), "public", "poetry"));
+  } catch {
+    return [];
+  }
+  return files
+    .filter((f) => VIDEO_EXT.test(f) || IMAGE_EXT.test(f))
+    .sort(
+      (a, b) =>
+        Number(a.match(/_(\d{10})_/)?.[1] ?? 0) -
+        Number(b.match(/_(\d{10})_/)?.[1] ?? 0),
+    )
+    .map((f, i) =>
+      VIDEO_EXT.test(f)
+        ? { title: toRoman(i + 1), type: "video", src: `/poetry/${f}` }
+        : { title: toRoman(i + 1), type: "image", image: `/poetry/${f}` },
+    );
+}
 
 export const metadata: Metadata = {
   title: "Gallery",
@@ -25,6 +76,7 @@ export const metadata: Metadata = {
 };
 
 export default function GalleryPage() {
+  const poetry = readPoetryItems();
   return (
     <>
       <ScriptHero title={"Tam’s Gallery"} image="/images/work-creative.png" />
@@ -36,19 +88,16 @@ export default function GalleryPage() {
           className="gallery-wall relative scroll-mt-24 overflow-hidden px-5 py-10 text-ink md:px-8 md:py-14"
         >
           <div className="relative mx-auto max-w-7xl">
-            <div className="flex flex-col items-center gap-4 text-center">
-              <h2 className="font-display text-3xl font-black leading-none md:text-4xl">
-                {category.title}
-              </h2>
-              <div className="flex w-full max-w-2xl items-center gap-5 text-ink/60">
-                <span aria-hidden="true" className="h-px flex-1 bg-current opacity-50" />
-                <Flourish className="h-10 w-48 shrink-0" />
-                <span aria-hidden="true" className="h-px flex-1 bg-current opacity-50" />
-              </div>
-            </div>
+            <h2 className="font-display text-4xl font-black leading-none md:text-5xl">
+              {category.title}
+            </h2>
 
             <GalleryGrid
-              items={category.items}
+              items={
+                category.slug === "poetry" && poetry.length
+                  ? poetry
+                  : category.items
+              }
               numbered={category.slug === "poetry"}
               landscape={category.slug === "short-films"}
             />
@@ -84,53 +133,35 @@ export default function GalleryPage() {
         </section>
       ))}
 
-      <section className="relative overflow-hidden bg-ink px-5 py-20 text-cream md:px-8 md:py-28">
-        <GhostWord word="Personal" className="-left-8 top-10 text-[15vw]" />
-        <div className="relative mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-          <div
-            className="relative aspect-[4/3] overflow-hidden rounded-lg border border-cream/12"
-            data-reveal="card"
+      <section className="bg-ink px-5 py-16 text-cream md:px-8 md:py-20">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-3">
+          <a
+            href={contact.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`motion-sheen inline-flex min-h-12 items-center justify-center gap-2 overflow-hidden rounded-md bg-red-600 px-5 py-3 text-sm font-bold uppercase text-white hover:bg-red-500 ${interactiveStateClasses}`}
           >
-            <SafeImage
-              src="/images/creation-hands.jpg"
-              alt=""
-              fill
-              sizes="(min-width: 1024px) 45vw, 100vw"
-              className="object-cover"
-            />
-          </div>
-          <div>
-            <SectionHeading title="This is the personal room." />
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a
-                href={contact.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`motion-sheen inline-flex min-h-12 items-center justify-center gap-2 overflow-hidden rounded-md bg-red-600 px-5 py-3 text-sm font-bold uppercase text-white hover:bg-red-500 ${interactiveStateClasses}`}
-              >
-                Visit Instagram
-                <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
-              </a>
-              <a
-                href={contact.youtube}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`motion-sheen inline-flex min-h-12 items-center justify-center gap-2 overflow-hidden rounded-md border border-cream/25 px-5 py-3 text-sm font-bold uppercase text-cream hover:border-red-500 hover:text-white ${interactiveStateClasses}`}
-              >
-                Visit YouTube
-                <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
-              </a>
-              <a
-                href={`mailto:${contact.email}?subject=${encodeURIComponent(
-                  "Gallery inquiry",
-                )}`}
-                className={`motion-sheen inline-flex min-h-12 items-center justify-center gap-2 overflow-hidden rounded-md border border-cream/25 px-5 py-3 text-sm font-bold uppercase text-cream hover:border-red-500 hover:text-white ${interactiveStateClasses}`}
-              >
-                Email Us
-                <ArrowRight aria-hidden="true" className="h-4 w-4" />
-              </a>
-            </div>
-          </div>
+            Visit Instagram
+            <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
+          </a>
+          <a
+            href={contact.youtube}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`motion-sheen inline-flex min-h-12 items-center justify-center gap-2 overflow-hidden rounded-md border border-cream/25 px-5 py-3 text-sm font-bold uppercase text-cream hover:border-red-500 hover:text-white ${interactiveStateClasses}`}
+          >
+            Visit YouTube
+            <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
+          </a>
+          <a
+            href={`mailto:${contact.email}?subject=${encodeURIComponent(
+              "Gallery inquiry",
+            )}`}
+            className={`motion-sheen inline-flex min-h-12 items-center justify-center gap-2 overflow-hidden rounded-md border border-cream/25 px-5 py-3 text-sm font-bold uppercase text-cream hover:border-red-500 hover:text-white ${interactiveStateClasses}`}
+          >
+            Email Us
+            <ArrowRight aria-hidden="true" className="h-4 w-4" />
+          </a>
         </div>
       </section>
     </>

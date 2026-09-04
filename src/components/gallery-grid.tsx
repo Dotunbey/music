@@ -91,10 +91,8 @@ function CardBody({
         {item.type === "video" && item.src ? (
           <video
             className="h-full w-full object-cover"
-            src={item.src}
+            src={`${item.src}#t=0.1`}
             muted
-            loop
-            autoPlay
             playsInline
             preload="metadata"
             tabIndex={-1}

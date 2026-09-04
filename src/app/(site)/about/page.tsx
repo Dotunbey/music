@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { SafeImage } from "@/components/safe-image";
 import { ActionLink } from "@/components/action-link";
-import { GhostWord } from "@/components/brand-motifs";
 import { ScriptHero } from "@/components/script-hero";
 import { SectionHeading } from "@/components/section-heading";
 import { team } from "@/lib/content";
@@ -28,18 +27,13 @@ export default function AboutPage() {
       <ScriptHero title="About" image="/images/creation-hands.jpg" />
 
       <section className="gallery-wall relative overflow-hidden px-5 py-24 text-ink md:px-8 md:py-36">
-        <GhostWord word="Guides" tone="dark" className="-right-10 top-12 text-[17vw]" />
         <div className="relative mx-auto max-w-7xl">
-          <SectionHeading
-            eyebrow="The guides"
-            title="Two musicians. One standard."
-            tone="dark"
-          />
+          <SectionHeading title="The guides." tone="dark" />
           <div
             className="mt-16 grid gap-x-10 gap-y-16 md:grid-cols-2"
             data-stagger
           >
-            {team.map((member, index) => (
+            {team.map((member) => (
               <article
                 key={member.name}
                 className="gallery-frame card-lift relative overflow-hidden"
@@ -55,14 +49,9 @@ export default function AboutPage() {
                   />
                 </div>
                 <div className="p-6 md:p-8">
-                  <div className="flex items-baseline justify-between gap-4">
-                    <span className="font-display text-sm font-black text-red-700">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span className="text-xs font-bold uppercase tracking-[0.16em] text-ink/55">
-                      {member.role}
-                    </span>
-                  </div>
+                  <span className="text-xs font-bold uppercase tracking-[0.16em] text-ink/55">
+                    {member.role}
+                  </span>
                   <h2 className="mt-4 font-display text-4xl font-black leading-none">
                     {member.name}
                   </h2>

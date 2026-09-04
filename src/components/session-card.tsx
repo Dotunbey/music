@@ -10,8 +10,6 @@ type SessionCardProps = {
 };
 
 export function SessionCard({ session }: SessionCardProps) {
-  const Icon = session.icon;
-
   return (
     <article
       className="card-lift group relative overflow-hidden rounded-lg border border-ink/10 bg-cream text-ink shadow-soft"
@@ -27,14 +25,9 @@ export function SessionCard({ session }: SessionCardProps) {
         />
       </div>
       <div className="p-6">
-        <div className="mb-5 flex items-center justify-between gap-4">
-          <span className="grid h-11 w-11 place-items-center rounded-md bg-red-600 text-white">
-            <Icon aria-hidden="true" className="h-5 w-5" />
-          </span>
-          <span className="text-right text-sm font-bold uppercase text-red-700">
-            {session.price} {session.cadence}
-          </span>
-        </div>
+        <p className="mb-4 text-sm font-bold uppercase text-red-700">
+          {session.price} {session.cadence}
+        </p>
         <h3 className="font-display text-3xl font-black leading-none">
           {session.title}
         </h3>

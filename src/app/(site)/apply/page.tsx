@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, CalendarDays, Mail, MessageCircle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { ErrorBoundary } from "@/components/error-boundary";
 import { InquiryForm } from "@/components/inquiry-form";
 import { PageHero } from "@/components/page-hero";
@@ -52,35 +52,17 @@ export default async function ApplyPage({ searchParams }: ApplyPageProps) {
             <p className="text-sm font-bold uppercase text-red-400">
               What happens next
             </p>
-            <div className="mt-6 grid gap-5">
-              {[
-                {
-                  icon: Mail,
-                  title: "Inquiry captured",
-                },
-                {
-                  icon: CalendarDays,
-                  title: "Schedule confirmed",
-                },
-                {
-                  icon: MessageCircle,
-                  title: "WhatsApp available",
-                },
-              ].map((item) => {
-                const Icon = item.icon;
-                return (
-                  <div key={item.title} className="flex gap-4">
-                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-md bg-brass text-ink">
-                      <Icon aria-hidden="true" className="h-5 w-5" />
-                    </span>
-                    <div>
-                      <h2 className="font-display text-2xl font-black">
-                        {item.title}
-                      </h2>
-                    </div>
-                  </div>
-                );
-              })}
+            <div className="mt-6 grid">
+              {["Inquiry captured", "Schedule confirmed", "WhatsApp available"].map(
+                (step) => (
+                  <h2
+                    key={step}
+                    className="border-t border-cream/12 py-4 font-display text-2xl font-black first:border-t-0 first:pt-0"
+                  >
+                    {step}
+                  </h2>
+                ),
+              )}
             </div>
           </aside>
 

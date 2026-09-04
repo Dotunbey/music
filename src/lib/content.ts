@@ -70,6 +70,8 @@ export type Session = {
   format: string;
   image: string;
   icon: LucideIcon;
+  /** Currently running — used to feature only active sessions on the home page. */
+  active: boolean;
   summary: string;
   outcomes: string[];
   materials: string;
@@ -81,6 +83,7 @@ export type Session = {
 export const sessions: Session[] = [
   {
     slug: "piano",
+    active: true,
     title: "Piano Sessions",
     eyebrow: "Technique, harmony, and expressive playing",
     price: "₦50,000",
@@ -122,6 +125,7 @@ export const sessions: Session[] = [
   },
   {
     slug: "choral",
+    active: true,
     title: "Choral Sessions",
     eyebrow: "Choir blend, parts, harmony, and vocal discipline",
     price: "₦50,000",
@@ -163,6 +167,7 @@ export const sessions: Session[] = [
   },
   {
     slug: "organ",
+    active: false,
     title: "Organ Sessions",
     eyebrow: "Flow, worship support, and musical leadership",
     price: "₦50,000",
@@ -204,6 +209,7 @@ export const sessions: Session[] = [
   },
   {
     slug: "production",
+    active: false,
     title: "Music Production Sessions",
     eyebrow: "DAW workflow, arrangement, recording, and mix foundations",
     price: "₦50,000",
