@@ -38,7 +38,6 @@ export function SessionCard({ session }: SessionCardProps) {
         <h3 className="font-display text-3xl font-black leading-none">
           {session.title}
         </h3>
-        <p className="mt-3 min-h-20 leading-7 text-ink/82">{session.summary}</p>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <ActionLink
             href={`/sessions/${session.slug}`}

@@ -1,28 +1,33 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #0c0b09;
-  --charcoal: #15110e;
-  --smoke: #211c17;
-  --cream: #f7efe3;
-  --muted: #c9bcaa;
-  --red: #d92d10;
-  --brass: #c59b5d;
+  /* Warm muted-greige gallery palette. "ink" is a mid warm-taupe "wall" (kept
+     dark enough that cream text stays legible); "cream" is a warm ivory. */
+  --ink: #524b42;
+  --charcoal: #5c554b;
+  --smoke: #6a6358;
+  --cream: #f3ece0;
+  --muted: #cabfad;
+  --red: #d97757;
+  --brass: #c9a25f;
   --sage: #7f8d76;
-  --font-body: "Manrope", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
 }
 
 @theme inline {
-  --color-background: #0c0b09;
-  --color-foreground: #f7efe3;
-  --color-ink: #0c0b09;
-  --color-charcoal: #15110e;
-  --color-smoke: #211c17;
-  --color-cream: #f7efe3;
-  --color-muted: #c9bcaa;
-  --color-red: #d92d10;
-  --color-brass: #c59b5d;
+  --color-background: #524b42;
+  --color-foreground: #f3ece0;
+  --color-ink: #524b42;
+  --color-charcoal: #5c554b;
+  --color-smoke: #6a6358;
+  --color-cream: #f3ece0;
+  --color-muted: #cabfad;
+  --color-red: #d97757;
+  --color-red-300: #f0bba4;
+  --color-red-400: #e8a184;
+  --color-red-500: #e08a6b;
+  --color-red-600: #d97757;
+  --color-red-700: #bf6242;
+  --color-brass: #c9a25f;
   --color-sage: #7f8d76;
   --shadow-soft: 0 24px 80px rgba(0, 0, 0, 0.24);
   --ease-fluid: cubic-bezier(0.16, 1, 0.3, 1);
@@ -57,10 +62,18 @@ body {
   margin: 0;
   overflow-x: clip;
   background:
-    radial-gradient(circle at 12% 18%, rgba(217, 45, 16, 0.14), transparent 28rem),
+    radial-gradient(circle at 12% 18%, rgba(201, 162, 95, 0.1), transparent 30rem),
     linear-gradient(180deg, var(--ink), var(--charcoal));
   color: var(--cream);
   font-family: var(--font-body), "Manrope", ui-sans-serif, system-ui, sans-serif;
+}
+
+.font-script {
+  font-family: var(--font-script), "Segoe Script", "Brush Script MT", cursive;
+}
+
+.font-art {
+  font-family: var(--font-art), "Segoe Script", "Brush Script MT", cursive;
 }
 
 a {
@@ -100,7 +113,7 @@ textarea {
 
 .gallery-wall {
   background:
-    linear-gradient(180deg, rgba(247, 239, 227, 0.92), rgba(255, 252, 247, 0.98)),
+    linear-gradient(180deg, rgba(238, 231, 219, 0.96), rgba(246, 240, 231, 0.99)),
     var(--cream);
 }
 
@@ -294,6 +307,36 @@ textarea {
 .card-lift:hover::before,
 .card-lift:focus-within::before {
   transform: scaleX(1);
+}
+
+/* Apple-style "liquid glass" nav pill: frosted translucent fill, soft specular
+   highlight, and a gentle drop shadow. Shown on hover and on the active item. */
+.nav-glass {
+  border: 1px solid transparent;
+  transition:
+    background 320ms var(--ease-fluid),
+    border-color 320ms var(--ease-fluid),
+    box-shadow 320ms var(--ease-fluid),
+    color 320ms var(--ease-fluid);
+}
+
+/* Note: the frosted blur itself is applied with Tailwind's backdrop-blur /
+   backdrop-saturate utilities on the nav link (hover + data-[active]) — raw
+   `backdrop-filter` here gets stripped by the CSS build pipeline. */
+.nav-glass:hover,
+.nav-glass:focus-visible,
+.nav-glass[data-active="true"] {
+  color: var(--cream);
+  background: rgba(247, 239, 227, 0.12);
+  border-color: rgba(247, 239, 227, 0.28);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08),
+    0 10px 30px rgba(0, 0, 0, 0.22);
+}
+
+.nav-glass[data-active="true"] {
+  background: rgba(247, 239, 227, 0.16);
 }
 
 .marquee-track {

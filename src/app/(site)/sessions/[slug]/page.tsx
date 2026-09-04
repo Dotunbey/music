@@ -90,10 +90,6 @@ export default async function SessionDetailPage({
                 Apply Now
               </ActionLink>
             </div>
-            <p className="mt-4 text-sm leading-6 text-ink/62">
-              Applying starts a conversation. No payment or schedule is locked
-              in until you agree with the team.
-            </p>
           </aside>
 
           <div
@@ -101,9 +97,8 @@ export default async function SessionDetailPage({
             data-reveal="card"
           >
             <SectionHeading
-              eyebrow="Structured learning path"
-              title="From foundation to confident application."
-              body={session.promise}
+              eyebrow="Who it's for"
+              title="Who this is for."
               tone="dark"
             />
             <div className="mt-10 grid gap-4 sm:grid-cols-2" data-stagger>
@@ -129,11 +124,7 @@ export default async function SessionDetailPage({
         <GhostWord word="Outcomes" className="-right-10 top-10 text-[14vw]" />
         <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_0.9fr] lg:items-start">
           <div>
-            <SectionHeading
-              eyebrow="Outcomes"
-              title="What you will learn."
-              body="Each topic is taught for use, not just theory. The goal is confident repetition outside the lesson."
-            />
+            <SectionHeading eyebrow="Outcomes" title="What you will learn." />
             <ol className="mt-10 grid" data-stagger>
               {session.outcomes.map((outcome, index) => (
                 <li
@@ -205,7 +196,6 @@ export default async function SessionDetailPage({
           <SectionHeading
             eyebrow="Questions"
             title="Before you apply."
-            body="The application starts the conversation. It does not lock you into payment or a schedule."
             align="center"
           />
           <div className="mt-10">

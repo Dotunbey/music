@@ -5,7 +5,7 @@ import { ErrorBoundary } from "@/components/error-boundary";
 import { InquiryForm } from "@/components/inquiry-form";
 import { PageHero } from "@/components/page-hero";
 import { SafeImage } from "@/components/safe-image";
-import { contact, getSession } from "@/lib/content";
+import { getSession } from "@/lib/content";
 import { interactiveStateClasses } from "@/lib/ui";
 
 type ApplyPageProps = {
@@ -37,7 +37,6 @@ export default async function ApplyPage({ searchParams }: ApplyPageProps) {
       <PageHero
         eyebrow="Apply"
         title="Start the conversation."
-        body="Share your current level, preferred schedule, and the session path you want. The team can review your fit before any payment conversation."
         image="/images/creation-hands.jpg"
       />
 
@@ -57,18 +56,15 @@ export default async function ApplyPage({ searchParams }: ApplyPageProps) {
               {[
                 {
                   icon: Mail,
-                  title: "Your inquiry is captured",
-                  text: "Your inquiry is captured now, and we also provide quick follow-up links for email or WhatsApp if you want to continue there.",
+                  title: "Inquiry captured",
                 },
                 {
                   icon: CalendarDays,
-                  title: "Schedule is confirmed manually",
-                  text: "The team can review your goals and agree on timing before any payment conversation.",
+                  title: "Schedule confirmed",
                 },
                 {
                   icon: MessageCircle,
-                  title: "Use WhatsApp for speed",
-                  text: `You can also message ${contact.phone} directly if you prefer a faster first touch.`,
+                  title: "WhatsApp available",
                 },
               ].map((item) => {
                 const Icon = item.icon;
@@ -81,9 +77,6 @@ export default async function ApplyPage({ searchParams }: ApplyPageProps) {
                       <h2 className="font-display text-2xl font-black">
                         {item.title}
                       </h2>
-                      <p className="mt-2 leading-7 text-cream/82">
-                        {item.text}
-                      </p>
                     </div>
                   </div>
                 );
@@ -98,10 +91,6 @@ export default async function ApplyPage({ searchParams }: ApplyPageProps) {
             <h2 className="font-display text-4xl font-black leading-none text-balance md:text-6xl">
               Tell us what you want to build.
             </h2>
-            <p className="mt-5 max-w-2xl leading-8 text-cream/82">
-              A few details help the team understand your goals, current level,
-              and preferred timing before the first reply.
-            </p>
 
             {selectedSession ? (
               <div className="mt-8 flex flex-col gap-4 overflow-hidden rounded-lg border border-brass/40 bg-cream/[0.05] sm:flex-row sm:items-center">

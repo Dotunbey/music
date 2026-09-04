@@ -1,12 +1,11 @@
-import Link from "next/link";
-import { ArrowRight, MessageCircle } from "lucide-react";
+import { ArrowUpRight, MessageCircle } from "lucide-react";
 import { ActionLink } from "@/components/action-link";
 import { Equalizer, GhostWord, Marquee, ScrollCue } from "@/components/brand-motifs";
-import { CountUp, MotionHeadline, MotionImageFrame } from "@/components/motion-primitives";
+import { MotionImageFrame } from "@/components/motion-primitives";
 import { SafeImage } from "@/components/safe-image";
 import { SectionHeading } from "@/components/section-heading";
 import { SessionCard } from "@/components/session-card";
-import { contact, galleryCategories, proofPoints, services, sessions, values } from "@/lib/content";
+import { contact, galleryCategories, services, sessions } from "@/lib/content";
 import { interactiveStateClasses } from "@/lib/ui";
 
 const marqueeItems = [
@@ -24,7 +23,7 @@ const marqueeItems = [
 export default function Home() {
   return (
     <>
-      <section className="grain relative isolate min-h-[88svh] overflow-hidden bg-ink px-5 pb-28 pt-28 text-cream md:px-8">
+      <section className="grain relative isolate min-h-[92svh] overflow-hidden bg-ink px-5 pb-28 pt-28 text-cream md:px-8">
         <MotionImageFrame className="absolute inset-0" parallax={30}>
           <SafeImage
             src="/images/hero-lesson.png"
@@ -32,64 +31,27 @@ export default function Home() {
             fill
             priority
             sizes="100vw"
-            className="animate-ken-burns object-cover object-center"
+            className="animate-ken-burns object-cover object-center [filter:brightness(0.88)_contrast(1.04)_saturate(0.88)]"
           />
         </MotionImageFrame>
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(12,11,9,0.96),rgba(12,11,9,0.72),rgba(12,11,9,0.18))]" />
-        <div className="relative mx-auto flex min-h-[calc(88svh-13rem)] w-full max-w-7xl items-center">
-          <div className="max-w-3xl py-16">
-            <div
-              className="animate-fade-up mb-5 flex items-center gap-4"
-              style={{ animationDelay: "80ms" }}
-            >
-              <Equalizer className="h-6" />
-              <p className="text-sm font-bold uppercase text-red-400">
-                Premium music academy and creative studio
+        <div className="absolute inset-0 bg-[radial-gradient(130%_130%_at_50%_42%,transparent,rgba(82,75,66,0.26)_68%,rgba(82,75,66,0.8))]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(82,75,66,0.58),transparent_30%,transparent_58%,rgba(82,75,66,0.92))]" />
+        <div className="relative mx-auto flex min-h-[calc(92svh-13rem)] w-full max-w-7xl items-center">
+          <div className="absolute inset-0 z-10 grid place-items-center px-5 text-center">
+            <div>
+              <h1 className="font-display text-3xl font-medium uppercase tracking-[0.34em] text-cream md:text-6xl md:tracking-[0.4em]">
+                Tami Bedford
+              </h1>
+              <p className="font-script mx-auto mt-6 max-w-2xl text-2xl leading-tight text-cream/85 md:mt-8 md:text-4xl">
+                &ldquo;&hellip;Turn these dreams into prophesies.&rdquo;
               </p>
-            </div>
-            <MotionHeadline
-              text="Tami Bedford Sessions"
-              className="font-display text-5xl font-black leading-none text-balance md:text-7xl"
-              delay={0.15}
-            />
-            <p
-              className="animate-fade-up mt-6 max-w-2xl text-lg leading-8 text-cream/80 md:text-xl"
-              style={{ animationDelay: "480ms" }}
-            >
-              Structured piano, choral, organ, and music production training for
-              musicians who want practical fluency, creative confidence, and
-              professional standards.
-            </p>
-            <div
-              className="animate-fade-up mt-8 flex flex-col gap-3 sm:flex-row"
-              style={{ animationDelay: "620ms" }}
-            >
-              <ActionLink href="/apply">Apply for Sessions</ActionLink>
-              <ActionLink href="/sessions" variant="ghost">
-                Explore Sessions
-              </ActionLink>
+              <p className="font-script mt-1 text-lg text-cream/55 md:text-2xl">
+                &mdash; Tami Bedford
+              </p>
             </div>
           </div>
         </div>
         <ScrollCue className="absolute bottom-28 left-1/2 hidden -translate-x-1/2 md:flex" />
-      </section>
-
-      <section className="relative z-10 -mt-20 px-5 md:px-8">
-        <div className="mx-auto grid max-w-7xl overflow-hidden rounded-lg border border-ink/10 bg-cream text-ink shadow-soft md:grid-cols-3">
-          {proofPoints.map((point) => (
-            <div
-              key={point.value}
-              className="border-b border-ink/10 px-7 py-7 md:border-b-0 md:border-r md:last:border-r-0"
-            >
-              <p className="font-display text-5xl font-black text-red-700">
-                <CountUp value={point.value} />
-              </p>
-              <p className="mt-2 max-w-xs text-sm font-bold uppercase leading-6 text-ink/82">
-                {point.label}
-              </p>
-            </div>
-          ))}
-        </div>
       </section>
 
       <Marquee
@@ -104,7 +66,6 @@ export default function Home() {
             <SectionHeading
               eyebrow="Sessions"
               title="Choose a path with structure."
-              body="Each session path is designed for weekly progress, direct application, and guided practice between meetings."
             />
             <ActionLink href="/sessions" variant="secondary">
               Compare Sessions
@@ -128,7 +89,7 @@ export default function Home() {
               Services
             </p>
             <h2 className="font-display text-5xl font-black leading-none text-balance md:text-7xl">
-              Three services. No clutter.
+              Made in the studio.
             </h2>
             <p className="gallery-caption mt-8 max-w-md pt-5 text-xs font-bold uppercase leading-6 text-ink/62">
               Vocal production / vocal arrangement / music production
@@ -201,7 +162,6 @@ export default function Home() {
             <SectionHeading
               eyebrow="Gallery"
               title="Personal projects in a quieter room."
-              body="Music, poetry, short films, books, and visual fragments share one gallery-style hub away from the client-facing portfolio."
             />
             <div className="mt-8 grid gap-5 sm:grid-cols-3" data-stagger>
               {galleryCategories.slice(0, 3).map((category) => {
@@ -214,7 +174,7 @@ export default function Home() {
                   >
                     <div className="relative aspect-[4/5]">
                       <SafeImage
-                        src={category.image}
+                        src={category.cover}
                         alt=""
                         fill
                         sizes="(min-width: 1024px) 18vw, 33vw"
@@ -234,42 +194,14 @@ export default function Home() {
               })}
             </div>
             <div className="mt-8">
-              <ActionLink href="/gallery" variant="secondary">
+              <a
+                href="/gallery"
+                className={`motion-sheen inline-flex min-h-12 items-center justify-center gap-2 overflow-hidden rounded-md border border-cream/30 bg-cream px-5 py-3 text-sm font-bold uppercase text-ink hover:bg-white ${interactiveStateClasses}`}
+              >
                 Visit Gallery
-              </ActionLink>
+                <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
+              </a>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="relative overflow-hidden bg-smoke px-5 py-20 md:px-8 md:py-28">
-        <GhostWord word="Craft" className="-left-6 top-10 text-[17vw]" />
-        <div className="relative mx-auto max-w-7xl">
-          <SectionHeading
-            eyebrow="Why it works"
-            title="Teaching that stays close to real music."
-            body="The brand serves musicians through structured learning, studio craft, and creative direction that stay close to real musical use."
-            align="center"
-          />
-          <div className="mt-12 grid gap-5 md:grid-cols-3" data-stagger>
-            {values.map((value) => {
-              const Icon = value.icon;
-              return (
-                <article
-                  key={value.title}
-                  className="card-lift relative overflow-hidden rounded-lg border border-cream/12 bg-cream/[0.04] p-6"
-                  data-reveal="card"
-                >
-                  <span className="grid h-12 w-12 place-items-center rounded-md bg-brass text-ink">
-                    <Icon aria-hidden="true" className="h-5 w-5" />
-                  </span>
-                  <h3 className="mt-6 font-display text-2xl font-black">
-                    {value.title}
-                  </h3>
-                  <p className="mt-3 leading-7 text-cream/82">{value.text}</p>
-                </article>
-              );
-            })}
           </div>
         </div>
       </section>
@@ -290,13 +222,12 @@ export default function Home() {
               Start with the path that fits your music.
             </h2>
           </div>
-          <Link
+          <a
             href="/apply"
             className={`motion-sheen inline-flex min-h-12 items-center justify-center gap-2 overflow-hidden rounded-md bg-white px-5 py-3 text-sm font-bold uppercase text-red-700 hover:bg-cream ${interactiveStateClasses}`}
           >
             Apply Now
-            <ArrowRight aria-hidden="true" className="h-4 w-4" />
-          </Link>
+          </a>
         </div>
       </section>
     </>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SafeImage } from "@/components/safe-image";
 import { ArrowRight, MessageCircle, Music2 } from "lucide-react";
 import { GhostWord } from "@/components/brand-motifs";
-import { PageHero } from "@/components/page-hero";
+import { ScriptHero } from "@/components/script-hero";
 import { SectionHeading } from "@/components/section-heading";
 import { contact, servicePortfolio, services } from "@/lib/content";
 import { interactiveStateClasses } from "@/lib/ui";
@@ -26,28 +26,13 @@ export const metadata: Metadata = {
 export default function ServicesPage() {
   return (
     <>
-      <PageHero
-        eyebrow="Services"
-        title="Studio work, presented without noise."
-        body="Vocal production, vocal arrangement, and music production for artists who need a refined ear on the record."
-        image="/images/studio-production.png"
-        primaryHref={`https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(
-          "Hello Tami Bedford team, I would like to ask about production services.",
-        )}`}
-        primaryLabel="Message Us"
-      />
+      <ScriptHero title="Tami Services" image="/images/studio-production.png" />
 
       <section className="gallery-wall relative overflow-hidden px-5 py-24 text-ink md:px-8 md:py-36">
         <GhostWord word="Services" tone="dark" className="-right-10 top-10 text-[16vw]" />
         <div className="mx-auto max-w-7xl">
-          <SectionHeading
-            eyebrow="Offerings"
-            title="Three ways into the record."
-            body="Simple cards, clear lanes, and one contact path. The conversation can carry the details."
-            tone="dark"
-          />
-          <div className="mt-16 grid gap-10 lg:grid-cols-3" data-stagger>
-            {services.map((service) => {
+          <div className="grid gap-10 lg:grid-cols-3" data-stagger>
+            {services.map((service, index) => {
               const Icon = service.icon;
               const whatsappMessage = `Hello Tami Bedford team, I would like to ask about ${service.title}.`;
 
@@ -67,15 +52,17 @@ export default function ServicesPage() {
                     />
                   </div>
                   <div className="p-6 md:p-7">
-                    <span className="grid h-11 w-11 place-items-center rounded-md bg-ink text-cream">
-                      <Icon aria-hidden="true" className="h-5 w-5" />
-                    </span>
-                    <h2 className="mt-6 font-display text-3xl font-black leading-none">
+                    <div className="flex items-center justify-between">
+                      <span className="grid h-11 w-11 place-items-center rounded-md bg-ink text-cream">
+                        <Icon aria-hidden="true" className="h-5 w-5" />
+                      </span>
+                      <span className="font-display text-sm font-black text-ink/25">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                    </div>
+                    <h2 className="mt-6 break-words font-display text-2xl font-black leading-tight md:text-3xl">
                       {service.title}
                     </h2>
-                    <p className="gallery-caption mt-5 pt-4 text-xs font-bold uppercase leading-6 text-ink/62">
-                      {service.summary}
-                    </p>
                     <ul className="mt-6 grid gap-3">
                       {service.deliverables.map((deliverable) => (
                         <li key={deliverable} className="flex gap-3">
@@ -111,8 +98,7 @@ export default function ServicesPage() {
         <div className="relative mx-auto max-w-7xl">
           <SectionHeading
             eyebrow="Portfolio"
-            title="Selected work will live under the service it proves."
-            body="Songs, albums, recorded vocals, and arrangements can be linked here as Michael curates the credits."
+            title="Work, placed under service."
           />
           <div className="mt-16 grid gap-8 md:grid-cols-3" data-stagger>
             {servicePortfolio.map((item) => (

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { navItems } from "@/lib/content";
@@ -19,6 +19,7 @@ function isActive(pathname: string, href: string) {
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const isHome = pathname === "/";
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const reduceMotion = useReducedMotion();
@@ -57,36 +58,77 @@ export function SiteHeader() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [open, close]);
 
+  const linkClasses = `nav-glass rounded-full px-4 py-2.5 text-xs font-medium uppercase tracking-[0.18em] text-cream/75 hover:backdrop-blur-md hover:backdrop-saturate-150 focus-visible:backdrop-blur-md data-[active=true]:backdrop-blur-md data-[active=true]:backdrop-saturate-150 ${interactiveStateClasses}`;
+
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-cream/10 bg-ink/78 backdrop-blur-xl">
+    <header
+      className={`fixed inset-x-0 top-0 z-50 border-b ${
+        isHome
+          ? "border-transparent bg-transparent"
+          : "border-cream/10 bg-ink/78 backdrop-blur-xl"
+      }`}
+    >
       <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-5 md:px-8">
         <Link
           href="/"
           className={`flex items-center gap-3 rounded-md text-cream ${interactiveStateClasses}`}
           onClick={close}
         >
-          <span className="grid h-10 w-10 place-items-center rounded-md border border-cream/20 bg-cream/8 font-display text-xl font-black">
-            tb
-          </span>
-          <span className="hidden text-sm font-bold uppercase sm:inline">
+          <span className="font-script text-4xl leading-none text-cream">tb</span>
+          <span className="hidden text-sm font-medium uppercase tracking-[0.18em] sm:inline">
             Tami Bedford
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`rounded-md px-4 py-3 text-sm font-bold uppercase ${interactiveStateClasses} ${
-                isActive(pathname, item.href)
-                  ? "bg-cream text-ink"
-                  : "text-cream/82 hover:bg-cream/10 hover:text-cream"
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
+        <nav
+          className={`hidden items-center gap-1 md:absolute md:left-1/2 md:flex md:-translate-x-1/2 ${
+            isHome ? "" : "relative"
+          }`}
+          aria-label="Main"
+        >
+          {navItems.map((item) =>
+            item.children ? (
+              <div key={item.href} className="group relative">
+                <Link
+                  href={item.href}
+                  data-active={isActive(pathname, item.href) ? "true" : "false"}
+                  className={`inline-flex items-center gap-1.5 ${linkClasses}`}
+                >
+                  {item.label}
+                  <ChevronDown
+                    aria-hidden="true"
+                    className="h-3.5 w-3.5 transition-transform duration-300 group-hover:rotate-180 group-focus-within:rotate-180"
+                  />
+                </Link>
+                <div className="pointer-events-none absolute left-1/2 top-full -translate-x-1/2 translate-y-1 pt-3 opacity-0 transition duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                  <div className="min-w-[210px] overflow-hidden rounded-md border border-cream/12 bg-ink/95 p-2 shadow-soft backdrop-blur-xl">
+                    {item.children.map((child) => (
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        className={`block rounded-md px-4 py-2.5 text-xs font-medium uppercase tracking-[0.16em] ${interactiveStateClasses} ${
+                          isActive(pathname, child.href)
+                            ? "bg-cream/10 text-cream"
+                            : "text-cream/65 hover:bg-cream/8 hover:text-cream"
+                        }`}
+                      >
+                        {child.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <Link
+                key={item.href}
+                href={item.href}
+                data-active={isActive(pathname, item.href) ? "true" : "false"}
+                className={linkClasses}
+              >
+                {item.label}
+              </Link>
+            ),
+          )}
         </nav>
 
         <button
@@ -116,10 +158,11 @@ export function SiteHeader() {
             exit={reduceMotion ? undefined : { opacity: 0, y: -8, scaleY: 0.97 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
-            <nav className="grid gap-2" aria-label="Mobile main">
+            <nav className="grid py-4 text-center" aria-label="Mobile main">
               {navItems.map((item, index) => (
                 <motion.div
                   key={item.href}
+                  className="border-b border-cream/10 last:border-b-0"
                   initial={reduceMotion ? false : { opacity: 0, y: -6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{
@@ -131,16 +174,42 @@ export function SiteHeader() {
                   <Link
                     href={item.href}
                     onClick={close}
-                    className={`block rounded-md px-4 py-4 text-base font-bold uppercase ${interactiveStateClasses} ${
+                    className={`block py-4 font-display text-2xl font-medium uppercase tracking-[0.14em] ${interactiveStateClasses} ${
                       isActive(pathname, item.href)
-                        ? "bg-cream text-ink"
-                        : "bg-cream/6 text-cream"
+                        ? "text-cream"
+                        : "text-cream/80 hover:text-cream"
                     }`}
                   >
                     {item.label}
                   </Link>
+                  {item.children ? (
+                    <div className="grid gap-1 pb-4">
+                      {item.children.map((child) => (
+                        <Link
+                          key={child.href}
+                          href={child.href}
+                          onClick={close}
+                          className={`block py-1.5 text-xs font-medium uppercase tracking-[0.24em] ${interactiveStateClasses} ${
+                            isActive(pathname, child.href)
+                              ? "text-brass"
+                              : "text-cream/50 hover:text-cream/85"
+                          }`}
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  ) : null}
                 </motion.div>
               ))}
+              <div className="mx-auto mt-8 max-w-xs">
+                <p className="font-script text-2xl leading-tight text-cream/75">
+                  &ldquo;&hellip;Turn these dreams into prophesies.&rdquo;
+                </p>
+                <p className="font-script mt-1 text-lg text-cream/50">
+                  &mdash; Tami Bedford
+                </p>
+              </div>
             </nav>
           </motion.div>
         ) : null}

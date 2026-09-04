@@ -10,9 +10,8 @@ export function SiteFooter() {
       <div className="mx-auto grid w-full max-w-7xl gap-10 px-5 py-14 md:grid-cols-[1.2fr_0.8fr_0.8fr] md:px-8">
         <div>
           <p className="font-display text-3xl font-black">Tami Bedford</p>
-          <p className="mt-4 max-w-md leading-8 text-cream/82">
-            Premium music sessions and creative production support for musicians
-            who want structure, clarity, and standards that carry into real work.
+          <p className="mt-4 max-w-md text-sm font-bold uppercase leading-6 tracking-wide text-cream/70">
+            Sessions / Services / Gallery
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <ActionLink href="/apply">Apply for Sessions</ActionLink>
@@ -77,8 +76,7 @@ export function SiteFooter() {
       </div>
       <div className="flex flex-col items-center gap-2 border-t border-cream/10 px-5 py-5 text-center text-sm text-cream/70 sm:flex-row sm:justify-between md:px-8">
         <p>
-          &copy; 2026 Tami Bedford. Built for Sessions, services, and creative
-          work.
+          &copy; 2026 Tami Bedford.
         </p>
         <Link
           href="/privacy"

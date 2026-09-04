@@ -1,5 +1,35 @@
 import type { Metadata } from "next";
+import { Fraunces, Manrope, Dancing_Script, Great_Vibes } from "next/font/google";
 import "./globals.css";
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "900"],
+  style: ["normal", "italic"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  weight: ["400", "500", "700", "800"],
+  variable: "--font-body",
+  display: "swap",
+});
+
+const script = Dancing_Script({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-script",
+  display: "swap",
+});
+
+const art = Great_Vibes({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-art",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://tamibedford.com"),
@@ -56,7 +86,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
+    <html
+      lang="en"
+      className={`h-full antialiased ${fraunces.variable} ${manrope.variable} ${script.variable} ${art.variable}`}
+    >
       <body className="flex min-h-full flex-col" suppressHydrationWarning>
         <script
           type="application/ld+json"

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { ArrowRight } from "lucide-react";
-import { GhostWord } from "@/components/brand-motifs";
-import { ActionLink } from "@/components/action-link";
-import { PageHero } from "@/components/page-hero";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { Flourish, GhostWord } from "@/components/brand-motifs";
+import { GalleryGrid } from "@/components/gallery-grid";
 import { SafeImage } from "@/components/safe-image";
+import { ScriptHero } from "@/components/script-hero";
 import { SectionHeading } from "@/components/section-heading";
 import { contact, galleryCategories } from "@/lib/content";
 import { interactiveStateClasses } from "@/lib/ui";
@@ -27,64 +27,64 @@ export const metadata: Metadata = {
 export default function GalleryPage() {
   return (
     <>
-      <PageHero
-        eyebrow="Tam's Gallery"
-        title="Mixed work in a quiet room."
-        body="Music, poems, short films, books, and personal creative fragments gathered like a gallery wall instead of a brochure."
-        image="/images/work-creative.png"
-        primaryHref={contact.instagram}
-        primaryLabel="View Instagram"
-      />
+      <ScriptHero title={"Tam’s Gallery"} image="/images/work-creative.png" />
 
-      <section className="gallery-wall relative overflow-hidden px-5 py-24 text-ink md:px-8 md:py-40">
-        <GhostWord word="Gallery" tone="dark" className="-right-10 top-12 text-[17vw]" />
-        <div className="relative mx-auto max-w-7xl">
-          <SectionHeading
-            eyebrow="Creative archive"
-            title="White space, image first, words when needed."
-            body="The gallery is ready for links, embeds, stills, excerpts, and Instagram material as Michael releases each project."
-            tone="dark"
-          />
-          <div className="mt-16 grid gap-x-8 gap-y-16 md:grid-cols-2 lg:grid-cols-4" data-stagger>
-            {galleryCategories.map((category, index) => {
-              const Icon = category.icon;
+      {galleryCategories.map((category) => (
+        <section
+          key={category.slug}
+          id={category.slug}
+          className="gallery-wall relative scroll-mt-24 overflow-hidden px-5 py-10 text-ink md:px-8 md:py-14"
+        >
+          <div className="relative mx-auto max-w-7xl">
+            <div className="flex flex-col items-center gap-4 text-center">
+              <h2 className="font-display text-3xl font-black leading-none md:text-4xl">
+                {category.title}
+              </h2>
+              <div className="flex w-full max-w-2xl items-center gap-5 text-ink/60">
+                <span aria-hidden="true" className="h-px flex-1 bg-current opacity-50" />
+                <Flourish className="h-10 w-48 shrink-0" />
+                <span aria-hidden="true" className="h-px flex-1 bg-current opacity-50" />
+              </div>
+            </div>
 
-              return (
-                <article
-                  key={category.title}
-                  className={`gallery-frame card-lift relative overflow-hidden ${
-                    index % 2 === 1 ? "lg:translate-y-10" : ""
-                  }`}
-                  data-reveal="card"
+            <GalleryGrid
+              items={category.items}
+              numbered={category.slug === "poetry"}
+              landscape={category.slug === "short-films"}
+            />
+
+            {category.purchase ? (
+              <div
+                className="mx-auto mt-12 flex max-w-md flex-col items-center gap-4 rounded-lg border border-ink/12 bg-ink/[0.03] p-8 text-center"
+                data-reveal="card"
+              >
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-red-700">
+                  Available now
+                </p>
+                <h3 className="font-display text-3xl font-black leading-none">
+                  {category.purchase.title}
+                </h3>
+                <a
+                  href={category.purchase.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`motion-sheen mt-1 inline-flex min-h-12 items-center justify-center gap-2 overflow-hidden rounded-md bg-red-600 px-6 py-3 text-sm font-bold uppercase text-white hover:bg-red-500 ${interactiveStateClasses}`}
                 >
-                  <div className="relative aspect-[3/4]">
-                    <SafeImage
-                      src={category.image}
-                      alt=""
-                      fill
-                      sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="p-5 md:p-6">
-                    <span className="grid h-10 w-10 place-items-center rounded-md bg-ink text-cream">
-                      <Icon aria-hidden="true" className="h-5 w-5" />
-                    </span>
-                    <h2 className="mt-5 font-display text-3xl font-black leading-none">
-                      {category.title}
-                    </h2>
-                    <p className="gallery-caption mt-5 pt-5 text-xs font-bold uppercase leading-6 text-red-700">
-                      {category.status}
-                    </p>
-                  </div>
-                </article>
-              );
-            })}
+                  Buy the book — {category.purchase.price}
+                  <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
+                </a>
+                {category.purchase.note ? (
+                  <p className="text-xs font-bold uppercase tracking-wide text-ink/45">
+                    {category.purchase.note}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
           </div>
-        </div>
-      </section>
+        </section>
+      ))}
 
-      <section className="relative overflow-hidden bg-ink px-5 py-20 md:px-8 md:py-28">
+      <section className="relative overflow-hidden bg-ink px-5 py-20 text-cream md:px-8 md:py-28">
         <GhostWord word="Personal" className="-left-8 top-10 text-[15vw]" />
         <div className="relative mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
           <div
@@ -100,15 +100,26 @@ export default function GalleryPage() {
             />
           </div>
           <div>
-            <SectionHeading
-              eyebrow="Not portfolio"
-              title="This is the personal room."
-              body="Client work belongs under Services. This space is for the poems, film poems, music ideas, book work, images, and mixed media that make the wider creative world visible."
-            />
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <ActionLink href="/services" variant="secondary">
-                See Services
-              </ActionLink>
+            <SectionHeading title="This is the personal room." />
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a
+                href={contact.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`motion-sheen inline-flex min-h-12 items-center justify-center gap-2 overflow-hidden rounded-md bg-red-600 px-5 py-3 text-sm font-bold uppercase text-white hover:bg-red-500 ${interactiveStateClasses}`}
+              >
+                Visit Instagram
+                <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
+              </a>
+              <a
+                href={contact.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`motion-sheen inline-flex min-h-12 items-center justify-center gap-2 overflow-hidden rounded-md border border-cream/25 px-5 py-3 text-sm font-bold uppercase text-cream hover:border-red-500 hover:text-white ${interactiveStateClasses}`}
+              >
+                Visit YouTube
+                <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
+              </a>
               <a
                 href={`mailto:${contact.email}?subject=${encodeURIComponent(
                   "Gallery inquiry",

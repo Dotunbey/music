@@ -3,6 +3,7 @@ import {
   BookOpen,
   Camera,
   Clapperboard,
+  Feather,
   Headphones,
   Mic2,
   Music2,
@@ -20,14 +21,43 @@ export const contact = {
   youtube: "https://youtube.com/@tamibedford?si=g35Z_Bc0xD1NIycH",
 };
 
-export const navItems = [
+export type NavChild = { href: string; label: string };
+export type NavItem = {
+  href: string;
+  label: string;
+  children?: NavChild[];
+};
+
+// Per the owner brief, "Apply" is not a top-level item — applying happens
+// under Sessions (you apply for a specific program). "Sessions" is a dropdown
+// that reveals the programs and the Apply action, matching the owner's request:
+// "when you click educational, you see everything under sessions."
+export const navItems: NavItem[] = [
   { href: "/", label: "Home" },
-  { href: "/sessions", label: "Sessions" },
+  {
+    href: "/sessions",
+    label: "Sessions",
+    children: [
+      { href: "/sessions/piano", label: "Piano" },
+      { href: "/sessions/choral", label: "Choral" },
+      { href: "/sessions/organ", label: "Organ" },
+      { href: "/sessions/production", label: "Music Production" },
+      { href: "/apply", label: "Apply" },
+    ],
+  },
   { href: "/services", label: "Services" },
-  { href: "/gallery", label: "Gallery" },
+  {
+    href: "/gallery",
+    label: "Gallery",
+    children: [
+      { href: "/gallery#music", label: "Music" },
+      { href: "/gallery#books", label: "Books" },
+      { href: "/gallery#poetry", label: "Poetry" },
+      { href: "/gallery#short-films", label: "Short Films" },
+    ],
+  },
   { href: "/about", label: "About" },
-  { href: "/apply", label: "Apply" },
-] as const;
+];
 
 export type SessionSlug = "piano" | "choral" | "organ" | "production";
 
@@ -41,7 +71,6 @@ export type Session = {
   image: string;
   icon: LucideIcon;
   summary: string;
-  promise: string;
   outcomes: string[];
   materials: string;
   requirements: string[];
@@ -61,8 +90,6 @@ export const sessions: Session[] = [
     icon: Piano,
     summary:
       "Build practical piano fluency for Gospel and Contemporary music through a structured path from fundamentals to confident accompaniment.",
-    promise:
-      "Piano Sessions guide students from foundational technique and harmony through confident accompaniment, musical fluency, and expressive independent playing.",
     outcomes: [
       "Proper technique, coordination, and control",
       "Scales, chords, and practical harmony",
@@ -104,8 +131,6 @@ export const sessions: Session[] = [
     icon: Users,
     summary:
       "Develop practical choir musicianship through harmony, blend, part learning, and confident group vocal direction.",
-    promise:
-      "Choral Sessions help singers and choir leads build stronger ears, cleaner parts, better blend, and more confident musical leadership.",
     outcomes: [
       "Part learning for soprano, alto, tenor, and bass contexts",
       "Harmony awareness and cleaner vocal movement",
@@ -147,8 +172,6 @@ export const sessions: Session[] = [
     icon: Music2,
     summary:
       "Develop organ-style control, harmonic movement, and worship accompaniment for real playing environments.",
-    promise:
-      "Organ Sessions develop students from foundational organ technique through flowing accompaniment, worship application, and confident expressive musicianship.",
     outcomes: [
       "Organ-style technique and musical flow",
       "Harmony, chord movement, and progression awareness",
@@ -190,8 +213,6 @@ export const sessions: Session[] = [
     icon: SlidersHorizontal,
     summary:
       "Move from rough ideas to organized sessions, confident recording, and release-ready production habits.",
-    promise:
-      "Music Production Sessions take students from foundational DAW skills and beat-making through recording, mixing, arrangement, and independent release-ready production.",
     outcomes: [
       "Confident DAW workflow and session setup",
       "Beat-making, arrangement, and sound selection",
@@ -229,7 +250,6 @@ export const services = [
     title: "Vocal Production",
     image: "/images/service-vocal.jpg",
     icon: Mic2,
-    summary: "Recording direction, vocal takes, editing, and performance shaping.",
     deliverables: [
       "Vocal recording",
       "Performance direction",
@@ -241,7 +261,6 @@ export const services = [
     title: "Vocal Arrangement",
     image: "/images/creation-hands.jpg",
     icon: Users,
-    summary: "Background parts, harmonies, stacks, and choir movement.",
     deliverables: [
       "Background vocal arrangements",
       "Harmony stacks",
@@ -253,10 +272,10 @@ export const services = [
     title: "Music Production",
     image: "/images/studio-production.png",
     icon: Headphones,
-    summary: "Production, arrangement, keys, instrumentals, and song direction.",
     deliverables: [
       "Songs and instrumentals",
       "Tracking and recording of keys",
+      "Stems production",
       "Arrangement direction",
       "Production guidance",
     ],
@@ -281,53 +300,169 @@ export const servicePortfolio = [
   },
 ] as const;
 
-export const galleryCategories = [
+export type GalleryMediaType = "image" | "video" | "text";
+
+export type GalleryItem = {
+  title: string;
+  type: GalleryMediaType;
+  /** Image src, or the poster frame for a video. */
+  image?: string;
+  /** A hosted/local video file (e.g. /videos/clip.mp4) — plays inline. */
+  src?: string;
+  /** External link for a video with no file (Instagram / YouTube) — links out. */
+  href?: string;
+  /** Body copy for a text/poem piece. */
+  excerpt?: string;
+  /** Small caption, e.g. the source or year. */
+  meta?: string;
+};
+
+export type GalleryPurchase = {
+  /** Shown as the heading of the buy card (e.g. the book title). */
+  title: string;
+  /** Display price, e.g. "₦3,000". */
+  price: string;
+  /** Checkout link — paste the Selar product URL here. */
+  href: string;
+  /** Small reassurance line under the button. */
+  note?: string;
+};
+
+export type GalleryCategory = {
+  title: string;
+  slug: string;
+  icon: LucideIcon;
+  blurb: string;
+  /** Representative image for the home preview and section header. */
+  cover: string;
+  /** Optional "buy" call-to-action rendered under the category. */
+  purchase?: GalleryPurchase;
+  items: GalleryItem[];
+};
+
+// Gallery is a mix of media from several sources. Instagram supplies mostly
+// video, so most items are videos (poster + link out) until real files land.
+// Placeholder covers reuse existing studio imagery and should be swapped for
+// Tami's own work.
+export const galleryCategories: GalleryCategory[] = [
   {
     title: "Music",
+    slug: "music",
     icon: Music2,
-    image: "/images/production-session.jpg",
-    status: "Curated releases and production notes are being prepared.",
-    summary:
-      "A focused home for released music, arrangements, instrumentals, and production credits.",
+    blurb: "Releases, arrangements, and production.",
+    cover: "/images/production-session.jpg",
+    items: [
+      {
+        title: "Studio session",
+        type: "video",
+        image: "/images/production-session.jpg",
+        href: contact.instagram,
+        meta: "Instagram",
+      },
+      {
+        title: "Produced record",
+        type: "image",
+        image: "/images/studio-production.png",
+        meta: "Cover art",
+      },
+      {
+        title: "Live take",
+        type: "video",
+        image: "/images/piano-keys.jpg",
+        href: contact.instagram,
+        meta: "Instagram",
+      },
+    ],
   },
   {
     title: "Books",
+    slug: "books",
     icon: BookOpen,
-    image: "/images/tami-bedford.jpeg",
-    status: "Book projects and excerpts will be staged here.",
-    summary:
-      "Long-form writing, concepts, and personal creative projects beyond client-facing services.",
+    blurb: "Long-form writing in progress.",
+    cover: "/images/work-creative.png",
+    // TODO: paste the Selar product link into `href` and set the real title/price.
+    purchase: {
+      title: "The book",
+      price: "₦3,000",
+      href: "#",
+      note: "Secure checkout on Selar · instant download",
+    },
+    items: [
+      {
+        title: "Untitled book",
+        type: "image",
+        image: "/images/work-creative.png",
+        meta: "In progress",
+      },
+      {
+        title: "From the manuscript",
+        type: "text",
+        excerpt:
+          "An excerpt from the writing will live here — a few lines that set the tone of the work, room to breathe.",
+        meta: "Excerpt",
+      },
+    ],
   },
   {
     title: "Poetry",
-    icon: BookOpen,
-    image: "/images/work-creative.png",
-    status: "Selected written and spoken pieces will be published here.",
-    summary:
-      "Poetic sketches, spoken-word ideas, and reflective writing connected to the wider creative practice.",
+    slug: "poetry",
+    icon: Feather,
+    blurb: "Written and spoken pieces.",
+    cover: "/images/creation-hands.jpg",
+    // Real poetry files (public/poetry) — a mix of images and video reels from
+    // the Instagram highlight, in chronological order. Videos play inline.
+    items: [
+      { title: "I", type: "image", image: "/poetry/tami.bedford_1607429774_highlight18176536909127087.jpg" },
+      { title: "II", type: "image", image: "/poetry/tami.bedford_1626718384_highlight18176536909127087.jpg" },
+      { title: "III", type: "image", image: "/poetry/tami.bedford_1654178711_highlight18176536909127087.webp" },
+      { title: "IV", type: "image", image: "/poetry/tami.bedford_1654251719_highlight18176536909127087.webp" },
+      { title: "V", type: "video", src: "/poetry/tami.bedford_1675445562_highlight18176536909127087.mp4" },
+      { title: "VI", type: "video", src: "/poetry/tami.bedford_1728509318_highlight18176536909127087.mp4" },
+      { title: "VII", type: "video", src: "/poetry/tami.bedford_1729767970_highlight18176536909127087.mp4" },
+      { title: "VIII", type: "video", src: "/poetry/tami.bedford_1732633580_highlight18176536909127087.mp4" },
+      { title: "IX", type: "video", src: "/poetry/tami.bedford_1753429449_highlight18176536909127087.mp4" },
+      { title: "X", type: "video", src: "/poetry/tami.bedford_1757365425_highlight18176536909127087.mp4" },
+    ],
   },
   {
     title: "Short Films",
+    slug: "short-films",
     icon: Clapperboard,
-    image: "/images/creation-hands.jpg",
-    status: "Film concepts, scores, and visual work will be added as they are ready.",
-    summary:
-      "A preview space for visual storytelling, music-led film concepts, and behind-the-scenes process.",
+    blurb: "Visual storytelling and film concepts.",
+    cover: "/images/tami-bedford.jpeg",
+    items: [
+      {
+        title: "Haunted by the Hunter",
+        type: "video",
+        image: "https://i.ytimg.com/vi/fx34GwTKtac/hqdefault.jpg",
+        href: "https://youtu.be/fx34GwTKtac",
+        meta: "YouTube",
+      },
+      {
+        title: "The Mad and The Riddle",
+        type: "video",
+        image: "https://i.ytimg.com/vi/UrXOKEo2vi4/hqdefault.jpg",
+        href: "https://youtu.be/UrXOKEo2vi4",
+        meta: "YouTube",
+      },
+    ],
   },
-] as const;
+];
 
 export const team = [
   {
     name: "Tami Bedford",
     role: "Owner / Session Guide",
     image: "/images/tami-bedford.jpeg",
-    bio: "Tami Bedford is a music producer, educator, and creative director with over a decade of experience in music performance, composition, theory, and creative production. MUSON certified in Music Theory and Piano Practical, he combines technical excellence with real-world artistry while mentoring musicians across Gospel, Contemporary, and Jazz.",
+    bio: "A decade of performance, production, and mentoring across Gospel, Contemporary, and Jazz.",
+    disciplines: ["Production", "Piano", "MUSON certified"],
   },
   {
     name: "Joseph Agbai",
     role: "Session Guide",
     image: "/images/joseph-agbai.png",
-    bio: "Joseph Agbai is a musician with over 10 years of experience. He has collaborated with artists and songwriters in Nigeria and abroad as a pianist, arranger, and producer, and actively mentors young musicians on industry standards and practical musicianship.",
+    bio: "Ten years arranging, producing, and playing with artists across Nigeria and abroad.",
+    disciplines: ["Arrangement", "Piano", "Mentoring"],
   },
 ] as const;
 
@@ -341,17 +476,17 @@ export const values = [
   {
     title: "Structured growth",
     icon: Sparkles,
-    text: "Each path moves from foundation to application so students always know what skill they are building next.",
+    text: "Every path moves from foundation to real application.",
   },
   {
     title: "Real music context",
     icon: Users,
-    text: "Lessons focus on the way musicians actually play, accompany, arrange, record, and lead in live or studio settings.",
+    text: "Built on how musicians actually play, arrange, and record.",
   },
   {
     title: "Creative standards",
     icon: Camera,
-    text: "The wider studio practice keeps the learning connected to professional production, performance, and storytelling.",
+    text: "Learning stays tied to professional production and performance.",
   },
 ] as const;
 

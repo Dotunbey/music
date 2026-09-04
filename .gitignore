@@ -43,3 +43,6 @@ next-env.d.ts
 
 # GitNexus local index
 .gitnexus/
+
+.vercel
+.env*

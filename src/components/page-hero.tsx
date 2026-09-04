@@ -6,7 +6,7 @@ import { MotionHeadline, MotionImageFrame } from "./motion-primitives";
 type PageHeroProps = {
   eyebrow: string;
   title: string;
-  body: string;
+  body?: string;
   image: string;
   primaryHref?: string;
   primaryLabel?: string;
@@ -29,10 +29,11 @@ export function PageHero({
           fill
           priority
           sizes="100vw"
-          className="animate-ken-burns object-cover object-center"
+          className="animate-ken-burns object-cover object-center [filter:brightness(0.82)_contrast(1.04)_saturate(0.85)]"
         />
       </MotionImageFrame>
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(12,11,9,0.92),rgba(12,11,9,0.62),rgba(12,11,9,0.2))]" />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(82,75,66,0.92),rgba(82,75,66,0.62),rgba(82,75,66,0.24))]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(82,75,66,0.5),transparent_36%,transparent_62%,rgba(82,75,66,0.9))]" />
       <div className="relative mx-auto flex min-h-[388px] w-full max-w-7xl items-center">
         <div className="max-w-3xl pb-14">
           <div
@@ -49,12 +50,14 @@ export function PageHero({
             className="font-display text-5xl font-black leading-none text-balance md:text-7xl"
             delay={0.12}
           />
-          <p
-            className="animate-fade-up mt-6 max-w-2xl text-lg leading-8 text-cream/82 md:text-xl"
-            style={{ animationDelay: "420ms" }}
-          >
-            {body}
-          </p>
+          {body ? (
+            <p
+              className="animate-fade-up mt-6 max-w-2xl text-lg leading-8 text-cream/82 md:text-xl"
+              style={{ animationDelay: "420ms" }}
+            >
+              {body}
+            </p>
+          ) : null}
           {primaryHref && primaryLabel ? (
             <div
               className="animate-fade-up mt-8"

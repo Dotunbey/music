@@ -151,8 +151,7 @@ export function InquiryForm({
           ) : null}
         </div>
         <p className="mt-8 text-sm leading-6 text-cream/62">
-          The team reviews every inquiry and replies to agree on goals and
-          timing before any payment conversation.
+          We reply to agree on goals and timing — no payment before that.
         </p>
       </motion.div>
     );
