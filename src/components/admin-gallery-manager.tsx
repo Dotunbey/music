@@ -62,13 +62,11 @@ export function AdminGalleryManager({ items }: { items: AdminItem[] }) {
   const [mediaType, setMediaType] = useState<GalleryMediaType>("image");
   const [libraryCategory, setLibraryCategory] = useState<GalleryCategory | "all">("all");
   const [mediaFile, setMediaFile] = useState<File | null>(null);
-  const [posterFile, setPosterFile] = useState<File | null>(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
   const [isPending, startTransition] = useTransition();
   const mediaPreview = useMemo(() => (mediaFile ? URL.createObjectURL(mediaFile) : null), [mediaFile]);
-  const posterPreview = useMemo(() => (posterFile ? URL.createObjectURL(posterFile) : null), [posterFile]);
 
   async function submitUpload(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -76,20 +74,17 @@ export function AdminGalleryManager({ items }: { items: AdminItem[] }) {
     setError("");
     const form = new FormData(event.currentTarget);
     if (!mediaFile) return setError("Choose the gallery media first.");
-    if (mediaType === "video" && !posterFile) return setError("Choose a poster image for the video.");
     setUploading(true);
     try {
       const storagePath = await uploadFile(mediaFile, category, "media");
-      const posterPath = posterFile ? await uploadFile(posterFile, category, "poster") : "";
       form.set("storagePath", storagePath);
-      form.set("posterPath", posterPath);
+      form.set("posterPath", "");
       form.set("category", category);
       form.set("mediaType", mediaType);
       const result = await registerGalleryItem(form);
       if (result.status === "error") throw new Error(result.message);
       setMessage(result.message);
       setMediaFile(null);
-      setPosterFile(null);
       event.currentTarget.reset();
       startTransition(() => window.location.reload());
     } catch (cause) {
@@ -111,9 +106,8 @@ export function AdminGalleryManager({ items }: { items: AdminItem[] }) {
         </div>
         <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Title</span><input name="title" required maxLength={160} className={formFieldClasses} placeholder="Work title" /></label>
         <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Caption</span><textarea name="caption" maxLength={500} rows={2} className={`${formFieldClasses} py-3`} placeholder="Small caption or year" /></label>
-        <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Media file</span><input required type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime" onChange={(e) => { const file = e.target.files?.[0] ?? null; const nextType: GalleryMediaType = file?.type.startsWith("video/") ? "video" : "image"; setMediaFile(file); setMediaType(nextType); if (nextType === "image") setPosterFile(null); }} className="text-sm text-cream/75 file:mr-3 file:rounded-md file:border-0 file:bg-cream file:px-3 file:py-2 file:font-bold file:text-ink" /></label>
-        {mediaType === "video" ? <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Video poster (required)</span><input required type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(e) => setPosterFile(e.target.files?.[0] ?? null)} className="text-sm text-cream/75 file:mr-3 file:rounded-md file:border-0 file:bg-cream file:px-3 file:py-2 file:font-bold file:text-ink" /></label> : null}
-        {(mediaPreview || posterPreview) ? <div className="grid gap-4 sm:grid-cols-2">{mediaPreview ? <Preview src={mediaPreview} type={mediaType} /> : null}{posterPreview ? <Preview src={posterPreview} type="image" /> : null}</div> : null}
+        <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Media file</span><input required type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime" onChange={(e) => { const file = e.target.files?.[0] ?? null; const nextType: GalleryMediaType = file?.type.startsWith("video/") ? "video" : "image"; setMediaFile(file); setMediaType(nextType); }} className="text-sm text-cream/75 file:mr-3 file:rounded-md file:border-0 file:bg-cream file:px-3 file:py-2 file:font-bold file:text-ink" /></label>
+        {mediaPreview ? <Preview src={mediaPreview} type={mediaType} /> : null}
         {error ? <p className="text-sm text-red-300" role="alert">{error}</p> : null}
         {message ? <p className="text-sm text-green-300" aria-live="polite">{message}</p> : null}
         <button type="submit" disabled={uploading || isPending} className={`inline-flex min-h-12 w-fit items-center justify-center rounded-md bg-red-600 px-5 py-3 text-sm font-bold uppercase text-white hover:bg-red-500 ${interactiveStateClasses}`}>{uploading ? "Uploading..." : "Save as Draft"}</button>

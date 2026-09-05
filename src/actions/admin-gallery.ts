@@ -103,10 +103,6 @@ export async function registerGalleryItem(formData: FormData): Promise<GalleryMu
   await requireAdmin();
   const parsed = parseItemFields(formData);
   if (!parsed.success) return { status: "error", message: "Complete the gallery item fields." };
-  if (parsed.data.mediaType === "video" && !parsed.data.posterPath) {
-    return { status: "error", message: "A poster image is required for video uploads." };
-  }
-
   const db = await getDbClient();
   const [queue] = await db
     .select({ lastOrder: max(galleryItems.sortOrder) })
