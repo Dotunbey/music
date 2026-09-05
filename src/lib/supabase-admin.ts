@@ -27,6 +27,30 @@ export function getGalleryBucketName(): string {
   return process.env.SUPABASE_GALLERY_BUCKET || "gallery-media";
 }
 
+export async function ensureGalleryBucket(): Promise<void> {
+  const storage = getSupabaseAdminClient().storage;
+  const bucket = getGalleryBucketName();
+  const existing = await storage.getBucket(bucket);
+  if (existing.data) return;
+
+  const created = await storage.createBucket(bucket, {
+    public: true,
+    fileSizeLimit: "524288000",
+    allowedMimeTypes: [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/gif",
+      "video/mp4",
+      "video/webm",
+      "video/quicktime",
+    ],
+  });
+  if (created.error && !created.error.message.toLowerCase().includes("already exists")) {
+    throw created.error;
+  }
+}
+
 export function getGalleryPublicUrl(storagePath: string): string {
   const baseUrl = getSupabaseUrl().replace(/\/$/, "");
   return `${baseUrl}/storage/v1/object/public/${getGalleryBucketName()}/${storagePath}`;

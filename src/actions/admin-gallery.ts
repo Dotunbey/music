@@ -11,7 +11,7 @@ import {
   galleryItemStatusEnum,
   galleryMediaTypeEnum,
 } from "@/lib/db/schema";
-import { getGalleryBucketName, getSupabaseAdminClient } from "@/lib/supabase-admin";
+import { ensureGalleryBucket, getGalleryBucketName, getSupabaseAdminClient } from "@/lib/supabase-admin";
 
 const categorySchema = z.enum(galleryCategoryEnum.enumValues);
 const mediaTypeSchema = z.enum(galleryMediaTypeEnum.enumValues);
@@ -66,10 +66,12 @@ export async function createGalleryUploadUrl(input: {
   }
 
   const path = `${category.data}/${input.variant}/${crypto.randomUUID()}-${safeFilename(input.filename)}`;
+  await ensureGalleryBucket();
   const { data, error } = await getSupabaseAdminClient()
     .storage.from(getGalleryBucketName())
     .createSignedUploadUrl(path);
   if (error || !data?.token) {
+    console.error("Gallery signed upload URL failed", error);
     return { status: "error", message: "Could not prepare the upload. Try again." };
   }
   return { status: "success", path, token: data.token };
