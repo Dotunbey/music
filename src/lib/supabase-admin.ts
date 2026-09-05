@@ -32,7 +32,7 @@ export async function ensureGalleryBucket(): Promise<void> {
   const bucket = getGalleryBucketName();
   const options = {
     public: true,
-    fileSizeLimit: "524288000",
+    fileSizeLimit: "52428800",
     allowedMimeTypes: [
       "image/jpeg",
       "image/png",

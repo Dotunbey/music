@@ -21,7 +21,7 @@ const pathSchema = z.string().min(3).max(500).refine((value) => !value.includes(
 const imageTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 const videoTypes = new Set(["video/mp4", "video/webm", "video/quicktime"]);
 const maxImageBytes = 20 * 1024 * 1024;
-const maxVideoBytes = 500 * 1024 * 1024;
+const maxVideoBytes = 50 * 1024 * 1024;
 
 function safeFilename(filename: string): string {
   const extension = filename.toLowerCase().match(/\.[a-z0-9]+$/)?.[0] ?? "";
@@ -62,7 +62,7 @@ export async function createGalleryUploadUrl(input: {
   }
   const maxSize = isVideo ? maxVideoBytes : maxImageBytes;
   if (input.size > maxSize) {
-    return { status: "error", message: `This file is larger than the ${isVideo ? "500 MB" : "20 MB"} limit.` };
+    return { status: "error", message: `This file is larger than the ${isVideo ? "50 MB" : "20 MB"} limit.` };
   }
 
   const path = `${category.data}/${input.variant}/${crypto.randomUUID()}-${safeFilename(input.filename)}`;
