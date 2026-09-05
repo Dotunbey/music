@@ -115,8 +115,10 @@ export type GalleryMutationState = { status: "success" | "error"; message: strin
 
 export async function registerGalleryItem(formData: FormData): Promise<GalleryMutationState> {
   await requireAdmin();
+  const title = z.string().trim().min(1).max(160).safeParse(formData.get("title"));
+  if (!title.success) return { status: "error", message: "Title is required." };
   const parsed = parseItemFields(formData);
-  if (!parsed.success) return { status: "error", message: "Complete the gallery item fields." };
+  if (!parsed.success) return { status: "error", message: "Select a category and add the gallery media." };
   if (!parsed.data.storagePath && !parsed.data.sourceUrl) return { status: "error", message: "Add a media file or a YouTube URL." };
   if (parsed.data.sourceUrl && parsed.data.mediaType !== "video") return { status: "error", message: "YouTube links must be video items." };
   const db = await getDbClient();
