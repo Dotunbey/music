@@ -18,10 +18,16 @@ const mediaTypeSchema = z.enum(galleryMediaTypeEnum.enumValues);
 const statusSchema = z.enum(galleryItemStatusEnum.enumValues);
 const pathSchema = z.string().min(3).max(500).refine((value) => !value.includes(".."), "Invalid storage path.");
 const optionalPathSchema = z.preprocess((value) => value || "", z.string().max(500).refine((value) => !value.includes(".."), "Invalid storage path."));
-const sourceUrlSchema = z.preprocess((value) => value || undefined, z.string().url().max(500).refine((value) => {
-  const url = new URL(value);
-  return ["youtube.com", "www.youtube.com", "youtu.be", "www.youtu.be"].includes(url.hostname);
-}, "Use a YouTube URL.").optional().default(""));
+const sourceUrlSchema = z.preprocess(
+  (value) => (typeof value === "string" ? value.trim() : ""),
+  z.union([
+    z.literal(""),
+    z.string().url().max(500).refine((value) => {
+      const url = new URL(value);
+      return ["youtube.com", "www.youtube.com", "youtu.be", "www.youtu.be"].includes(url.hostname);
+    }, "Use a YouTube URL."),
+  ]),
+);
 
 const imageTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 const videoTypes = new Set(["video/mp4", "video/webm", "video/quicktime"]);
