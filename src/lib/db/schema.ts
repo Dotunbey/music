@@ -1,4 +1,5 @@
-import { index, pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { index, integer, pgEnum, pgTable, text, timestamp, uuid, check } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
 export const inquiryTypeEnum = pgEnum("inquiry_type", [
   "session",
@@ -14,6 +15,25 @@ export const inquiryStatusEnum = pgEnum("inquiry_status", [
   "enrolled",
   "closed",
   "spam",
+]);
+
+export const galleryCategoryEnum = pgEnum("gallery_category", [
+  "music",
+  "books",
+  "poetry",
+  "short_films",
+]);
+
+export const galleryMediaTypeEnum = pgEnum("gallery_media_type", [
+  "image",
+  "video",
+]);
+
+export const galleryItemStatusEnum = pgEnum("gallery_item_status", [
+  "draft",
+  "approved",
+  "rejected",
+  "archived",
 ]);
 
 export const inquiries = pgTable(
@@ -82,8 +102,55 @@ export const inquiryEvents = pgTable(
   }),
 );
 
+export const galleryItems = pgTable(
+  "gallery_items",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    category: galleryCategoryEnum("category").notNull(),
+    mediaType: galleryMediaTypeEnum("media_type").notNull(),
+    title: text("title").notNull(),
+    caption: text("caption"),
+    storagePath: text("storage_path"),
+    posterPath: text("poster_path"),
+    sourceUrl: text("source_url"),
+    status: galleryItemStatusEnum("status").notNull().default("draft"),
+    sortOrder: integer("sort_order").notNull().default(0),
+    rejectionReason: text("rejection_reason"),
+    publishedAt: timestamp("published_at", { withTimezone: true }),
+    reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  ({ category, status, sortOrder, createdAt }) => ({
+    categoryOrderIndex: index("gallery_items_category_order_idx").on(
+      category,
+      sortOrder,
+      createdAt,
+    ),
+    statusOrderIndex: index("gallery_items_status_order_idx").on(
+      status,
+      sortOrder,
+      createdAt,
+    ),
+    sourceCheck: check(
+      "gallery_items_source_check",
+      sql`storage_path IS NOT NULL OR source_url IS NOT NULL`,
+    ),
+  }),
+);
+
 export type Inquiry = typeof inquiries.$inferSelect;
 export type InquiryInsert = typeof inquiries.$inferInsert;
 export type InquiryEvent = typeof inquiryEvents.$inferSelect;
 export type InquiryStatus = (typeof inquiryStatusEnum.enumValues)[number];
 export type InquiryType = (typeof inquiryTypeEnum.enumValues)[number];
+export type GalleryCategory = (typeof galleryCategoryEnum.enumValues)[number];
+export type GalleryMediaType = (typeof galleryMediaTypeEnum.enumValues)[number];
+export type GalleryItemStatus = (typeof galleryItemStatusEnum.enumValues)[number];
+export type GalleryItem = typeof galleryItems.$inferSelect;
+export type GalleryItemInsert = typeof galleryItems.$inferInsert;

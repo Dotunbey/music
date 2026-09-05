@@ -59,8 +59,6 @@ export default async function SessionDetailPage({
         title={session.title}
         body={session.summary}
         image={session.image}
-        primaryHref={`/apply?track=${session.slug}`}
-        primaryLabel="Apply for this Session"
       />
 
       <section className="bg-cream px-5 py-16 text-ink md:px-8 md:py-20">
@@ -90,11 +88,7 @@ export default async function SessionDetailPage({
             className="rounded-lg border border-ink/10 bg-white p-6 shadow-soft md:p-8"
             data-reveal="card"
           >
-            <SectionHeading
-              eyebrow="Who it's for"
-              title="Who this is for."
-              tone="dark"
-            />
+            <SectionHeading title="Who this is for." tone="dark" />
             <div className="mt-10 grid gap-4 sm:grid-cols-2" data-stagger>
               {session.whoFor.map((item) => (
                 <div

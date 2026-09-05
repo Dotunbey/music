@@ -5,7 +5,10 @@ import { MotionImageFrame } from "@/components/motion-primitives";
 import { SafeImage } from "@/components/safe-image";
 import { SessionCard } from "@/components/session-card";
 import { contact, services, sessions } from "@/lib/content";
+import { getApprovedGalleryItems } from "@/lib/gallery";
 import { interactiveStateClasses } from "@/lib/ui";
+
+export const dynamic = "force-dynamic";
 
 const marqueeItems = [
   "Piano",
@@ -19,7 +22,9 @@ const marqueeItems = [
   "Vocal Production",
 ] as const;
 
-export default function Home() {
+export default async function Home() {
+  const galleryItems = await getApprovedGalleryItems();
+
   return (
     <>
       <section className="grain relative isolate min-h-[92svh] overflow-hidden bg-ink px-5 pb-28 pt-28 text-cream md:px-8">
@@ -130,6 +135,55 @@ export default function Home() {
                 </article>
               ))}
           </div>
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden bg-ink px-5 py-20 text-cream md:px-8 md:py-28">
+        <div className="relative mx-auto max-w-7xl">
+          <div className="mb-10 flex items-end justify-between gap-6">
+            <h2
+              className="font-display text-6xl font-black leading-none md:text-8xl"
+              data-reveal="heading"
+            >
+              Gallery
+            </h2>
+            <ActionLink href="/gallery" variant="secondary">
+              Visit Gallery
+            </ActionLink>
+          </div>
+          {galleryItems.length > 0 ? (
+            <div className="grid gap-5 sm:grid-cols-3" data-stagger>
+              {galleryItems.slice(0, 3).map((item) => (
+                <article
+                  key={item.id}
+                  className="gallery-frame card-lift overflow-hidden bg-cream text-ink"
+                  data-reveal="card"
+                >
+                  <div className="relative aspect-[4/5] overflow-hidden bg-charcoal">
+                    <SafeImage
+                      src={item.image ?? ""}
+                      alt={item.title}
+                      fill
+                      sizes="(min-width: 640px) 33vw, 100vw"
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="p-5">
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-red-700">
+                      {item.category.replace("_", " ")}
+                    </p>
+                    <h3 className="mt-2 font-display text-2xl font-black">
+                      {item.title}
+                    </h3>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <p className="border-t border-cream/12 pt-5 text-xs font-bold uppercase tracking-[0.16em] text-cream/45">
+              The archive is being curated.
+            </p>
+          )}
         </div>
       </section>
 

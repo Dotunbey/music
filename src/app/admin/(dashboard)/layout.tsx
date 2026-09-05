@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LayoutDashboard, Inbox, LogOut } from "lucide-react";
+import { GalleryHorizontal, LayoutDashboard, Inbox, LogOut } from "lucide-react";
 import { logoutAction } from "@/actions/admin-auth";
 import { requireAdmin } from "@/lib/admin-session";
 import { interactiveStateClasses } from "@/lib/ui";
@@ -22,6 +22,7 @@ export const maxDuration = 30;
 const navItems = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
   { href: "/admin/inquiries", label: "Inquiries", icon: Inbox },
+  { href: "/admin/gallery", label: "Gallery", icon: GalleryHorizontal },
 ] as const;
 
 export default async function AdminDashboardLayout({

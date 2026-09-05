@@ -7,7 +7,15 @@ const nextConfig: NextConfig = {
     root: process.cwd(),
   },
   images: {
-    remotePatterns: [{ protocol: "https", hostname: "i.ytimg.com" }],
+    remotePatterns: [
+      { protocol: "https", hostname: "i.ytimg.com" },
+      ...(process.env.NEXT_PUBLIC_SUPABASE_URL
+        ? [{
+            protocol: "https" as const,
+            hostname: new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname,
+          }]
+        : []),
+    ],
   },
 };
 

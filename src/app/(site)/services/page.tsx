@@ -81,10 +81,7 @@ export default function ServicesPage() {
 
       <section className="relative overflow-hidden bg-charcoal px-5 py-20 md:px-8 md:py-28">
         <div className="relative mx-auto max-w-7xl">
-          <SectionHeading
-            eyebrow="Portfolio"
-            title="Work, placed under service."
-          />
+          <SectionHeading title="Portfolio" />
           <div className="mt-16 grid gap-8 md:grid-cols-3" data-stagger>
             {servicePortfolio.map((item) => (
               <article

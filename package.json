@@ -8,6 +8,7 @@
     "db:push": "drizzle-kit push",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
+    "gallery:seed": "node scripts/seed-gallery.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -15,6 +16,7 @@
   "dependencies": {
     "@marsidev/react-turnstile": "^1.5.3",
     "@sentry/nextjs": "^10.57.0",
+    "@supabase/supabase-js": "^2.115.0",
     "drizzle-orm": "^0.44.2",
     "framer-motion": "^12.40.0",
     "lucide-react": "^1.17.0",
