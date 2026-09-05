@@ -29,6 +29,13 @@
       "when": 1788595835478,
       "tag": "0003_superb_sentry",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1788640747418,
+      "tag": "0004_groovy_queen_noir",
+      "breakpoints": true
     }
   ]
 }

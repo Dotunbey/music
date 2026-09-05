@@ -38,7 +38,6 @@ function toPublicItem(item: GalleryItem): PublicGalleryItem & {
         ? getGalleryPublicUrl(item.storagePath)
         : undefined,
     href: item.sourceUrl ?? undefined,
-    meta: item.caption ?? undefined,
   };
 }
 

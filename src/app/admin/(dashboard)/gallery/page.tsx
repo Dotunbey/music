@@ -12,7 +12,6 @@ export default async function AdminGalleryPage() {
     category: item.category,
     mediaType: item.mediaType,
     title: item.title,
-    caption: item.caption,
     storagePath: item.storagePath,
     posterPath: item.posterPath,
     status: item.status,

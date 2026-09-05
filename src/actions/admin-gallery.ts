@@ -84,7 +84,6 @@ export async function createGalleryUploadUrl(input: {
 
 const itemFields = z.object({
   title: z.string().trim().min(1).max(160),
-  caption: z.string().trim().max(500).optional().default(""),
   category: categorySchema,
   mediaType: mediaTypeSchema,
   storagePath: optionalPathSchema,
@@ -127,7 +126,6 @@ const registerFields = itemFields.superRefine((value, context) => {
 function parseItemFields(formData: FormData) {
   return itemFields.safeParse({
     title: formData.get("title"),
-    caption: formData.get("caption") ?? "",
     category: formData.get("category"),
     mediaType: formData.get("mediaType"),
     storagePath: formData.get("storagePath"),
@@ -144,7 +142,6 @@ export async function registerGalleryItem(formData: FormData): Promise<GalleryMu
   if (!title.success) return { status: "error", message: "Title is required." };
   const parsed = registerFields.safeParse({
     title: formData.get("title"),
-    caption: formData.get("caption") ?? "",
     category: formData.get("category"),
     mediaType: formData.get("mediaType"),
     storagePath: formData.get("storagePath"),

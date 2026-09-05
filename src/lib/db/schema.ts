@@ -109,7 +109,6 @@ export const galleryItems = pgTable(
     category: galleryCategoryEnum("category").notNull(),
     mediaType: galleryMediaTypeEnum("media_type").notNull(),
     title: text("title").notNull(),
-    caption: text("caption"),
     storagePath: text("storage_path"),
     posterPath: text("poster_path"),
     sourceUrl: text("source_url"),

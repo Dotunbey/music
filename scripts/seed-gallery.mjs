@@ -40,7 +40,7 @@ for (let i = 0; i < poetryFiles.length; i++) {
   const extension = path.extname(file.name).toLowerCase();
   const mediaType = videoMime.has(extension) ? "video" : "image";
   const storagePath = await uploadFile(path.join(poetryDir, file.name), `poetry/media/${file.name}`, videoMime.get(extension) || imageMime.get(extension));
-  await insert({ category: "poetry", media_type: mediaType, title: String(i + 1).padStart(2, "0"), caption: "", storage_path: storagePath, status: "approved", sort_order: i, published_at: new Date().toISOString() });
+  await insert({ category: "poetry", media_type: mediaType, title: String(i + 1).padStart(2, "0"), storage_path: storagePath, status: "approved", sort_order: i, published_at: new Date().toISOString() });
 }
 
 const localItems = [
@@ -52,7 +52,7 @@ const localItems = [
 for (const [category, title, filename, mediaType, sortOrder] of localItems) {
   const extension = path.extname(filename).toLowerCase();
   const storagePath = await uploadFile(path.join(root, "public", "images", filename), `${category}/media/${filename}`, imageMime.get(extension) || "image/png");
-  await insert({ category, media_type: mediaType, title, caption: "", storage_path: storagePath, status: "approved", sort_order: sortOrder, published_at: new Date().toISOString() });
+  await insert({ category, media_type: mediaType, title, storage_path: storagePath, status: "approved", sort_order: sortOrder, published_at: new Date().toISOString() });
 }
 
 console.log("Gallery seed complete. Existing external YouTube films should be re-uploaded through /admin/gallery.");
