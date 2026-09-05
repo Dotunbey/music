@@ -30,10 +30,7 @@ export function getGalleryBucketName(): string {
 export async function ensureGalleryBucket(): Promise<void> {
   const storage = getSupabaseAdminClient().storage;
   const bucket = getGalleryBucketName();
-  const existing = await storage.getBucket(bucket);
-  if (existing.data) return;
-
-  const created = await storage.createBucket(bucket, {
+  const options = {
     public: true,
     fileSizeLimit: "524288000",
     allowedMimeTypes: [
@@ -45,7 +42,15 @@ export async function ensureGalleryBucket(): Promise<void> {
       "video/webm",
       "video/quicktime",
     ],
-  });
+  };
+  const existing = await storage.getBucket(bucket);
+  if (existing.data) {
+    const updated = await storage.updateBucket(bucket, options);
+    if (updated.error) throw updated.error;
+    return;
+  }
+
+  const created = await storage.createBucket(bucket, options);
   if (created.error && !created.error.message.toLowerCase().includes("already exists")) {
     throw created.error;
   }
