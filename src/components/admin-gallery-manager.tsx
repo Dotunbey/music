@@ -70,6 +70,13 @@ export function AdminGalleryManager({ items, supabaseUrl, supabaseAnonKey }: { i
   const [isPending, startTransition] = useTransition();
   const mediaPreview = useMemo(() => (mediaFile ? URL.createObjectURL(mediaFile) : null), [mediaFile]);
 
+  function handleCategoryChange(nextCategory: GalleryCategory) {
+    setCategory(nextCategory);
+    setSourceUrl("");
+    setMediaFile(null);
+    setMediaType(nextCategory === "short_films" ? "video" : "image");
+  }
+
   async function submitUpload(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMessage("");
@@ -105,7 +112,7 @@ export function AdminGalleryManager({ items, supabaseUrl, supabaseAnonKey }: { i
         <div className="m-auto grid w-full max-w-3xl gap-5 rounded-lg border border-cream/12 bg-ink p-6 shadow-soft md:p-8">
           <div className="flex items-start justify-between gap-4"><div><h2 className="font-display text-2xl font-black">Add new work</h2><p className="mt-1 text-sm text-cream/60">Uploads remain hidden until approved.</p></div><button type="button" onClick={() => setShowUpload(false)} className="rounded-md border border-cream/20 px-3 py-2 text-xs font-bold uppercase text-cream/70 hover:border-brass hover:text-brass">Close</button></div>
         <div className="grid gap-4 md:grid-cols-2">
-          <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Category</span><select name="category" value={category} onChange={(e) => setCategory(e.target.value as GalleryCategory)} className={formFieldClasses}>{categories.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select></label>
+          <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Category</span><select name="category" value={category} onChange={(e) => handleCategoryChange(e.target.value as GalleryCategory)} className={formFieldClasses}>{categories.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select></label>
         </div>
         <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Title</span><input name="title" required maxLength={160} className={formFieldClasses} placeholder="Work title" /></label>
         {category === "short_films" ? <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">YouTube URL</span><input required type="url" value={sourceUrl} onChange={(e) => { setSourceUrl(e.target.value); setMediaType("video"); }} className={formFieldClasses} placeholder="https://youtu.be/..." /></label> : <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Media file</span><input required type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime" onChange={(e) => { const file = e.target.files?.[0] ?? null; const nextType: GalleryMediaType = file?.type.startsWith("video/") ? "video" : "image"; setMediaFile(file); setMediaType(nextType); }} className="text-sm text-cream/75 file:mr-3 file:rounded-md file:border-0 file:bg-cream file:px-3 file:py-2 file:font-bold file:text-ink" /></label>}
