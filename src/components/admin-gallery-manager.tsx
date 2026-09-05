@@ -60,6 +60,7 @@ async function uploadFile(file: File, category: GalleryCategory, variant: "media
 export function AdminGalleryManager({ items }: { items: AdminItem[] }) {
   const [category, setCategory] = useState<GalleryCategory>("poetry");
   const [mediaType, setMediaType] = useState<GalleryMediaType>("image");
+  const [libraryCategory, setLibraryCategory] = useState<GalleryCategory | "all">("all");
   const [mediaFile, setMediaFile] = useState<File | null>(null);
   const [posterFile, setPosterFile] = useState<File | null>(null);
   const [message, setMessage] = useState("");
@@ -107,14 +108,12 @@ export function AdminGalleryManager({ items }: { items: AdminItem[] }) {
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Category</span><select name="category" value={category} onChange={(e) => setCategory(e.target.value as GalleryCategory)} className={formFieldClasses}>{categories.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select></label>
-          <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Format</span><select name="mediaType" value={mediaType} onChange={(e) => setMediaType(e.target.value as GalleryMediaType)} className={formFieldClasses}><option value="image">Image</option><option value="video">Video</option></select></label>
+          <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Format</span><select name="mediaType" value={mediaType} onChange={(e) => { const next = e.target.value as GalleryMediaType; setMediaType(next); if (next === "image") setPosterFile(null); }} className={formFieldClasses}><option value="image">Image</option><option value="video">Video</option></select></label>
         </div>
         <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Title</span><input name="title" required maxLength={160} className={formFieldClasses} placeholder="Work title" /></label>
         <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Caption</span><textarea name="caption" maxLength={500} rows={2} className={`${formFieldClasses} py-3`} placeholder="Small caption or year" /></label>
-        <div className="grid gap-4 md:grid-cols-2">
-          <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Media file</span><input required type="file" accept={mediaType === "video" ? "video/mp4,video/webm,video/quicktime" : "image/jpeg,image/png,image/webp,image/gif"} onChange={(e) => setMediaFile(e.target.files?.[0] ?? null)} className="text-sm text-cream/75 file:mr-3 file:rounded-md file:border-0 file:bg-cream file:px-3 file:py-2 file:font-bold file:text-ink" /></label>
-          <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Video poster {mediaType === "video" ? "(required)" : "(optional)"}</span><input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(e) => setPosterFile(e.target.files?.[0] ?? null)} className="text-sm text-cream/75 file:mr-3 file:rounded-md file:border-0 file:bg-cream file:px-3 file:py-2 file:font-bold file:text-ink" /></label>
-        </div>
+        <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Media file</span><input required type="file" accept={mediaType === "video" ? "video/mp4,video/webm,video/quicktime" : "image/jpeg,image/png,image/webp,image/gif"} onChange={(e) => setMediaFile(e.target.files?.[0] ?? null)} className="text-sm text-cream/75 file:mr-3 file:rounded-md file:border-0 file:bg-cream file:px-3 file:py-2 file:font-bold file:text-ink" /></label>
+        {mediaType === "video" ? <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Video poster (required)</span><input required type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(e) => setPosterFile(e.target.files?.[0] ?? null)} className="text-sm text-cream/75 file:mr-3 file:rounded-md file:border-0 file:bg-cream file:px-3 file:py-2 file:font-bold file:text-ink" /></label> : null}
         <label className="grid max-w-xs gap-2"><span className="text-xs font-bold uppercase text-cream/60">Display order</span><input name="sortOrder" type="number" min="0" max="100000" defaultValue="0" className={formFieldClasses} /></label>
         {(mediaPreview || posterPreview) ? <div className="grid gap-4 sm:grid-cols-2">{mediaPreview ? <Preview src={mediaPreview} type={mediaType} /> : null}{posterPreview ? <Preview src={posterPreview} type="image" /> : null}</div> : null}
         {error ? <p className="text-sm text-red-300" role="alert">{error}</p> : null}
@@ -123,8 +122,9 @@ export function AdminGalleryManager({ items }: { items: AdminItem[] }) {
       </form>
 
       <section>
-        <div className="flex items-end justify-between gap-4"><div><h2 className="font-display text-2xl font-black">Manage work</h2><p className="mt-1 text-sm text-cream/60">Preview, edit, and moderate every gallery item.</p></div><span className="text-sm text-cream/55">{items.length} items</span></div>
-        <div className="mt-5 grid gap-4">{items.map((item) => <AdminItemCard key={item.id} item={item} />)}</div>
+        <div className="flex items-end justify-between gap-4"><div><h2 className="font-display text-2xl font-black">Current gallery</h2><p className="mt-1 text-sm text-cream/60">Every item stays here. Archive anything you want hidden.</p></div><span className="text-sm text-cream/55">{items.length} items</span></div>
+        <div className="mt-5 flex flex-wrap gap-2"><button type="button" onClick={() => setLibraryCategory("all")} className={`rounded-full border px-3 py-2 text-xs font-bold uppercase ${libraryCategory === "all" ? "border-brass bg-brass/15 text-brass" : "border-cream/20 text-cream/65"}`}>All ({items.length})</button>{categories.map((item) => { const count = items.filter((galleryItem) => galleryItem.category === item.value).length; return <button type="button" key={item.value} onClick={() => setLibraryCategory(item.value)} className={`rounded-full border px-3 py-2 text-xs font-bold uppercase ${libraryCategory === item.value ? "border-brass bg-brass/15 text-brass" : "border-cream/20 text-cream/65"}`}>{item.label} ({count})</button>; })}</div>
+        <div className="mt-5 grid gap-4">{items.filter((item) => libraryCategory === "all" || item.category === libraryCategory).map((item) => <AdminItemCard key={item.id} item={item} />)}{items.filter((item) => libraryCategory === "all" || item.category === libraryCategory).length === 0 ? <p className="rounded-lg border border-dashed border-cream/20 p-8 text-sm text-cream/55">No work in this category yet.</p> : null}</div>
       </section>
     </div>
   );
