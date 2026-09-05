@@ -33,15 +33,15 @@ const categories: Array<{ value: GalleryCategory; label: string }> = [
 const statuses: GalleryItemStatus[] = ["draft", "approved", "rejected", "archived"];
 const galleryBucket = process.env.NEXT_PUBLIC_SUPABASE_GALLERY_BUCKET || "gallery-media";
 
-function browserSupabase() {
+function browserSupabase(url: string, anonKey: string) {
   return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
+    url,
+    anonKey,
     { auth: { persistSession: false, autoRefreshToken: false } },
   );
 }
 
-async function uploadFile(file: File, category: GalleryCategory, variant: "media" | "poster") {
+async function uploadFile(file: File, category: GalleryCategory, variant: "media" | "poster", supabaseUrl: string, supabaseAnonKey: string) {
   const signed = await createGalleryUploadUrl({
     category,
     filename: file.name,
@@ -50,14 +50,14 @@ async function uploadFile(file: File, category: GalleryCategory, variant: "media
     variant,
   });
   if (signed.status === "error") throw new Error(signed.message);
-  const { error } = await browserSupabase()
+  const { error } = await browserSupabase(supabaseUrl, supabaseAnonKey)
     .storage.from(galleryBucket)
     .uploadToSignedUrl(signed.path, signed.token, file);
   if (error) throw new Error("The file upload failed. Try again.");
   return signed.path;
 }
 
-export function AdminGalleryManager({ items }: { items: AdminItem[] }) {
+export function AdminGalleryManager({ items, supabaseUrl, supabaseAnonKey }: { items: AdminItem[]; supabaseUrl: string; supabaseAnonKey: string }) {
   const [category, setCategory] = useState<GalleryCategory>("poetry");
   const [mediaType, setMediaType] = useState<GalleryMediaType>("image");
   const [libraryCategory, setLibraryCategory] = useState<GalleryCategory | "all">("all");
@@ -77,7 +77,8 @@ export function AdminGalleryManager({ items }: { items: AdminItem[] }) {
     if (!mediaFile) return setError("Choose the gallery media first.");
     setUploading(true);
     try {
-      const storagePath = await uploadFile(mediaFile, category, "media");
+      if (!supabaseUrl || !supabaseAnonKey) throw new Error("Supabase URL and anonymous key are not configured.");
+      const storagePath = await uploadFile(mediaFile, category, "media", supabaseUrl, supabaseAnonKey);
       form.set("storagePath", storagePath);
       form.set("posterPath", "");
       form.set("category", category);

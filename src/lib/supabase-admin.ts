@@ -8,11 +8,15 @@ function requiredEnv(name: string): string {
   return value;
 }
 
+function getSupabaseUrl(): string {
+  return process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL ?? requiredEnv("SUPABASE_URL");
+}
+
 export function getSupabaseAdminClient(): SupabaseClient {
   if (adminClient) return adminClient;
 
   adminClient = createClient(
-    requiredEnv("NEXT_PUBLIC_SUPABASE_URL"),
+    getSupabaseUrl(),
     requiredEnv("SUPABASE_SERVICE_ROLE_KEY"),
     { auth: { autoRefreshToken: false, persistSession: false } },
   );
@@ -24,6 +28,6 @@ export function getGalleryBucketName(): string {
 }
 
 export function getGalleryPublicUrl(storagePath: string): string {
-  const baseUrl = requiredEnv("NEXT_PUBLIC_SUPABASE_URL").replace(/\/$/, "");
+  const baseUrl = getSupabaseUrl().replace(/\/$/, "");
   return `${baseUrl}/storage/v1/object/public/${getGalleryBucketName()}/${storagePath}`;
 }

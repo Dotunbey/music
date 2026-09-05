@@ -23,6 +23,8 @@ export default async function AdminGalleryPage() {
     posterUrl: item.posterPath ? getGalleryPublicUrl(item.posterPath) : null,
     createdAt: item.createdAt.toISOString(),
   }));
+  const supabaseUrl = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+  const supabaseAnonKey = process.env.SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
 
   return (
     <>
@@ -30,7 +32,7 @@ export default async function AdminGalleryPage() {
         <h1 className="font-display text-4xl font-black">Gallery</h1>
         <p className="mt-2 leading-7 text-cream/70">Upload, preview, and approve the public archive.</p>
       </div>
-      <AdminGalleryManager items={items} />
+      <AdminGalleryManager items={items} supabaseUrl={supabaseUrl} supabaseAnonKey={supabaseAnonKey} />
     </>
   );
 }
