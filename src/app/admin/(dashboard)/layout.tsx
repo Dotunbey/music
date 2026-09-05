@@ -41,7 +41,7 @@ export default async function AdminDashboardLayout({
               href="/admin"
               className={`flex items-center gap-3 rounded-md ${interactiveStateClasses}`}
             >
-              <span className="grid h-9 w-9 place-items-center rounded-md border border-cream/20 bg-cream/8 font-display text-lg font-black">
+              <span className="grid h-9 w-9 place-items-center rounded-md border border-cream/20 bg-cream/8 font-script text-2xl leading-none">
                 tb
               </span>
               <span className="text-sm font-bold uppercase text-cream/82">
