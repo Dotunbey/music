@@ -20,13 +20,7 @@ const pathSchema = z.string().min(3).max(500).refine((value) => !value.includes(
 const optionalPathSchema = z.preprocess((value) => value || "", z.string().max(500).refine((value) => !value.includes(".."), "Invalid storage path."));
 const sourceUrlSchema = z.preprocess(
   (value) => (typeof value === "string" ? value.trim() : ""),
-  z.union([
-    z.literal(""),
-    z.string().url().max(500).refine((value) => {
-      const url = new URL(value);
-      return ["youtube.com", "www.youtube.com", "youtu.be", "www.youtu.be"].includes(url.hostname);
-    }, "Use a YouTube URL."),
-  ]),
+  z.string().max(500),
 );
 
 const imageTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
@@ -120,7 +114,17 @@ export async function registerGalleryItem(formData: FormData): Promise<GalleryMu
   const parsed = parseItemFields(formData);
   if (!parsed.success) return { status: "error", message: "Select a category and add the gallery media." };
   if (!parsed.data.storagePath && !parsed.data.sourceUrl) return { status: "error", message: "Add a media file or a YouTube URL." };
-  if (parsed.data.sourceUrl && parsed.data.mediaType !== "video") return { status: "error", message: "YouTube links must be video items." };
+  if (parsed.data.sourceUrl) {
+    try {
+      const url = new URL(parsed.data.sourceUrl);
+      if (!["youtube.com", "www.youtube.com", "youtu.be", "www.youtu.be"].includes(url.hostname)) {
+        return { status: "error", message: "Use a YouTube URL for Short Films." };
+      }
+    } catch {
+      return { status: "error", message: "Enter a valid YouTube URL." };
+    }
+    if (parsed.data.mediaType !== "video") return { status: "error", message: "YouTube links must be video items." };
+  }
   const db = await getDbClient();
   const [queue] = await db
     .select({ lastOrder: max(galleryItems.sortOrder) })
