@@ -61,6 +61,7 @@ export function AdminGalleryManager({ items }: { items: AdminItem[] }) {
   const [category, setCategory] = useState<GalleryCategory>("poetry");
   const [mediaType, setMediaType] = useState<GalleryMediaType>("image");
   const [libraryCategory, setLibraryCategory] = useState<GalleryCategory | "all">("all");
+  const [showUpload, setShowUpload] = useState(false);
   const [mediaFile, setMediaFile] = useState<File | null>(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -96,11 +97,9 @@ export function AdminGalleryManager({ items }: { items: AdminItem[] }) {
 
   return (
     <div className="grid gap-8">
-      <form onSubmit={submitUpload} className="grid gap-5 rounded-lg border border-cream/12 bg-cream/[0.04] p-6 md:p-8">
-        <div>
-          <h2 className="font-display text-2xl font-black">Add new work</h2>
-          <p className="mt-1 text-sm text-cream/60">Uploads remain hidden until approved.</p>
-        </div>
+      <form onSubmit={submitUpload} className={showUpload ? "fixed inset-0 z-50 grid overflow-y-auto bg-ink/80 p-4 backdrop-blur-sm md:p-8" : "hidden"}>
+        <div className="m-auto grid w-full max-w-3xl gap-5 rounded-lg border border-cream/12 bg-ink p-6 shadow-soft md:p-8">
+          <div className="flex items-start justify-between gap-4"><div><h2 className="font-display text-2xl font-black">Add new work</h2><p className="mt-1 text-sm text-cream/60">Uploads remain hidden until approved.</p></div><button type="button" onClick={() => setShowUpload(false)} className="rounded-md border border-cream/20 px-3 py-2 text-xs font-bold uppercase text-cream/70 hover:border-brass hover:text-brass">Close</button></div>
         <div className="grid gap-4 md:grid-cols-2">
           <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Category</span><select name="category" value={category} onChange={(e) => setCategory(e.target.value as GalleryCategory)} className={formFieldClasses}>{categories.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select></label>
         </div>
@@ -111,10 +110,11 @@ export function AdminGalleryManager({ items }: { items: AdminItem[] }) {
         {error ? <p className="text-sm text-red-300" role="alert">{error}</p> : null}
         {message ? <p className="text-sm text-green-300" aria-live="polite">{message}</p> : null}
         <button type="submit" disabled={uploading || isPending} className={`inline-flex min-h-12 w-fit items-center justify-center rounded-md bg-red-600 px-5 py-3 text-sm font-bold uppercase text-white hover:bg-red-500 ${interactiveStateClasses}`}>{uploading ? "Uploading..." : "Save as Draft"}</button>
+        </div>
       </form>
 
-      <section>
-        <div className="flex items-end justify-between gap-4"><div><h2 className="font-display text-2xl font-black">Current gallery</h2><p className="mt-1 text-sm text-cream/60">Every item stays here. Archive anything you want hidden.</p></div><span className="text-sm text-cream/55">{items.length} items</span></div>
+      <section className="order-first">
+        <div className="flex items-end justify-between gap-4"><div><h2 className="font-display text-2xl font-black">Current gallery</h2><p className="mt-1 text-sm text-cream/60">Every item stays here. Archive anything you want hidden.</p></div><div className="flex items-center gap-4"><span className="text-sm text-cream/55">{items.length} items</span><button type="button" onClick={() => setShowUpload(true)} className={`rounded-md bg-red-600 px-4 py-3 text-xs font-bold uppercase text-white hover:bg-red-500 ${interactiveStateClasses}`}>Add work</button></div></div>
         <div className="mt-5 flex flex-wrap gap-2"><button type="button" onClick={() => setLibraryCategory("all")} className={`rounded-full border px-3 py-2 text-xs font-bold uppercase ${libraryCategory === "all" ? "border-brass bg-brass/15 text-brass" : "border-cream/20 text-cream/65"}`}>All ({items.length})</button>{categories.map((item) => { const count = items.filter((galleryItem) => galleryItem.category === item.value).length; return <button type="button" key={item.value} onClick={() => setLibraryCategory(item.value)} className={`rounded-full border px-3 py-2 text-xs font-bold uppercase ${libraryCategory === item.value ? "border-brass bg-brass/15 text-brass" : "border-cream/20 text-cream/65"}`}>{item.label} ({count})</button>; })}</div>
         <div className="mt-5 grid gap-4">{items.filter((item) => libraryCategory === "all" || item.category === libraryCategory).map((item) => <AdminItemCard key={item.id} item={item} />)}{items.filter((item) => libraryCategory === "all" || item.category === libraryCategory).length === 0 ? <p className="rounded-lg border border-dashed border-cream/20 p-8 text-sm text-cream/55">No work in this category yet.</p> : null}</div>
       </section>
