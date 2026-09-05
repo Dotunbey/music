@@ -93,6 +93,37 @@ const itemFields = z.object({
   sortOrder: z.coerce.number().int().min(0).max(100000),
 });
 
+const registerFields = itemFields.superRefine((value, context) => {
+  if (value.category === "short_films") {
+    if (value.mediaType !== "video") {
+      context.addIssue({ code: z.ZodIssueCode.custom, path: ["mediaType"], message: "Short Films must be video items." });
+    }
+    if (!value.sourceUrl) {
+      context.addIssue({ code: z.ZodIssueCode.custom, path: ["sourceUrl"], message: "Short Films need a YouTube URL." });
+      return;
+    }
+    try {
+      const url = new URL(value.sourceUrl);
+      if (!["youtube.com", "www.youtube.com", "youtu.be", "www.youtu.be"].includes(url.hostname)) {
+        context.addIssue({ code: z.ZodIssueCode.custom, path: ["sourceUrl"], message: "Use a YouTube URL." });
+      }
+    } catch {
+      context.addIssue({ code: z.ZodIssueCode.custom, path: ["sourceUrl"], message: "Enter a valid YouTube URL." });
+    }
+    if (value.storagePath) {
+      context.addIssue({ code: z.ZodIssueCode.custom, path: ["storagePath"], message: "Short Films use a YouTube URL." });
+    }
+    return;
+  }
+
+  if (!value.storagePath) {
+    context.addIssue({ code: z.ZodIssueCode.custom, path: ["storagePath"], message: "Choose a media file." });
+  }
+  if (value.sourceUrl) {
+    context.addIssue({ code: z.ZodIssueCode.custom, path: ["sourceUrl"], message: "Only Short Films use a YouTube URL." });
+  }
+});
+
 function parseItemFields(formData: FormData) {
   return itemFields.safeParse({
     title: formData.get("title"),
@@ -111,7 +142,16 @@ export async function registerGalleryItem(formData: FormData): Promise<GalleryMu
   await requireAdmin();
   const title = z.string().trim().min(1).max(160).safeParse(formData.get("title"));
   if (!title.success) return { status: "error", message: "Title is required." };
-  const parsed = parseItemFields(formData);
+  const parsed = registerFields.safeParse({
+    title: formData.get("title"),
+    caption: formData.get("caption"),
+    category: formData.get("category"),
+    mediaType: formData.get("mediaType"),
+    storagePath: formData.get("storagePath"),
+    posterPath: formData.get("posterPath") || undefined,
+    sourceUrl: formData.get("sourceUrl"),
+    sortOrder: formData.get("sortOrder"),
+  });
   if (!parsed.success) return { status: "error", message: "Select a category and add the gallery media." };
   if (!parsed.data.storagePath && !parsed.data.sourceUrl) return { status: "error", message: "Add a media file or a YouTube URL." };
   if (parsed.data.sourceUrl) {
