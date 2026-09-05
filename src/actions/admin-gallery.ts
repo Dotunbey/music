@@ -148,7 +148,6 @@ export async function updateGalleryItem(formData: FormData): Promise<void> {
     .update(galleryItems)
     .set({
       title: parsed.data.title,
-      caption: parsed.data.caption,
       category: parsed.data.category,
       sortOrder: parsed.data.sortOrder,
       updatedAt: new Date(),
