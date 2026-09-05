@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { and, eq } from "drizzle-orm";
+import { and, eq, max } from "drizzle-orm";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/admin-session";
 import { getDbClient } from "@/lib/db/client";
@@ -108,8 +108,14 @@ export async function registerGalleryItem(formData: FormData): Promise<GalleryMu
   }
 
   const db = await getDbClient();
+  const [queue] = await db
+    .select({ lastOrder: max(galleryItems.sortOrder) })
+    .from(galleryItems)
+    .where(eq(galleryItems.category, parsed.data.category));
+  const sortOrder = Number(queue?.lastOrder ?? -1) + 1;
   await db.insert(galleryItems).values({
     ...parsed.data,
+    sortOrder,
     posterPath: parsed.data.posterPath || null,
     status: "draft",
   });
