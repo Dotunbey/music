@@ -36,6 +36,19 @@ export const galleryItemStatusEnum = pgEnum("gallery_item_status", [
   "archived",
 ]);
 
+export const portfolioProviderEnum = pgEnum("portfolio_provider", [
+  "spotify",
+  "youtube",
+  "audiomack",
+]);
+
+export const portfolioContentTypeEnum = pgEnum("portfolio_content_type", [
+  "album",
+  "track",
+  "video",
+  "song",
+]);
+
 export const inquiries = pgTable(
   "inquiries",
   {
@@ -143,6 +156,44 @@ export const galleryItems = pgTable(
   }),
 );
 
+export const portfolioItems = pgTable(
+  "portfolio_items",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    title: text("title").notNull(),
+    provider: portfolioProviderEnum("provider").notNull(),
+    contentType: portfolioContentTypeEnum("content_type").notNull(),
+    sourceUrl: text("source_url").notNull().unique(),
+    artworkUrl: text("artwork_url"),
+    credits: text("credits").array().notNull(),
+    status: galleryItemStatusEnum("status").notNull().default("draft"),
+    sortOrder: integer("sort_order").notNull().default(0),
+    rejectionReason: text("rejection_reason"),
+    publishedAt: timestamp("published_at", { withTimezone: true }),
+    reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+    metadataFetchedAt: timestamp("metadata_fetched_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  ({ provider, status, sortOrder, createdAt }) => ({
+    providerOrderIndex: index("portfolio_items_provider_order_idx").on(
+      provider,
+      sortOrder,
+      createdAt,
+    ),
+    statusOrderIndex: index("portfolio_items_status_order_idx").on(
+      status,
+      sortOrder,
+      createdAt,
+    ),
+  }),
+);
+
 export type Inquiry = typeof inquiries.$inferSelect;
 export type InquiryInsert = typeof inquiries.$inferInsert;
 export type InquiryEvent = typeof inquiryEvents.$inferSelect;
@@ -153,3 +204,7 @@ export type GalleryMediaType = (typeof galleryMediaTypeEnum.enumValues)[number];
 export type GalleryItemStatus = (typeof galleryItemStatusEnum.enumValues)[number];
 export type GalleryItem = typeof galleryItems.$inferSelect;
 export type GalleryItemInsert = typeof galleryItems.$inferInsert;
+export type PortfolioProvider = (typeof portfolioProviderEnum.enumValues)[number];
+export type PortfolioContentType = (typeof portfolioContentTypeEnum.enumValues)[number];
+export type PortfolioItem = typeof portfolioItems.$inferSelect;
+export type PortfolioItemInsert = typeof portfolioItems.$inferInsert;

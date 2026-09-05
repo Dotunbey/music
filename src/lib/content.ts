@@ -288,24 +288,6 @@ export const services = [
   },
 ] as const;
 
-export const servicePortfolio = [
-  {
-    title: "Recorded vocals",
-    image: "/images/service-vocal.jpg",
-    status: "Selected songs and credits will be linked here.",
-  },
-  {
-    title: "Produced projects",
-    image: "/images/studio-production.png",
-    status: "Albums and artist projects are being curated.",
-  },
-  {
-    title: "Arranged work",
-    image: "/images/production-session.jpg",
-    status: "Streaming links and project notes will be added.",
-  },
-] as const;
-
 export type GalleryMediaType = "image" | "video" | "text";
 
 export type GalleryItem = {

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { SafeImage } from "@/components/safe-image";
 import { ArrowRight, MessageCircle } from "lucide-react";
+import { SafeImage } from "@/components/safe-image";
+import { PortfolioShowcase } from "@/components/portfolio-showcase";
 import { ScriptHero } from "@/components/script-hero";
 import { SectionHeading } from "@/components/section-heading";
-import { contact, servicePortfolio, services } from "@/lib/content";
+import { contact, services } from "@/lib/content";
+import { getApprovedPortfolioItems } from "@/lib/portfolio";
 import { interactiveStateClasses } from "@/lib/ui";
 
 export const metadata: Metadata = {
@@ -22,7 +24,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const portfolioItems = await getApprovedPortfolioItems();
   return (
     <>
       <ScriptHero title="Tami Services" image="/images/studio-production.png" />
@@ -82,33 +85,7 @@ export default function ServicesPage() {
       <section className="relative overflow-hidden bg-charcoal px-5 py-20 md:px-8 md:py-28">
         <div className="relative mx-auto max-w-7xl">
           <SectionHeading title="Portfolio" />
-          <div className="mt-16 grid gap-8 md:grid-cols-3" data-stagger>
-            {servicePortfolio.map((item) => (
-              <article
-                key={item.title}
-                className="card-lift relative overflow-hidden border border-cream/12 bg-cream/[0.04]"
-                data-reveal="card"
-              >
-                <div className="relative aspect-[3/4]">
-                  <SafeImage
-                    src={item.image}
-                    alt=""
-                    fill
-                    sizes="(min-width: 768px) 33vw, 100vw"
-                    className="object-cover"
-                  />
-                </div>
-                <div className="p-6">
-                  <h2 className="font-display text-3xl font-black leading-none">
-                    {item.title}
-                  </h2>
-                  <p className="mt-5 border-t border-cream/12 pt-5 text-sm font-bold uppercase leading-6 text-brass">
-                    {item.status}
-                  </p>
-                </div>
-              </article>
-            ))}
-          </div>
+          <PortfolioShowcase items={portfolioItems} />
           <a
             href={`mailto:${contact.email}?subject=${encodeURIComponent(
               "Service inquiry",

@@ -36,6 +36,13 @@
       "when": 1788640747418,
       "tag": "0004_groovy_queen_noir",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1788642303570,
+      "tag": "0005_cool_puppet_master",
+      "breakpoints": true
     }
   ]
 }

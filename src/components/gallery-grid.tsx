@@ -115,6 +115,7 @@ function CardBody({
 
 const BASE_SPEED = 26; // px/s idle drift
 const MAX_SPEED = 300; // px/s at the far edge under the cursor
+const COVERFLOW_COPIES = 8;
 
 /**
  * A rotating "coverflow" — pieces drift through a centre spotlight (scaled up,
@@ -152,7 +153,7 @@ function Coverflow({
     const s = st.current;
 
     const measure = () => {
-      s.setW = track.scrollWidth / 2; // items are rendered twice
+      s.setW = track.scrollWidth / COVERFLOW_COPIES;
     };
     measure();
     s.last = performance.now();
@@ -211,7 +212,9 @@ function Coverflow({
   return (
     <div ref={containerRef} className="relative mt-6 overflow-hidden py-14">
       <div ref={trackRef} className="flex w-max items-center will-change-transform">
-        {[...items, ...items].map((it, i) => (
+        {Array.from({ length: COVERFLOW_COPIES }, () => items)
+          .flat()
+          .map((it, i) => (
           <div
             key={i}
             className="shrink-0 px-3"
@@ -229,7 +232,7 @@ function Coverflow({
               />
             </button>
           </div>
-        ))}
+          ))}
       </div>
     </div>
   );
@@ -314,7 +317,7 @@ export function GalleryGrid({
   const ytId =
     item && item.type === "video" && !item.src ? youtubeId(item.href) : null;
 
-  const useCoverflow = items.length >= 6 && !reduce;
+  const useCoverflow = items.length >= 2 && !reduce;
 
   return (
     <>
