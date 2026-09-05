@@ -17,6 +17,11 @@ const categorySchema = z.enum(galleryCategoryEnum.enumValues);
 const mediaTypeSchema = z.enum(galleryMediaTypeEnum.enumValues);
 const statusSchema = z.enum(galleryItemStatusEnum.enumValues);
 const pathSchema = z.string().min(3).max(500).refine((value) => !value.includes(".."), "Invalid storage path.");
+const optionalPathSchema = z.preprocess((value) => value || "", z.string().max(500).refine((value) => !value.includes(".."), "Invalid storage path."));
+const sourceUrlSchema = z.preprocess((value) => value || undefined, z.string().url().max(500).refine((value) => {
+  const url = new URL(value);
+  return ["youtube.com", "www.youtube.com", "youtu.be", "www.youtu.be"].includes(url.hostname);
+}, "Use a YouTube URL.").optional().default(""));
 
 const imageTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 const videoTypes = new Set(["video/mp4", "video/webm", "video/quicktime"]);
@@ -82,8 +87,9 @@ const itemFields = z.object({
   caption: z.string().trim().max(500).optional().default(""),
   category: categorySchema,
   mediaType: mediaTypeSchema,
-  storagePath: pathSchema,
+  storagePath: optionalPathSchema,
   posterPath: pathSchema.optional().or(z.literal("")),
+  sourceUrl: sourceUrlSchema,
   sortOrder: z.coerce.number().int().min(0).max(100000),
 });
 
@@ -105,6 +111,8 @@ export async function registerGalleryItem(formData: FormData): Promise<GalleryMu
   await requireAdmin();
   const parsed = parseItemFields(formData);
   if (!parsed.success) return { status: "error", message: "Complete the gallery item fields." };
+  if (!parsed.data.storagePath && !parsed.data.sourceUrl) return { status: "error", message: "Add a media file or a YouTube URL." };
+  if (parsed.data.sourceUrl && parsed.data.mediaType !== "video") return { status: "error", message: "YouTube links must be video items." };
   const db = await getDbClient();
   const [queue] = await db
     .select({ lastOrder: max(galleryItems.sortOrder) })
@@ -113,8 +121,10 @@ export async function registerGalleryItem(formData: FormData): Promise<GalleryMu
   const sortOrder = Number(queue?.lastOrder ?? -1) + 1;
   await db.insert(galleryItems).values({
     ...parsed.data,
+    storagePath: parsed.data.storagePath || null,
     sortOrder,
     posterPath: parsed.data.posterPath || null,
+    sourceUrl: parsed.data.sourceUrl || null,
     status: "draft",
   });
   revalidatePath("/admin/gallery");

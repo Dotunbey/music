@@ -62,6 +62,7 @@ export function AdminGalleryManager({ items, supabaseUrl, supabaseAnonKey }: { i
   const [mediaType, setMediaType] = useState<GalleryMediaType>("image");
   const [libraryCategory, setLibraryCategory] = useState<GalleryCategory | "all">("all");
   const [showUpload, setShowUpload] = useState(false);
+  const [sourceUrl, setSourceUrl] = useState("");
   const [mediaFile, setMediaFile] = useState<File | null>(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -74,19 +75,21 @@ export function AdminGalleryManager({ items, supabaseUrl, supabaseAnonKey }: { i
     setMessage("");
     setError("");
     const form = new FormData(event.currentTarget);
-    if (!mediaFile) return setError("Choose the gallery media first.");
+    if (category === "short_films" && !sourceUrl.trim()) return setError("Add the YouTube URL first.");
+    if (category !== "short_films" && !mediaFile) return setError("Choose the gallery media first.");
     setUploading(true);
     try {
-      if (!supabaseUrl || !supabaseAnonKey) throw new Error("Supabase URL and anonymous key are not configured.");
-      const storagePath = await uploadFile(mediaFile, category, "media", supabaseUrl, supabaseAnonKey);
+      const storagePath = mediaFile && category !== "short_films" ? await uploadFile(mediaFile, category, "media", supabaseUrl, supabaseAnonKey) : "";
       form.set("storagePath", storagePath);
       form.set("posterPath", "");
+      form.set("sourceUrl", category === "short_films" ? sourceUrl.trim() : "");
       form.set("category", category);
       form.set("mediaType", mediaType);
       const result = await registerGalleryItem(form);
       if (result.status === "error") throw new Error(result.message);
       setMessage(result.message);
       setMediaFile(null);
+      setSourceUrl("");
       event.currentTarget.reset();
       startTransition(() => window.location.reload());
     } catch (cause) {
@@ -106,8 +109,8 @@ export function AdminGalleryManager({ items, supabaseUrl, supabaseAnonKey }: { i
         </div>
         <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Title</span><input name="title" required maxLength={160} className={formFieldClasses} placeholder="Work title" /></label>
         <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Caption</span><textarea name="caption" maxLength={500} rows={2} className={`${formFieldClasses} py-3`} placeholder="Small caption or year" /></label>
-        <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Media file</span><input required type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime" onChange={(e) => { const file = e.target.files?.[0] ?? null; const nextType: GalleryMediaType = file?.type.startsWith("video/") ? "video" : "image"; setMediaFile(file); setMediaType(nextType); }} className="text-sm text-cream/75 file:mr-3 file:rounded-md file:border-0 file:bg-cream file:px-3 file:py-2 file:font-bold file:text-ink" /></label>
-        {mediaPreview ? <Preview src={mediaPreview} type={mediaType} /> : null}
+        {category === "short_films" ? <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">YouTube URL</span><input required type="url" value={sourceUrl} onChange={(e) => { setSourceUrl(e.target.value); setMediaType("video"); }} className={formFieldClasses} placeholder="https://youtu.be/..." /></label> : <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Media file</span><input required type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime" onChange={(e) => { const file = e.target.files?.[0] ?? null; const nextType: GalleryMediaType = file?.type.startsWith("video/") ? "video" : "image"; setMediaFile(file); setMediaType(nextType); }} className="text-sm text-cream/75 file:mr-3 file:rounded-md file:border-0 file:bg-cream file:px-3 file:py-2 file:font-bold file:text-ink" /></label>}
+        {mediaPreview ? <Preview src={mediaPreview} type={mediaType} /> : sourceUrl ? <p className="rounded-md border border-cream/15 p-4 text-sm text-cream/65">YouTube link ready to save as a draft.</p> : null}
         {error ? <p className="text-sm text-red-300" role="alert">{error}</p> : null}
         {message ? <p className="text-sm text-green-300" aria-live="polite">{message}</p> : null}
         <button type="submit" disabled={uploading || isPending} className={`inline-flex min-h-12 w-fit items-center justify-center rounded-md bg-red-600 px-5 py-3 text-sm font-bold uppercase text-white hover:bg-red-500 ${interactiveStateClasses}`}>{uploading ? "Uploading..." : "Save as Draft"}</button>
