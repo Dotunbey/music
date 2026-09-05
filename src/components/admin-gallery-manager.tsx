@@ -60,7 +60,7 @@ async function uploadFile(file: File, category: GalleryCategory, variant: "media
 export function AdminGalleryManager({ items, supabaseUrl, supabaseAnonKey }: { items: AdminItem[]; supabaseUrl: string; supabaseAnonKey: string }) {
   const [category, setCategory] = useState<GalleryCategory>("poetry");
   const [mediaType, setMediaType] = useState<GalleryMediaType>("image");
-  const [libraryCategory, setLibraryCategory] = useState<GalleryCategory | "all">("all");
+  const [libraryCategory, setLibraryCategory] = useState<GalleryCategory>("music");
   const [showUpload, setShowUpload] = useState(false);
   const [sourceUrl, setSourceUrl] = useState("");
   const [mediaFile, setMediaFile] = useState<File | null>(null);
@@ -124,9 +124,9 @@ export function AdminGalleryManager({ items, supabaseUrl, supabaseAnonKey }: { i
       </form>
 
       <section className="order-first">
-        <div className="flex items-end justify-between gap-4"><div><h2 className="font-display text-2xl font-black">Current gallery</h2><p className="mt-1 text-sm text-cream/60">Every item stays here. Archive anything you want hidden.</p></div><div className="flex items-center gap-4"><span className="text-sm text-cream/55">{items.length} items</span><button type="button" onClick={() => setShowUpload(true)} className={`rounded-md bg-red-600 px-4 py-3 text-xs font-bold uppercase text-white hover:bg-red-500 ${interactiveStateClasses}`}>Add work</button></div></div>
-        <div className="mt-5 flex flex-wrap gap-2"><button type="button" onClick={() => setLibraryCategory("all")} className={`rounded-full border px-3 py-2 text-xs font-bold uppercase ${libraryCategory === "all" ? "border-brass bg-brass/15 text-brass" : "border-cream/20 text-cream/65"}`}>All ({items.length})</button>{categories.map((item) => { const count = items.filter((galleryItem) => galleryItem.category === item.value).length; return <button type="button" key={item.value} onClick={() => setLibraryCategory(item.value)} className={`rounded-full border px-3 py-2 text-xs font-bold uppercase ${libraryCategory === item.value ? "border-brass bg-brass/15 text-brass" : "border-cream/20 text-cream/65"}`}>{item.label} ({count})</button>; })}</div>
-        <div className="mt-5 grid gap-4">{items.filter((item) => libraryCategory === "all" || item.category === libraryCategory).map((item) => <AdminItemCard key={item.id} item={item} />)}{items.filter((item) => libraryCategory === "all" || item.category === libraryCategory).length === 0 ? <p className="rounded-lg border border-dashed border-cream/20 p-8 text-sm text-cream/55">No work in this category yet.</p> : null}</div>
+        <div className="flex justify-end"><button type="button" onClick={() => setShowUpload(true)} className={`rounded-md bg-red-600 px-4 py-3 text-xs font-bold uppercase text-white hover:bg-red-500 ${interactiveStateClasses}`}>Add work</button></div>
+        <div className="mt-5 flex flex-wrap justify-center gap-2">{categories.map((item) => { const count = items.filter((galleryItem) => galleryItem.category === item.value).length; return <button type="button" key={item.value} onClick={() => setLibraryCategory(item.value)} className={`rounded-full border px-3 py-2 text-xs font-bold uppercase ${libraryCategory === item.value ? "border-brass bg-brass/15 text-brass" : "border-cream/20 text-cream/65"}`}>{item.label} ({count})</button>; })}</div>
+        <div className="mt-5 grid gap-4">{items.filter((item) => item.category === libraryCategory).map((item) => <AdminItemCard key={item.id} item={item} />)}{items.filter((item) => item.category === libraryCategory).length === 0 ? <p className="rounded-lg border border-dashed border-cream/20 p-8 text-center text-sm text-cream/55">No work in this category yet.</p> : null}</div>
       </section>
     </div>
   );
