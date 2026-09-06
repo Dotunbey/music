@@ -3,6 +3,7 @@ import { CheckCircle2 } from "lucide-react";
 import { ScriptHero } from "@/components/script-hero";
 import { SectionHeading } from "@/components/section-heading";
 import { SessionCard } from "@/components/session-card";
+import { ActionLink } from "@/components/action-link";
 import { sessions } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -33,6 +34,7 @@ export default function SessionsPage() {
               <SessionCard key={session.slug} session={session} />
             ))}
           </div>
+          <div className="mt-10 text-center"><ActionLink href="/sessions/teachers">Meet the Teachers</ActionLink></div>
         </div>
       </section>
 

@@ -15,9 +15,9 @@ export function PortfolioShowcase({ items }: { items: PublicPortfolioItem[] }) {
 
   return (
     <>
-      <div className="mt-14 flex flex-wrap justify-center gap-5 md:gap-7">
+      <div className="mt-14 flex snap-x snap-mandatory flex-nowrap gap-5 overflow-x-auto overscroll-x-contain pb-5 [scrollbar-width:thin] md:gap-7">
         {items.map((item) => (
-          <article key={item.id} className="w-44 shrink-0 overflow-hidden border border-cream/12 bg-cream/[0.04] sm:w-52">
+          <article key={item.id} className="w-44 shrink-0 snap-start overflow-hidden border border-cream/12 bg-cream/[0.04] sm:w-52">
             <div className="relative aspect-[9/16] overflow-hidden bg-ink">
               {item.artworkUrl ? <img src={item.artworkUrl} alt="" className="h-full w-full object-cover transition duration-700 hover:scale-[1.03]" loading="lazy" /> : <div className="grid h-full place-items-center font-display text-5xl font-black text-cream/20">TB</div>}
               <span className="absolute left-3 top-3 bg-ink/75 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-cream backdrop-blur-sm">{providerLabels[item.provider]}</span>

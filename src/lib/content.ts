@@ -42,6 +42,7 @@ export const navItems: NavItem[] = [
       { href: "/sessions/choral", label: "Choral" },
       { href: "/sessions/organ", label: "Organ" },
       { href: "/sessions/production", label: "Music Production" },
+      { href: "/sessions/teachers", label: "Teachers" },
       { href: "/apply", label: "Apply" },
     ],
   },

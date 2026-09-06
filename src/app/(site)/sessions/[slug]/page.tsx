@@ -82,6 +82,7 @@ export default async function SessionDetailPage({
                 Apply Now
               </ActionLink>
             </div>
+            <Link href="/sessions/teachers" className={`mt-4 inline-flex items-center gap-2 text-sm font-bold uppercase text-red-700 hover:text-red-600 ${interactiveStateClasses}`}>Meet the Teachers<ArrowRight aria-hidden="true" className="h-4 w-4" /></Link>
           </aside>
 
           <div

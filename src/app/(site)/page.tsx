@@ -5,7 +5,7 @@ import { MotionImageFrame } from "@/components/motion-primitives";
 import { SafeImage } from "@/components/safe-image";
 import { SessionCard } from "@/components/session-card";
 import { contact, services, sessions } from "@/lib/content";
-import { getApprovedGalleryItems } from "@/lib/gallery";
+import { getApprovedGalleryItems, selectHomeGalleryItems } from "@/lib/gallery";
 import { interactiveStateClasses } from "@/lib/ui";
 
 export const dynamic = "force-dynamic";
@@ -24,6 +24,7 @@ const marqueeItems = [
 
 export default async function Home() {
   const galleryItems = await getApprovedGalleryItems();
+  const homeGalleryItems = selectHomeGalleryItems(galleryItems);
 
   return (
     <>
@@ -151,22 +152,20 @@ export default async function Home() {
               Visit Gallery
             </ActionLink>
           </div>
-          {galleryItems.length > 0 ? (
-            <div className="grid gap-5 sm:grid-cols-3" data-stagger>
-              {galleryItems.slice(0, 3).map((item) => (
+          {homeGalleryItems.length > 0 ? (
+            <div className={`grid gap-5 ${homeGalleryItems.length === 4 ? "sm:grid-cols-2 lg:grid-cols-4" : "sm:grid-cols-3"}`} data-stagger>
+              {homeGalleryItems.map((item, index) => (
                 <article
-                  key={item.id}
+                  key={`${item.id}-${index}`}
                   className="gallery-frame card-lift overflow-hidden bg-cream text-ink"
                   data-reveal="card"
                 >
                   <div className="relative aspect-[4/5] overflow-hidden bg-charcoal">
-                    <SafeImage
-                      src={item.image ?? ""}
-                      alt={item.title}
-                      fill
-                      sizes="(min-width: 640px) 33vw, 100vw"
-                      className="object-cover"
-                    />
+                    {item.type === "video" && item.src ? (
+                      <video src={`${item.src}#t=0.1`} muted playsInline preload="metadata" className="h-full w-full object-cover" />
+                    ) : (
+                      <SafeImage src={item.image ?? ""} alt={item.title} fill sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 100vw" className="object-cover" />
+                    )}
                   </div>
                   <div className="p-5">
                     <p className="text-xs font-bold uppercase tracking-[0.16em] text-red-700">
