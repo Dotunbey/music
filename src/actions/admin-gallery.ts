@@ -22,6 +22,14 @@ const sourceUrlSchema = z.preprocess(
   (value) => (typeof value === "string" ? value.trim() : ""),
   z.string().max(500),
 );
+const optionalTextSchema = z.preprocess(
+  (value) => (typeof value === "string" ? value.trim() : ""),
+  z.string().max(5000),
+);
+const optionalHttpsUrlSchema = z.preprocess(
+  (value) => (typeof value === "string" ? value.trim() : ""),
+  z.union([z.literal(""), z.string().url().max(1000).refine((value) => new URL(value).protocol === "https:", "Use an HTTPS checkout URL.")]),
+);
 
 const imageTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 const videoTypes = new Set(["video/mp4", "video/webm", "video/quicktime"]);
@@ -48,7 +56,7 @@ export async function createGalleryUploadUrl(input: {
   filename: string;
   contentType: string;
   size: number;
-  variant: "media" | "poster";
+  variant: "media" | "poster" | "sample";
 }): Promise<SignedGalleryUpload> {
   await requireAdmin();
 
@@ -59,7 +67,7 @@ export async function createGalleryUploadUrl(input: {
   }
   const isImage = imageTypes.has(input.contentType);
   const isVideo = videoTypes.has(input.contentType);
-  if (input.variant === "poster" && !isImage) {
+  if ((input.variant === "poster" || input.variant === "sample") && !isImage) {
     return { status: "error", message: "Video posters must be JPEG, PNG, WebP, or GIF images." };
   }
   if (input.variant === "media" && !isImage && !isVideo) {
@@ -139,6 +147,12 @@ export async function registerGalleryItem(formData: FormData): Promise<GalleryMu
     sortOrder: formData.get("sortOrder"),
   });
   if (!parsed.success) return { status: "error", message: "Select a category and add the gallery media." };
+  const price = optionalTextSchema.safeParse(formData.get("price"));
+  const purchaseUrl = optionalHttpsUrlSchema.safeParse(formData.get("purchaseUrl"));
+  const excerpt = optionalTextSchema.safeParse(formData.get("excerpt"));
+  const samplePaths = formData.getAll("samplePaths").filter((value): value is string => typeof value === "string" && value.length > 0);
+  if (!price.success || !purchaseUrl.success || !excerpt.success || samplePaths.some((path) => path.includes(".."))) return { status: "error", message: "Check the book details and sample pages." };
+  if (parsed.data.category === "books" && (!price.data || !purchaseUrl.data)) return { status: "error", message: "Books need a price and secure purchase URL." };
   if (!parsed.data.storagePath && !parsed.data.sourceUrl) return { status: "error", message: "Add a media file or a YouTube URL." };
   if (parsed.data.sourceUrl) {
     try {
@@ -163,6 +177,10 @@ export async function registerGalleryItem(formData: FormData): Promise<GalleryMu
     sortOrder,
     posterPath: parsed.data.posterPath || null,
     sourceUrl: parsed.data.sourceUrl || null,
+    price: parsed.data.category === "books" ? price.data || null : null,
+    purchaseUrl: parsed.data.category === "books" ? purchaseUrl.data || null : null,
+    excerpt: parsed.data.category === "books" ? excerpt.data || null : null,
+    samplePaths: parsed.data.category === "books" ? samplePaths : [],
     status: "draft",
   });
   revalidatePath("/admin/gallery");
@@ -174,7 +192,11 @@ export async function updateGalleryItem(formData: FormData): Promise<void> {
   const id = z.string().uuid().safeParse(formData.get("id"));
   const title = z.string().trim().min(1).max(160).safeParse(formData.get("title"));
   const category = categorySchema.safeParse(formData.get("category"));
-  if (!id.success || !title.success || !category.success) return;
+  const price = optionalTextSchema.safeParse(formData.get("price"));
+  const purchaseUrl = optionalHttpsUrlSchema.safeParse(formData.get("purchaseUrl"));
+  const excerpt = optionalTextSchema.safeParse(formData.get("excerpt"));
+  if (!id.success || !title.success || !category.success || !price.success || !purchaseUrl.success || !excerpt.success) return;
+  if (category.data === "books" && (!price.data || !purchaseUrl.data)) return;
 
   const db = await getDbClient();
   const result = await db
@@ -182,6 +204,9 @@ export async function updateGalleryItem(formData: FormData): Promise<void> {
     .set({
       title: title.data,
       category: category.data,
+      price: category.data === "books" ? price.data || null : null,
+      purchaseUrl: category.data === "books" ? purchaseUrl.data || null : null,
+      excerpt: category.data === "books" ? excerpt.data || null : null,
       updatedAt: new Date(),
     })
     .where(eq(galleryItems.id, id.data))

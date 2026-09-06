@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { GalleryGrid } from "@/components/gallery-grid";
+import { BookGallery } from "@/components/book-gallery";
 import { ScriptHero } from "@/components/script-hero";
 import { contact } from "@/lib/content";
 import {
@@ -61,13 +62,16 @@ async function GalleryContent({
               {category.title}
             </h2>
 
-            {categoryItems.length > 0 ? (
+            {categoryItems.length > 0 ? category.slug === "books" ? (
+              <BookGallery items={categoryItems} />
+            ) : (
               <GalleryGrid
                 items={categoryItems}
                 numbered={category.slug === "poetry"}
                 landscape={category.slug === "short_films"}
               />
-            ) : (
+            )
+            : (
               <p className="mt-12 border-t border-ink/10 pt-5 text-xs font-bold uppercase tracking-[0.16em] text-ink/45">
                 New work will appear here.
               </p>

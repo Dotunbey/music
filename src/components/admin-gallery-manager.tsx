@@ -19,6 +19,10 @@ type AdminItem = {
   previewUrl: string | null;
   mediaUrl: string | null;
   posterUrl: string | null;
+  price: string | null;
+  purchaseUrl: string | null;
+  excerpt: string | null;
+  sampleUrls: string[];
   createdAt: string;
 };
 
@@ -63,6 +67,7 @@ export function AdminGalleryManager({ items, supabaseUrl, supabaseAnonKey }: { i
   const [showUpload, setShowUpload] = useState(false);
   const [sourceUrl, setSourceUrl] = useState("");
   const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [sampleFiles, setSampleFiles] = useState<File[]>([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -71,6 +76,10 @@ export function AdminGalleryManager({ items, supabaseUrl, supabaseAnonKey }: { i
 
   function handleCategoryChange(nextCategory: GalleryCategory) {
     setCategory(nextCategory);
+    setMediaFile(null);
+    setSampleFiles([]);
+    setSourceUrl("");
+    setMediaType(nextCategory === "short_films" ? "video" : "image");
     setSourceUrl("");
     setMediaFile(null);
     setMediaType(nextCategory === "short_films" ? "video" : "image");
@@ -85,8 +94,11 @@ export function AdminGalleryManager({ items, supabaseUrl, supabaseAnonKey }: { i
     if (category !== "short_films" && !mediaFile) return setError("Choose the gallery media first.");
     setUploading(true);
     try {
-      const storagePath = mediaFile && category !== "short_films" ? await uploadFile(mediaFile, category, "media", supabaseUrl, supabaseAnonKey) : "";
+    const storagePath = mediaFile && category !== "short_films" ? await uploadFile(mediaFile, category, "media", supabaseUrl, supabaseAnonKey) : "";
+      const samplePaths = category === "books" ? await Promise.all(sampleFiles.map((file) => uploadFile(file, category, "sample", supabaseUrl, supabaseAnonKey))) : [];
       form.set("storagePath", storagePath);
+      form.delete("samplePaths");
+      samplePaths.forEach((path) => form.append("samplePaths", path));
       form.set("posterPath", "");
       form.set("sourceUrl", category === "short_films" ? sourceUrl.trim() : "");
       form.set("category", category);
@@ -95,6 +107,7 @@ export function AdminGalleryManager({ items, supabaseUrl, supabaseAnonKey }: { i
       if (result.status === "error") throw new Error(result.message);
       setMessage(result.message);
       setMediaFile(null);
+      setSampleFiles([]);
       setSourceUrl("");
       event.currentTarget.reset();
       startTransition(() => window.location.reload());
@@ -114,7 +127,10 @@ export function AdminGalleryManager({ items, supabaseUrl, supabaseAnonKey }: { i
           <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Category</span><select name="category" value={category} onChange={(e) => handleCategoryChange(e.target.value as GalleryCategory)} className={formFieldClasses}>{categories.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select></label>
         </div>
         <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Title</span><input name="title" required maxLength={160} className={formFieldClasses} placeholder="Work title" /></label>
+        {category === "books" ? <div className="grid gap-4 md:grid-cols-2"><label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Price</span><input name="price" required maxLength={80} className={formFieldClasses} placeholder="₦3,000" /></label><label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Secure purchase URL</span><input name="purchaseUrl" required type="url" className={formFieldClasses} placeholder="https://selar.com/..." /></label></div> : null}
+        {category === "books" ? <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Preview excerpt (optional)</span><textarea name="excerpt" rows={5} maxLength={5000} className={formFieldClasses} placeholder="A short passage readers can preview." /></label> : null}
         {category === "short_films" ? <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">YouTube URL</span><input required type="url" value={sourceUrl} onChange={(e) => { setSourceUrl(e.target.value); setMediaType("video"); }} className={formFieldClasses} placeholder="https://youtu.be/..." /></label> : <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Media file</span><input required type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime" onChange={(e) => { const file = e.target.files?.[0] ?? null; const nextType: GalleryMediaType = file?.type.startsWith("video/") ? "video" : "image"; setMediaFile(file); setMediaType(nextType); }} className="text-sm text-cream/75 file:mr-3 file:rounded-md file:border-0 file:bg-cream file:px-3 file:py-2 file:font-bold file:text-ink" /></label>}
+        {category === "books" ? <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Sample pages (optional)</span><input type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif" onChange={(e) => setSampleFiles(Array.from(e.target.files ?? []))} className="text-sm text-cream/75 file:mr-3 file:rounded-md file:border-0 file:bg-cream file:px-3 file:py-2 file:font-bold file:text-ink" />{sampleFiles.length ? <span className="text-xs text-cream/55">{sampleFiles.length} sample page{sampleFiles.length === 1 ? "" : "s"} selected</span> : null}</label> : null}
         {mediaPreview ? <Preview src={mediaPreview} type={mediaType} /> : sourceUrl ? <p className="rounded-md border border-cream/15 p-4 text-sm text-cream/65">YouTube link ready to save as a draft.</p> : null}
         {error ? <p className="text-sm text-red-300" role="alert">{error}</p> : null}
         {message ? <p className="text-sm text-green-300" aria-live="polite">{message}</p> : null}
@@ -145,7 +161,7 @@ function AdminItemCard({ item }: { item: AdminItem }) {
   const youtubeVideoId = item.category === "short_films" ? youtubeId(item.mediaUrl) : null;
   return <article className="grid gap-5 rounded-lg border border-cream/12 bg-cream/[0.04] p-5 lg:grid-cols-[14rem_1fr_auto]">
     <div>{youtubeVideoId ? <iframe src={`https://www.youtube.com/embed/${youtubeVideoId}?playsinline=1&rel=0`} title={item.title} className="aspect-video w-full rounded-md border-0 bg-black" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen /> : item.mediaUrl ? (item.mediaType === "video" ? <video src={item.mediaUrl} poster={item.posterUrl ?? undefined} controls muted className="aspect-[4/3] w-full rounded-md bg-black object-contain" /> : <img src={item.mediaUrl} alt="" className="aspect-[4/3] w-full rounded-md bg-black object-contain" />) : <div className="grid aspect-[4/3] place-items-center rounded-md bg-black text-xs uppercase text-cream/45">No preview</div>}</div>
-    <div className="grid content-start gap-3"><div className="flex flex-wrap items-center gap-3"><h3 className="font-display text-2xl font-black">{item.title}</h3><span className="rounded-full border border-cream/20 px-2 py-1 text-[11px] font-bold uppercase text-cream/60">{item.status}</span></div><p className="text-sm uppercase tracking-wide text-cream/50">{item.category.replace("_", " ")} · {item.mediaType}</p>{item.rejectionReason ? <p className="text-sm text-red-300">Rejected: {item.rejectionReason}</p> : null}<details><summary className="cursor-pointer text-xs font-bold uppercase text-brass">Edit metadata</summary><form action={updateGalleryItem} className="mt-3 grid gap-3"><input type="hidden" name="id" value={item.id} /><label className="grid gap-1"><span className="text-xs uppercase text-cream/50">Title</span><input name="title" defaultValue={item.title} className={formFieldClasses} /></label><select name="category" value={category} onChange={(e) => setCategory(e.target.value as GalleryCategory)} className={formFieldClasses}>{categories.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select><button type="submit" className={`w-fit rounded-md border border-cream/20 px-3 py-2 text-xs font-bold uppercase hover:border-brass hover:text-brass ${interactiveStateClasses}`}>Save metadata</button></form></details></div>
+    <div className="grid content-start gap-3"><div className="flex flex-wrap items-center gap-3"><h3 className="font-display text-2xl font-black">{item.title}</h3><span className="rounded-full border border-cream/20 px-2 py-1 text-[11px] font-bold uppercase text-cream/60">{item.status}</span></div><p className="text-sm uppercase tracking-wide text-cream/50">{item.category.replace("_", " ")} · {item.mediaType}{item.price ? ` · ${item.price}` : ""}</p>{item.sampleUrls.length ? <p className="text-xs text-cream/55">{item.sampleUrls.length} sample page{item.sampleUrls.length === 1 ? "" : "s"}</p> : null}{item.rejectionReason ? <p className="text-sm text-red-300">Rejected: {item.rejectionReason}</p> : null}<details><summary className="cursor-pointer text-xs font-bold uppercase text-brass">Edit metadata</summary><form action={updateGalleryItem} className="mt-3 grid gap-3"><input type="hidden" name="id" value={item.id} /><label className="grid gap-1"><span className="text-xs uppercase text-cream/50">Title</span><input name="title" defaultValue={item.title} className={formFieldClasses} /></label><select name="category" value={category} onChange={(e) => setCategory(e.target.value as GalleryCategory)} className={formFieldClasses}>{categories.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select>{category === "books" ? <><label className="grid gap-1"><span className="text-xs uppercase text-cream/50">Price</span><input name="price" required defaultValue={item.price ?? ""} className={formFieldClasses} /></label><label className="grid gap-1"><span className="text-xs uppercase text-cream/50">Purchase URL</span><input name="purchaseUrl" required type="url" defaultValue={item.purchaseUrl ?? ""} className={formFieldClasses} /></label><label className="grid gap-1"><span className="text-xs uppercase text-cream/50">Excerpt</span><textarea name="excerpt" rows={4} defaultValue={item.excerpt ?? ""} className={formFieldClasses} /></label></> : null}<button type="submit" className={`w-fit rounded-md border border-cream/20 px-3 py-2 text-xs font-bold uppercase hover:border-brass hover:text-brass ${interactiveStateClasses}`}>Save metadata</button></form></details></div>
     <div className="flex flex-wrap content-start gap-2 lg:max-w-40 lg:flex-col"><select value={status} onChange={(e) => setStatus(e.target.value as GalleryItemStatus)} className={formFieldClasses}>{statuses.map((value) => <option key={value} value={value}>{value}</option>)}</select><form action={updateGalleryStatus}><input type="hidden" name="id" value={item.id} /><input type="hidden" name="status" value={status} /><input type="hidden" name="rejectionReason" value={status === "rejected" ? "Review in admin" : ""} /><button type="submit" className={`rounded-md bg-red-600 px-3 py-2 text-xs font-bold uppercase text-white hover:bg-red-500 ${interactiveStateClasses}`}>Update status</button></form></div>
   </article>;
 }

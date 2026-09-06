@@ -43,6 +43,10 @@ function toPublicItem(item: GalleryItem): PublicGalleryItem & {
         ? getGalleryPublicUrl(item.storagePath)
         : undefined,
     href: item.sourceUrl ?? undefined,
+    excerpt: item.excerpt ?? undefined,
+    price: item.price ?? undefined,
+    purchaseUrl: item.purchaseUrl ?? undefined,
+    sampleImages: item.samplePaths.map(getGalleryPublicUrl),
   };
 }
 
@@ -52,37 +56,41 @@ function randomItem<T>(items: T[]): T {
   return items[Math.floor(Math.random() * items.length)];
 }
 
-export function selectHomeGalleryItems(items: ApprovedGalleryItem[]) {
+function shuffled<T>(items: T[]) {
+  const result = [...items];
+  for (let index = result.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [result[index], result[swapIndex]] = [result[swapIndex], result[index]];
+  }
+  return result;
+}
+
+export function selectHomeGalleryItems(items: ApprovedGalleryItem[], limit = 8) {
+  if (limit <= 0) return [];
+
   const populated = galleryCategoryConfig
     .map(({ slug }) => items.filter((item) => item.category === slug))
     .filter((categoryItems) => categoryItems.length > 0);
 
-  if (populated.length === 4) {
-    return populated.map((categoryItems) => randomItem(categoryItems));
-  }
+  if (populated.length === 0) return [];
 
-  if (populated.length === 3) {
-    return populated.map((categoryItems) => randomItem(categoryItems));
-  }
-
-  if (populated.length === 2) {
-    const selected = populated.map((categoryItems) => randomItem(categoryItems));
-    const candidates = populated.flatMap((categoryItems) =>
+  const selected = shuffled(populated)
+    .slice(0, limit)
+    .map((categoryItems) => randomItem(categoryItems));
+  const unused = shuffled(
+    populated.flatMap((categoryItems) =>
       categoryItems.filter((item) => !selected.some((chosen) => chosen.id === item.id)),
-    );
-    return [...selected, randomItem(candidates.length > 0 ? candidates : selected)];
+    ),
+  );
+
+  while (selected.length < limit && unused.length > 0) {
+    selected.push(unused.shift()!);
+  }
+  while (selected.length < limit) {
+    selected.push(randomItem(selected));
   }
 
-  if (populated.length === 1) {
-    const categoryItems = populated[0];
-    const selected = [...categoryItems]
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 3);
-    while (selected.length < 3) selected.push(randomItem(categoryItems));
-    return selected;
-  }
-
-  return [];
+  return selected;
 }
 
 export async function getApprovedGalleryItems() {

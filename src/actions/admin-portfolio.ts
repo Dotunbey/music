@@ -110,7 +110,12 @@ export async function createPortfolioItem(formData: FormData): Promise<Portfolio
   if (storagePath.data && !mediaKind.success) return { status: "error", message: "The uploaded media type is invalid." };
 
   const provider = storagePath.data ? "upload" as const : parsed!.provider;
-  const contentType = storagePath.data ? mediaKind.data : parsed!.contentType;
+  const contentType = storagePath.data
+    ? mediaKind.success
+      ? mediaKind.data
+      : null
+    : parsed?.contentType;
+  if (!contentType) return { status: "error", message: "The portfolio media type is invalid." };
   const db = await getDbClient();
   const [queue] = await db.select({ lastOrder: max(portfolioItems.sortOrder) }).from(portfolioItems).where(eq(portfolioItems.provider, provider));
   try {

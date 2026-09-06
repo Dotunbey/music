@@ -2,6 +2,7 @@ import { MessageCircle } from "lucide-react";
 import { ActionLink } from "@/components/action-link";
 import { Marquee, ScrollCue } from "@/components/brand-motifs";
 import { MotionImageFrame } from "@/components/motion-primitives";
+import { HomeGalleryWall } from "@/components/home-gallery-wall";
 import { SafeImage } from "@/components/safe-image";
 import { SessionCard } from "@/components/session-card";
 import { contact, services, sessions } from "@/lib/content";
@@ -24,7 +25,7 @@ const marqueeItems = [
 
 export default async function Home() {
   const galleryItems = await getApprovedGalleryItems();
-  const homeGalleryItems = selectHomeGalleryItems(galleryItems);
+  const homeGalleryItems = selectHomeGalleryItems(galleryItems, 8);
 
   return (
     <>
@@ -153,31 +154,7 @@ export default async function Home() {
             </ActionLink>
           </div>
           {homeGalleryItems.length > 0 ? (
-            <div className={`grid gap-5 ${homeGalleryItems.length === 4 ? "sm:grid-cols-2 lg:grid-cols-4" : "sm:grid-cols-3"}`} data-stagger>
-              {homeGalleryItems.map((item, index) => (
-                <article
-                  key={`${item.id}-${index}`}
-                  className="gallery-frame card-lift overflow-hidden bg-cream text-ink"
-                  data-reveal="card"
-                >
-                  <div className="relative aspect-[4/5] overflow-hidden bg-charcoal">
-                    {item.type === "video" && item.src ? (
-                      <video src={`${item.src}#t=0.1`} muted playsInline preload="metadata" className="h-full w-full object-cover" />
-                    ) : (
-                      <SafeImage src={item.image ?? ""} alt={item.title} fill sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 100vw" className="object-cover" />
-                    )}
-                  </div>
-                  <div className="p-5">
-                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-red-700">
-                      {item.category.replace("_", " ")}
-                    </p>
-                    <h3 className="mt-2 font-display text-2xl font-black">
-                      {item.title}
-                    </h3>
-                  </div>
-                </article>
-              ))}
-            </div>
+            <HomeGalleryWall items={homeGalleryItems} />
           ) : (
             <p className="border-t border-cream/12 pt-5 text-xs font-bold uppercase tracking-[0.16em] text-cream/45">
               The archive is being curated.

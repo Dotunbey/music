@@ -85,6 +85,14 @@ input,
 select,
 textarea {
   font: inherit;
+  min-width: 0;
+  max-width: 100%;
+}
+
+img,
+video,
+iframe {
+  max-width: 100%;
 }
 
 ::selection {
@@ -139,6 +147,149 @@ textarea {
 
 .gallery-rule {
   border-top: 1px solid rgba(12, 11, 9, 0.14);
+}
+
+.salon-wall-scroll {
+  overflow: hidden;
+  border: 1px solid rgba(243, 236, 224, 0.12);
+  background:
+    radial-gradient(circle at 48% 42%, rgba(201, 162, 95, 0.12), transparent 34%),
+    linear-gradient(145deg, #625a50, #474139);
+  box-shadow: inset 0 24px 70px rgba(0, 0, 0, 0.22);
+}
+
+.salon-wall {
+  position: relative;
+  width: 100%;
+  min-width: 68rem;
+  height: 42rem;
+}
+
+.salon-wall::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  opacity: 0.32;
+  background-image: repeating-linear-gradient(90deg, transparent 0 31px, rgba(255, 255, 255, 0.018) 32px);
+}
+
+.salon-frame {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  cursor: pointer;
+  color: var(--ink);
+  border: 0;
+  background: var(--cream);
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.32), 0 3px 8px rgba(0, 0, 0, 0.25);
+  transition: transform 360ms var(--ease-fluid), box-shadow 360ms var(--ease-fluid);
+}
+
+.salon-frame:hover,
+.salon-frame:focus-visible {
+  z-index: 20;
+  transform: translateY(-5px) rotate(0deg) scale(1.025);
+  box-shadow: 0 26px 50px rgba(0, 0, 0, 0.42);
+}
+
+.salon-artwork {
+  position: relative;
+  display: block;
+  flex: 1;
+  min-height: 0;
+  margin: 8px;
+  overflow: hidden;
+  background: #27241f;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.salon-placard {
+  display: grid;
+  gap: 2px;
+  padding: 6px 9px 8px;
+  text-align: left;
+  line-height: 1.1;
+}
+
+.salon-placard span {
+  font-size: 0.57rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--red-700);
+}
+
+.salon-placard strong {
+  overflow: hidden;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 0.85rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.salon-frame--black { outline: 8px solid #1f1d1a; }
+.salon-frame--wood { outline: 9px solid #755b43; }
+.salon-frame--brass { outline: 8px solid #b9934f; }
+.salon-frame--cream { outline: 10px solid #ddd2bf; }
+.salon-frame--portrait { left: 4%; top: 15%; width: 18%; height: 58%; transform: rotate(-1deg); }
+.salon-frame--landscape { left: 26%; top: 8%; width: 28%; height: 35%; transform: rotate(0.7deg); }
+.salon-frame--square { left: 58%; top: 10%; width: 17%; height: 30%; transform: rotate(-0.8deg); }
+.salon-frame--round { left: 79%; top: 8%; width: 15%; height: 27%; border-radius: 50%; transform: rotate(1deg); }
+.salon-frame--round .salon-artwork { border-radius: 50%; }
+.salon-frame--round .salon-placard { display: none; }
+.salon-frame--small-portrait { left: 26%; top: 53%; width: 13%; height: 34%; transform: rotate(1.2deg); }
+.salon-frame--wide { left: 43%; top: 51%; width: 30%; height: 37%; transform: rotate(-0.6deg); }
+.salon-frame--small-square { left: 78%; top: 45%; width: 14%; height: 25%; transform: rotate(0.8deg); }
+.salon-frame--tall { left: 79%; top: 75%; width: 12%; height: 20%; transform: rotate(-1deg); }
+
+@media (max-width: 639px) {
+  .font-display.text-6xl {
+    font-size: clamp(2.7rem, 14vw, 3.55rem);
+  }
+
+  .font-display.text-5xl {
+    font-size: clamp(2.35rem, 12vw, 3rem);
+  }
+
+  [role="dialog"] {
+    max-width: 100vw;
+  }
+
+  .salon-wall-scroll {
+    margin-inline: -1.25rem;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    touch-action: pan-y pinch-zoom;
+    cursor: grab;
+  }
+
+  .salon-wall-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .salon-wall-scroll:active {
+    cursor: grabbing;
+  }
+
+  .salon-wall {
+    width: 52rem;
+    min-width: 52rem;
+    height: 31rem;
+    scroll-snap-align: start;
+  }
+
+  .salon-frame:nth-child(n + 5) {
+    display: none;
+  }
+
+  .salon-frame--portrait { left: 3%; top: 14%; width: 19%; height: 62%; }
+  .salon-frame--landscape { left: 27%; top: 9%; width: 31%; height: 39%; }
+  .salon-frame--square { left: 63%; top: 13%; width: 19%; height: 34%; }
+  .salon-frame--round { left: 84%; top: 10%; width: 14%; height: 25%; }
 }
 
 .grain {

@@ -50,6 +50,13 @@
       "when": 1788655161142,
       "tag": "0006_short_korvac",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1788715152047,
+      "tag": "0007_nappy_giant_girl",
+      "breakpoints": true
     }
   ]
 }

@@ -149,7 +149,7 @@ export function SiteHeader() {
           <motion.div
             ref={menuRef}
             id="mobile-navigation"
-            className="border-t border-cream/10 bg-ink px-5 pb-6 pt-3 md:hidden"
+            className="max-h-[calc(100svh-5rem)] overflow-y-auto overscroll-contain border-t border-cream/10 bg-ink px-5 pb-6 pt-3 md:hidden"
             role="dialog"
             aria-modal="true"
             aria-label="Navigation menu"

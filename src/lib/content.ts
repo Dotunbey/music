@@ -304,6 +304,9 @@ export type GalleryItem = {
   excerpt?: string;
   /** Small caption, e.g. the source or year. */
   meta?: string;
+  price?: string;
+  purchaseUrl?: string;
+  sampleImages?: string[];
 };
 
 export type GalleryPurchase = {
