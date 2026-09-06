@@ -44,7 +44,7 @@ function browserSupabase(url: string, anonKey: string) {
   );
 }
 
-async function uploadFile(file: File, category: GalleryCategory, variant: "media" | "poster", supabaseUrl: string, supabaseAnonKey: string) {
+async function uploadFile(file: File, category: GalleryCategory, variant: "media" | "poster" | "sample", supabaseUrl: string, supabaseAnonKey: string) {
   const signed = await createGalleryUploadUrl({
     category,
     filename: file.name,

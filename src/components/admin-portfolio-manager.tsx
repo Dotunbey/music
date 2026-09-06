@@ -59,17 +59,19 @@ export function AdminPortfolioManager({ items, supabaseUrl, supabaseAnonKey, buc
     event.preventDefault(); setError(""); setMessage(""); setUploading(true);
     const form = new FormData(event.currentTarget);
     try {
+      if (artworkFile) {
+        const artwork = await upload(artworkFile, "artwork", supabaseUrl, supabaseAnonKey, bucketName);
+        form.set("artworkPath", artwork.path);
+      } else {
+        form.set("artworkPath", "");
+      }
       if (mode === "upload") {
         if (!mediaFile) throw new Error("Choose an audio or video file.");
         const media = await upload(mediaFile, "media", supabaseUrl, supabaseAnonKey, bucketName);
         form.set("storagePath", media.path); form.set("mediaKind", media.mediaKind);
-        if (artworkFile) {
-          const artwork = await upload(artworkFile, "artwork", supabaseUrl, supabaseAnonKey, bucketName);
-          form.set("artworkPath", artwork.path);
-        }
         form.set("sourceUrl", ""); form.set("artworkUrl", "");
       } else {
-        form.set("storagePath", ""); form.set("artworkPath", "");
+        form.set("storagePath", "");
       }
       const result = await createPortfolioItem(form);
       if (result.status === "error") throw new Error(result.message);
@@ -89,7 +91,8 @@ export function AdminPortfolioManager({ items, supabaseUrl, supabaseAnonKey, buc
         {mode === "link" ? <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Streaming link</span><div className="flex gap-2"><input name="sourceUrl" required type="url" value={url} onChange={(e) => { setUrl(e.target.value); setProvider(""); }} className={`${formFieldClasses} min-w-0 flex-1`} placeholder="https://..." /><button type="button" onClick={preview} disabled={!url || isPending} className="rounded-md border border-brass px-4 text-xs font-bold uppercase text-brass">Preview</button></div></label> : <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Audio or video</span><input required type="file" accept="audio/mpeg,audio/wav,audio/mp4,audio/aac,audio/ogg,video/mp4,video/webm,video/quicktime" onChange={(e) => setMediaFile(e.target.files?.[0] ?? null)} className="text-sm text-cream/75 file:mr-3 file:rounded-md file:border-0 file:bg-cream file:px-3 file:py-2 file:font-bold file:text-ink" /></label>}
         {provider ? <p className="text-xs font-bold uppercase tracking-wide text-brass">Source: {provider}</p> : null}
         <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Title</span><input name="title" required maxLength={180} value={title} onChange={(e) => setTitle(e.target.value)} className={formFieldClasses} /></label>
-        {mode === "link" ? <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Artwork URL (optional)</span><input name="artworkUrl" type="url" value={artworkUrl} onChange={(e) => setArtworkUrl(e.target.value)} className={formFieldClasses} /></label> : <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Artwork (optional)</span><input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(e) => setArtworkFile(e.target.files?.[0] ?? null)} className="text-sm text-cream/75 file:mr-3 file:rounded-md file:border-0 file:bg-cream file:px-3 file:py-2 file:font-bold file:text-ink" /></label>}
+        {mode === "link" ? <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Detected artwork URL (optional)</span><input name="artworkUrl" type="url" value={artworkUrl} onChange={(e) => setArtworkUrl(e.target.value)} className={formFieldClasses} /></label> : null}
+        <label className="grid gap-2"><span className="text-xs font-bold uppercase text-cream/60">Upload artwork (optional)</span><input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(e) => setArtworkFile(e.target.files?.[0] ?? null)} className="text-sm text-cream/75 file:mr-3 file:rounded-md file:border-0 file:bg-cream file:px-3 file:py-2 file:font-bold file:text-ink" /><span className="text-xs leading-5 text-cream/50">A selected file replaces detected artwork for this portfolio card.</span></label>
         {artworkPreview ? <img src={artworkPreview} alt="Artwork preview" className="aspect-square w-40 rounded-md object-cover" /> : mediaPreview && mediaFile?.type.startsWith("video/") ? <video src={mediaPreview} controls muted className="aspect-video max-h-52 w-full bg-black object-contain" /> : mediaPreview ? <audio src={mediaPreview} controls className="w-full" /> : null}
         <CreditFields />
         {error ? <p role="alert" className="text-sm text-red-300">{error}</p> : null}{message ? <p className="text-sm text-green-300">{message}</p> : null}
