@@ -43,6 +43,13 @@
       "when": 1788642303570,
       "tag": "0005_cool_puppet_master",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1788655161142,
+      "tag": "0006_short_korvac",
+      "breakpoints": true
     }
   ]
 }

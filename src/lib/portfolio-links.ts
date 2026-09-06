@@ -55,7 +55,13 @@ export function parsePortfolioLink(value: string): ParsedPortfolioLink | null {
     };
   }
 
-  return null;
+  url.hash = "";
+  return {
+    provider: "external",
+    contentType: "track",
+    sourceUrl: url.toString(),
+    embedUrl: "",
+  };
 }
 
 export const portfolioCreditOptions = [

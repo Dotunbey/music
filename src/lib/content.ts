@@ -42,7 +42,7 @@ export const navItems: NavItem[] = [
       { href: "/sessions/choral", label: "Choral" },
       { href: "/sessions/organ", label: "Organ" },
       { href: "/sessions/production", label: "Music Production" },
-      { href: "/sessions/teachers", label: "Teachers" },
+      { href: "/sessions/tutors", label: "Tutors" },
       { href: "/apply", label: "Apply" },
     ],
   },
@@ -441,14 +441,14 @@ export const galleryCategories: GalleryCategory[] = [
 export const team = [
   {
     name: "Tami Bedford",
-    role: "Owner / Session Guide",
+    role: "Owner / Tutor",
     image: "/images/tami-bedford.jpeg",
     bio: "A decade of performance, production, and mentoring across Gospel, Contemporary, and Jazz.",
     disciplines: ["Production", "Piano", "MUSON certified"],
   },
   {
     name: "Joseph Agbai",
-    role: "Session Guide",
+    role: "Tutor",
     image: "/images/joseph-agbai.png",
     bio: "Ten years arranging, producing, and playing with artists across Nigeria and abroad.",
     disciplines: ["Arrangement", "Piano", "Mentoring"],

@@ -40,6 +40,8 @@ export const portfolioProviderEnum = pgEnum("portfolio_provider", [
   "spotify",
   "youtube",
   "audiomack",
+  "external",
+  "upload",
 ]);
 
 export const portfolioContentTypeEnum = pgEnum("portfolio_content_type", [
@@ -47,6 +49,7 @@ export const portfolioContentTypeEnum = pgEnum("portfolio_content_type", [
   "track",
   "video",
   "song",
+  "audio",
 ]);
 
 export const inquiries = pgTable(
@@ -163,8 +166,10 @@ export const portfolioItems = pgTable(
     title: text("title").notNull(),
     provider: portfolioProviderEnum("provider").notNull(),
     contentType: portfolioContentTypeEnum("content_type").notNull(),
-    sourceUrl: text("source_url").notNull().unique(),
+    sourceUrl: text("source_url").unique(),
+    storagePath: text("storage_path"),
     artworkUrl: text("artwork_url"),
+    artworkPath: text("artwork_path"),
     credits: text("credits").array().notNull(),
     status: galleryItemStatusEnum("status").notNull().default("draft"),
     sortOrder: integer("sort_order").notNull().default(0),
@@ -190,6 +195,10 @@ export const portfolioItems = pgTable(
       status,
       sortOrder,
       createdAt,
+    ),
+    sourceCheck: check(
+      "portfolio_items_source_check",
+      sql`source_url IS NOT NULL OR storage_path IS NOT NULL`,
     ),
   }),
 );

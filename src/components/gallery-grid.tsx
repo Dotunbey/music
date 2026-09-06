@@ -140,6 +140,9 @@ function Coverflow({
     offset: 0,
     speed: BASE_SPEED,
     hovering: false,
+    dragging: false,
+    moved: false,
+    lastX: 0,
     px: 0.5,
     setW: 0,
     raf: 0,
@@ -162,7 +165,11 @@ function Coverflow({
       const dt = Math.min(0.05, (now - s.last) / 1000);
       s.last = now;
 
-      const target = s.hovering ? (s.px - 0.5) * 2 * MAX_SPEED : BASE_SPEED;
+      const target = s.dragging
+        ? 0
+        : s.hovering
+          ? (s.px - 0.5) * 2 * MAX_SPEED
+          : BASE_SPEED;
       s.speed += (target - s.speed) * Math.min(1, dt * 3.5);
       s.offset += s.speed * dt;
       if (s.setW > 0) s.offset = ((s.offset % s.setW) + s.setW) % s.setW;
@@ -189,6 +196,26 @@ function Coverflow({
     const onMove = (e: PointerEvent) => {
       const r = container.getBoundingClientRect();
       s.px = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+      if (s.dragging) {
+        const delta = e.clientX - s.lastX;
+        if (Math.abs(delta) > 1) s.moved = true;
+        s.offset -= delta;
+        s.lastX = e.clientX;
+        e.preventDefault();
+      }
+    };
+    const onDown = (e: PointerEvent) => {
+      s.dragging = true;
+      s.moved = false;
+      s.lastX = e.clientX;
+      s.speed = 0;
+      container.setPointerCapture(e.pointerId);
+    };
+    const onUp = (e: PointerEvent) => {
+      s.dragging = false;
+      if (container.hasPointerCapture(e.pointerId)) {
+        container.releasePointerCapture(e.pointerId);
+      }
     };
     const onEnter = () => {
       s.hovering = true;
@@ -197,12 +224,18 @@ function Coverflow({
       s.hovering = false;
     };
     container.addEventListener("pointermove", onMove);
+    container.addEventListener("pointerdown", onDown);
+    container.addEventListener("pointerup", onUp);
+    container.addEventListener("pointercancel", onUp);
     container.addEventListener("pointerenter", onEnter);
     container.addEventListener("pointerleave", onLeave);
     window.addEventListener("resize", measure);
     return () => {
       cancelAnimationFrame(s.raf);
       container.removeEventListener("pointermove", onMove);
+      container.removeEventListener("pointerdown", onDown);
+      container.removeEventListener("pointerup", onUp);
+      container.removeEventListener("pointercancel", onUp);
       container.removeEventListener("pointerenter", onEnter);
       container.removeEventListener("pointerleave", onLeave);
       window.removeEventListener("resize", measure);
@@ -210,7 +243,7 @@ function Coverflow({
   }, [items.length]);
 
   return (
-    <div ref={containerRef} className="relative mt-6 overflow-hidden py-14">
+    <div ref={containerRef} className="relative mt-6 cursor-grab touch-pan-y overflow-hidden py-16 active:cursor-grabbing">
       <div ref={trackRef} className="flex w-max items-center will-change-transform">
         {Array.from({ length: COVERFLOW_COPIES }, () => items)
           .flat()
@@ -222,8 +255,15 @@ function Coverflow({
           >
             <button
               type="button"
-              onClick={() => onOpen(i % items.length)}
-              className={`gallery-frame card-lift group relative block w-44 overflow-hidden text-left sm:w-52 ${interactiveStateClasses}`}
+              onClick={(event) => {
+                if (st.current.moved) {
+                  event.preventDefault();
+                  st.current.moved = false;
+                  return;
+                }
+                onOpen(i % items.length);
+              }}
+              className={`gallery-frame card-lift group relative block w-56 overflow-hidden text-left sm:w-64 ${interactiveStateClasses}`}
             >
               <CardBody
                 item={it}

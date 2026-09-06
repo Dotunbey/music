@@ -34,7 +34,7 @@ export default function SessionsPage() {
               <SessionCard key={session.slug} session={session} />
             ))}
           </div>
-          <div className="mt-10 text-center"><ActionLink href="/sessions/teachers">Meet the Teachers</ActionLink></div>
+          <div className="mt-10 text-center"><ActionLink href="/sessions/tutors">Meet the Tutors</ActionLink></div>
         </div>
       </section>
 

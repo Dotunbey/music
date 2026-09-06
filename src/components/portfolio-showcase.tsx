@@ -5,7 +5,7 @@ import { ArrowUpRight, Play, X } from "lucide-react";
 import type { PublicPortfolioItem } from "@/lib/portfolio";
 import { interactiveStateClasses } from "@/lib/ui";
 
-const providerLabels = { spotify: "Spotify", youtube: "YouTube", audiomack: "Audiomack" } as const;
+const providerLabels = { spotify: "Spotify", youtube: "YouTube", audiomack: "Audiomack", external: "Listen", upload: "Tami Bedford" } as const;
 
 export function PortfolioShowcase({ items }: { items: PublicPortfolioItem[] }) {
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -26,19 +26,19 @@ export function PortfolioShowcase({ items }: { items: PublicPortfolioItem[] }) {
               <h3 className="font-display text-lg font-black leading-tight">{item.title}</h3>
               <p className="mt-2 text-[10px] font-bold uppercase leading-5 tracking-wide text-brass">{item.credits.join(" · ")}</p>
               <div className="mt-4 flex items-center justify-between gap-2">
-                {item.embedUrl ? <button type="button" onClick={() => setActiveId(item.id)} className={`inline-flex min-h-9 items-center gap-2 rounded-md bg-red-600 px-3 py-2 text-[10px] font-bold uppercase text-white hover:bg-red-500 ${interactiveStateClasses}`}><Play className="h-3.5 w-3.5" aria-hidden="true" />{item.provider === "youtube" ? "Watch" : "Listen"}</button> : null}
-                <a href={item.sourceUrl} target="_blank" rel="noreferrer" aria-label={`Open ${item.title} in ${providerLabels[item.provider]}`} className={`grid h-9 w-9 place-items-center rounded-md border border-cream/20 text-cream hover:border-brass hover:text-brass ${interactiveStateClasses}`}><ArrowUpRight className="h-4 w-4" aria-hidden="true" /></a>
+                {item.embedUrl || item.mediaUrl ? <button type="button" onClick={() => setActiveId(item.id)} className={`inline-flex min-h-9 items-center gap-2 rounded-md bg-red-600 px-3 py-2 text-[10px] font-bold uppercase text-white hover:bg-red-500 ${interactiveStateClasses}`}><Play className="h-3.5 w-3.5" aria-hidden="true" />{item.contentType === "video" ? "Watch" : "Listen"}</button> : null}
+                {item.sourceUrl ? <a href={item.sourceUrl} target="_blank" rel="noreferrer" aria-label={`Open ${item.title}`} className={`grid h-9 w-9 place-items-center rounded-md border border-cream/20 text-cream hover:border-brass hover:text-brass ${interactiveStateClasses}`}><ArrowUpRight className="h-4 w-4" aria-hidden="true" /></a> : null}
               </div>
             </div>
           </article>
         ))}
       </div>
 
-      {activeItem?.embedUrl ? (
+      {activeItem && (activeItem.embedUrl || activeItem.mediaUrl) ? (
         <div className="fixed inset-0 z-[60] grid place-items-center bg-ink/85 p-4 backdrop-blur-md" role="dialog" aria-modal="true" aria-label={activeItem.title} onClick={() => setActiveId(null)}>
           <button type="button" onClick={() => setActiveId(null)} className={`absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full border border-cream/25 bg-ink/70 text-cream hover:border-red-500 ${interactiveStateClasses}`} aria-label="Close player"><X aria-hidden="true" /></button>
-          <div className={`w-full overflow-hidden rounded-lg border border-cream/15 bg-ink shadow-soft ${activeItem.provider === "youtube" ? "aspect-video max-w-4xl" : "h-[352px] max-w-xl"}`} onClick={(event) => event.stopPropagation()}>
-            <iframe src={activeItem.embedUrl} title={`${activeItem.title} on ${providerLabels[activeItem.provider]}`} className="h-full w-full border-0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" allowFullScreen />
+          <div className={`w-full overflow-hidden rounded-lg border border-cream/15 bg-ink shadow-soft ${activeItem.contentType === "video" ? "aspect-video max-w-4xl" : "h-[352px] max-w-xl"}`} onClick={(event) => event.stopPropagation()}>
+            {activeItem.mediaUrl ? (activeItem.contentType === "video" ? <video src={activeItem.mediaUrl} poster={activeItem.artworkUrl ?? undefined} className="h-full w-full bg-black object-contain" controls autoPlay playsInline /> : <div className="grid h-full place-items-center p-6"><audio src={activeItem.mediaUrl} className="w-full" controls autoPlay /></div>) : <iframe src={activeItem.embedUrl ?? ""} title={`${activeItem.title} on ${providerLabels[activeItem.provider]}`} className="h-full w-full border-0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" allowFullScreen />}
           </div>
         </div>
       ) : null}

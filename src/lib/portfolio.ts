@@ -2,6 +2,7 @@ import { asc, desc, eq } from "drizzle-orm";
 import { getDbClient } from "@/lib/db/client";
 import { portfolioItems } from "@/lib/db/schema";
 import { parsePortfolioLink } from "@/lib/portfolio-links";
+import { getGalleryPublicUrl } from "@/lib/supabase-admin";
 
 export async function getApprovedPortfolioItems() {
   const db = await getDbClient();
@@ -17,8 +18,9 @@ export async function getApprovedPortfolioItems() {
     provider: item.provider,
     contentType: item.contentType,
     sourceUrl: item.sourceUrl,
-    embedUrl: parsePortfolioLink(item.sourceUrl)?.embedUrl ?? null,
-    artworkUrl: item.artworkUrl,
+    embedUrl: item.sourceUrl ? parsePortfolioLink(item.sourceUrl)?.embedUrl || null : null,
+    mediaUrl: item.storagePath ? getGalleryPublicUrl(item.storagePath) : null,
+    artworkUrl: item.artworkPath ? getGalleryPublicUrl(item.artworkPath) : item.artworkUrl,
     credits: item.credits,
   }));
 }
