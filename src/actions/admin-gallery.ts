@@ -123,17 +123,6 @@ const registerFields = itemFields.superRefine((value, context) => {
   }
 });
 
-function parseItemFields(formData: FormData) {
-  return itemFields.safeParse({
-    title: formData.get("title"),
-    category: formData.get("category"),
-    mediaType: formData.get("mediaType"),
-    storagePath: formData.get("storagePath"),
-    posterPath: formData.get("posterPath") || undefined,
-    sortOrder: formData.get("sortOrder"),
-  });
-}
-
 export type GalleryMutationState = { status: "success" | "error"; message: string };
 
 export async function registerGalleryItem(formData: FormData): Promise<GalleryMutationState> {
@@ -183,16 +172,16 @@ export async function registerGalleryItem(formData: FormData): Promise<GalleryMu
 export async function updateGalleryItem(formData: FormData): Promise<void> {
   await requireAdmin();
   const id = z.string().uuid().safeParse(formData.get("id"));
-  const parsed = parseItemFields(formData);
-  if (!id.success || !parsed.success) return;
+  const title = z.string().trim().min(1).max(160).safeParse(formData.get("title"));
+  const category = categorySchema.safeParse(formData.get("category"));
+  if (!id.success || !title.success || !category.success) return;
 
   const db = await getDbClient();
   const result = await db
     .update(galleryItems)
     .set({
-      title: parsed.data.title,
-      category: parsed.data.category,
-      sortOrder: parsed.data.sortOrder,
+      title: title.data,
+      category: category.data,
       updatedAt: new Date(),
     })
     .where(eq(galleryItems.id, id.data))
