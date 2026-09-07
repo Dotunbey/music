@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { BriefcaseBusiness, GalleryHorizontal, LayoutDashboard, Inbox, LogOut, Wrench } from "lucide-react";
 import { logoutAction } from "@/actions/admin-auth";
 import { requireAdmin } from "@/lib/admin-session";
@@ -43,9 +44,7 @@ export default async function AdminDashboardLayout({
               href="/admin"
               className={`flex items-center gap-3 rounded-md ${interactiveStateClasses}`}
             >
-              <span className="grid h-9 w-9 place-items-center rounded-md border border-cream/20 bg-cream/8 font-script text-2xl leading-none">
-                tb
-              </span>
+              <Image src="/images/tami-bedford-logo.png" alt="Tami Bedford" width={44} height={44} className="h-11 w-11 object-contain" />
               <span className="text-sm font-bold uppercase text-cream/82">
                 Admin
               </span>

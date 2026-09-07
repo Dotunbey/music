@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -74,10 +75,14 @@ export function SiteHeader() {
           className={`flex items-center gap-3 rounded-md text-cream ${interactiveStateClasses}`}
           onClick={close}
         >
-          <span className="font-script text-4xl leading-none text-cream">tb</span>
-          <span className="hidden text-sm font-medium uppercase tracking-[0.18em] sm:inline">
-            Tami Bedford
-          </span>
+          <Image
+            src="/images/tami-bedford-logo.png"
+            alt="Tami Bedford"
+            width={64}
+            height={64}
+            priority
+            className="h-14 w-14 object-contain"
+          />
         </Link>
 
         <nav

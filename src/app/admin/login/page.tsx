@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import Image from "next/image";
 import { AdminLoginForm } from "@/components/admin-login-form";
 import { isAdminSessionValid } from "@/lib/admin-session";
 
@@ -17,9 +18,7 @@ export default async function AdminLoginPage() {
     <main className="flex min-h-svh items-center justify-center bg-ink px-5 py-16">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <span className="mx-auto grid h-12 w-12 place-items-center rounded-md border border-cream/20 bg-cream/8 font-display text-2xl font-black text-cream">
-            tb
-          </span>
+          <Image src="/images/tami-bedford-logo.png" alt="Tami Bedford" width={88} height={88} priority className="mx-auto h-22 w-22 object-contain" />
           <h1 className="mt-5 font-display text-4xl font-black text-cream">
             Team sign in
           </h1>

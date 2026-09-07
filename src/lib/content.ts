@@ -444,17 +444,17 @@ export const galleryCategories: GalleryCategory[] = [
 export const team = [
   {
     name: "Tami Bedford",
-    role: "Owner / Tutor",
+    role: "Owner / Session Guide",
     image: "/images/tami-bedford.jpeg",
-    bio: "A decade of performance, production, and mentoring across Gospel, Contemporary, and Jazz.",
-    disciplines: ["Production", "Piano", "MUSON certified"],
+    bio: "Tami Bedford is a Music Producer, Educator and Creative Director with over a decade of experience in music performance, composition, theory and creative production. He has worked as a vocal arranger, songwriter and producer with artists on officially released projects, bringing practical industry insight into his teaching. MUSON certified in Music Theory and Piano Practical, he combines technical excellence with real-world artistry as the Founder of Sessions and Director at Tami Bedford Limited, mentoring musicians across Gospel, Contemporary and Jazz with structured systems and professional standards for long-term growth.",
+    disciplines: ["Music Production", "Education", "Creative Direction"],
   },
   {
     name: "Joseph Agbai",
-    role: "Tutor",
+    role: "Session Guide",
     image: "/images/joseph-agbai.png",
-    bio: "Ten years arranging, producing, and playing with artists across Nigeria and abroad.",
-    disciplines: ["Arrangement", "Piano", "Mentoring"],
+    bio: "Joseph Agbai is a musician with over 10 years of musical experience. He has collaborated extensively with artists and songwriters in Nigeria and abroad, including as a featured pianist on the Tingle project by Bitz Music, released in 2023, and as an arranger and producer. He actively mentors young musicians on industry standards and best practices in the evolving music space. He is also a co-founder of Control Play, Founder and Lead Creative at Psalms and Sonic City, and an artist whose latest instrumental album is Whisper by Joekeyz.",
+    disciplines: ["Piano", "Arrangement", "Music Production"],
   },
 ] as const;
 
