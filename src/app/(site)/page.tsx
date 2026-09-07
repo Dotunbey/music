@@ -9,7 +9,7 @@ import { contact, services, sessions } from "@/lib/content";
 import { getApprovedGalleryItems, selectHomeGalleryItems } from "@/lib/gallery";
 import { interactiveStateClasses } from "@/lib/ui";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 const marqueeItems = [
   "Piano",

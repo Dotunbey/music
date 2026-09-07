@@ -31,6 +31,7 @@ export async function generateMetadata({
   return {
     title: session.title,
     description: session.summary,
+    alternates: { canonical: `/sessions/${session.slug}` },
     openGraph: {
       title: `${session.title} | Tami Bedford`,
       description: session.summary,

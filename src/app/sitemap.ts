@@ -1,10 +1,12 @@
 import type { MetadataRoute } from "next";
+import { getApprovedGalleryItems } from "@/lib/gallery";
+import { absoluteUrl } from "@/lib/site-url";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const base = "https://tamibedford.com";
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const routes = [
     "",
     "/sessions",
+    "/sessions/tutors",
     "/services",
     "/gallery",
     "/about",
@@ -15,10 +17,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/sessions/production",
     "/privacy",
   ];
-  return routes.map((route) => ({
-    url: `${base}${route}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly",
+  const items = await getApprovedGalleryItems();
+  return [...routes.map((route) => ({
+    url: absoluteUrl(route || "/"),
+    lastModified: new Date("2026-09-07T00:00:00.000Z"),
+    changeFrequency: "monthly" as const,
     priority: route === "" ? 1 : 0.8,
-  }));
+  })), ...items.map((item) => ({ url: absoluteUrl(`/gallery/${item.category.replace("_", "-")}/${item.slug}`), lastModified: item.updatedAt, changeFrequency: "monthly" as const, priority: 0.7 }))];
 }

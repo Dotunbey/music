@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { contact } from "@/lib/content";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/privacy" },
   title: "Privacy Policy",
   description:
     "How Tami Bedford collects, uses, and protects the information you share when you apply for sessions or services.",

@@ -1,0 +1,11 @@
+ALTER TABLE "gallery_items" ADD COLUMN "slug" text;
+ALTER TABLE "gallery_items" ADD COLUMN "seo_description" text;
+ALTER TABLE "gallery_items" ADD COLUMN "price_amount" integer;
+ALTER TABLE "gallery_items" ADD COLUMN "currency" text DEFAULT 'NGN' NOT NULL;
+UPDATE "gallery_items" SET "slug" = COALESCE(NULLIF(trim(both '-' from lower(regexp_replace("title", '[^a-zA-Z0-9]+', '-', 'g'))), ''), 'work') || '-' || substring(replace("id"::text, '-', '') from 1 for 8);
+UPDATE "gallery_items" SET "price_amount" = regexp_replace("price", '[^0-9]', '', 'g')::integer WHERE "category" = 'books' AND NULLIF(regexp_replace(COALESCE("price", ''), '[^0-9]', '', 'g'), '') IS NOT NULL;
+ALTER TABLE "gallery_items" ALTER COLUMN "slug" SET NOT NULL;
+CREATE UNIQUE INDEX "gallery_items_slug_unique" ON "gallery_items" USING btree ("slug");
+CREATE INDEX "gallery_items_approved_lookup_idx" ON "gallery_items" USING btree ("status", "category", "updated_at");
+ALTER TABLE "gallery_items" ADD CONSTRAINT "gallery_items_price_amount_check" CHECK ("price_amount" IS NULL OR "price_amount" > 0);
+ALTER TABLE "gallery_items" ADD CONSTRAINT "gallery_items_currency_check" CHECK ("currency" ~ '^[A-Z]{3}$');

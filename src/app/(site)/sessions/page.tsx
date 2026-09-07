@@ -7,6 +7,7 @@ import { ActionLink } from "@/components/action-link";
 import { sessions } from "@/lib/content";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/sessions" },
   title: "Sessions",
   description:
     "Compare Tami Bedford piano, choral, organ, and music production sessions.",

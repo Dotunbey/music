@@ -16,6 +16,7 @@ import {
 import { isValidTrack, normalizeTrackLabel, resolveInquiryType } from "@/lib/inquiry-utils";
 import { logger } from "@/lib/logger";
 import { checkRateLimit, cleanupStore } from "@/lib/rate-limiter";
+import { absoluteUrl } from "@/lib/site-url";
 
 const EXPERIENCE_LEVELS = ["Beginner", "Intermediate", "Advanced"] as const;
 const DELIVERY_OPTIONS = ["email", "whatsapp"] as const;
@@ -346,8 +347,6 @@ export async function submitInquiryAction(
     emailSubject,
   )}&body=${encodeURIComponent(followUpText)}`;
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
-
   let emailSent = true;
   let emailMessage =
     "Inquiry submitted and logged. The team has been notified by email.";
@@ -364,7 +363,7 @@ export async function submitInquiryAction(
       delivery: values.delivery,
       message: values.message,
       sourcePath,
-      adminUrl: siteUrl ? `${siteUrl}/admin/inquiries/${inquiryId}` : undefined,
+      adminUrl: absoluteUrl(`/admin/inquiries/${inquiryId}`),
     });
     await sendEmail({
       to: process.env.ADMIN_NOTIFICATION_EMAIL ?? contact.email,
@@ -400,7 +399,7 @@ export async function submitInquiryAction(
       preferredTime: values.preferredTime,
       priceLine: session ? `${session.price} ${session.cadence}` : undefined,
       whatsappUrl: whatsappLink,
-      siteUrl,
+      siteUrl: absoluteUrl("/"),
     });
     await sendEmail({
       to: values.email,

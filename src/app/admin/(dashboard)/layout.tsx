@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BriefcaseBusiness, GalleryHorizontal, LayoutDashboard, Inbox, LogOut } from "lucide-react";
+import { BriefcaseBusiness, GalleryHorizontal, LayoutDashboard, Inbox, LogOut, Wrench } from "lucide-react";
 import { logoutAction } from "@/actions/admin-auth";
 import { requireAdmin } from "@/lib/admin-session";
 import { interactiveStateClasses } from "@/lib/ui";
@@ -24,6 +24,7 @@ const navItems = [
   { href: "/admin/inquiries", label: "Inquiries", icon: Inbox },
   { href: "/admin/gallery", label: "Gallery", icon: GalleryHorizontal },
   { href: "/admin/portfolio", label: "Portfolio", icon: BriefcaseBusiness },
+  { href: "/admin/maintenance", label: "Maintenance", icon: Wrench },
 ] as const;
 
 export default async function AdminDashboardLayout({

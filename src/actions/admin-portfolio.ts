@@ -8,6 +8,7 @@ import { getDbClient } from "@/lib/db/client";
 import { galleryItemStatusEnum, portfolioItems } from "@/lib/db/schema";
 import { parsePortfolioLink, portfolioCreditOptions, type PortfolioCredit } from "@/lib/portfolio-links";
 import { ensureGalleryBucket, getGalleryBucketName, getSupabaseAdminClient } from "@/lib/supabase-admin";
+import { invalidatePortfolio } from "@/lib/cache-tags";
 
 const titleSchema = z.string().trim().min(1).max(180);
 const optionalUrlSchema = z.preprocess((value) => typeof value === "string" ? value.trim() : "", z.union([z.literal(""), z.string().url().max(1000)]));
@@ -125,6 +126,7 @@ export async function createPortfolioItem(formData: FormData): Promise<Portfolio
     return { status: "error", message: "This work may already be in the portfolio." };
   }
   revalidatePath("/admin/portfolio");
+  invalidatePortfolio();
   return { status: "success", message: "Work saved as a draft." };
 }
 
@@ -136,7 +138,7 @@ export async function updatePortfolioItem(formData: FormData): Promise<void> {
   const credits = readCredits(formData);
   if (!id.success || !title.success || !artworkUrl.success || !credits) return;
   await (await getDbClient()).update(portfolioItems).set({ title: title.data, artworkUrl: artworkUrl.data || null, credits, updatedAt: new Date() }).where(eq(portfolioItems.id, id.data));
-  revalidatePath("/admin/portfolio"); revalidatePath("/services");
+  revalidatePath("/admin/portfolio"); invalidatePortfolio();
 }
 
 export async function updatePortfolioStatus(formData: FormData): Promise<void> {
@@ -145,5 +147,5 @@ export async function updatePortfolioStatus(formData: FormData): Promise<void> {
   const status = statusSchema.parse(formData.get("status"));
   const rejectionReason = z.string().trim().max(500).parse(formData.get("rejectionReason") ?? "");
   await (await getDbClient()).update(portfolioItems).set({ status, rejectionReason: status === "rejected" ? rejectionReason || null : null, reviewedAt: status === "draft" ? null : new Date(), publishedAt: status === "approved" ? new Date() : null, updatedAt: new Date() }).where(eq(portfolioItems.id, id));
-  revalidatePath("/admin/portfolio"); revalidatePath("/services");
+  revalidatePath("/admin/portfolio"); invalidatePortfolio();
 }

@@ -9,6 +9,7 @@ import { getApprovedPortfolioItems } from "@/lib/portfolio";
 import { interactiveStateClasses } from "@/lib/ui";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/services" },
   title: "Services",
   description:
     "Music arrangement, production, vocal arrangement, and recording support from Tami Bedford.",

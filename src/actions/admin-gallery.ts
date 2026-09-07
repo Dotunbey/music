@@ -12,6 +12,7 @@ import {
   galleryMediaTypeEnum,
 } from "@/lib/db/schema";
 import { ensureGalleryBucket, getGalleryBucketName, getSupabaseAdminClient } from "@/lib/supabase-admin";
+import { invalidateGallery } from "@/lib/cache-tags";
 
 const categorySchema = z.enum(galleryCategoryEnum.enumValues);
 const mediaTypeSchema = z.enum(galleryMediaTypeEnum.enumValues);
@@ -26,6 +27,13 @@ const optionalTextSchema = z.preprocess(
   (value) => (typeof value === "string" ? value.trim() : ""),
   z.string().max(5000),
 );
+const seoDescriptionSchema = z.preprocess((value) => typeof value === "string" ? value.trim() : "", z.string().max(320));
+const currencySchema = z.preprocess((value) => typeof value === "string" ? value.trim().toUpperCase() : "NGN", z.string().regex(/^[A-Z]{3}$/));
+
+function immutableSlug(title: string, id: string) {
+  const base = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80) || "work";
+  return `${base}-${id.replaceAll("-", "").slice(0, 8)}`;
+}
 const optionalHttpsUrlSchema = z.preprocess(
   (value) => (typeof value === "string" ? value.trim() : ""),
   z.union([z.literal(""), z.string().url().max(1000).refine((value) => new URL(value).protocol === "https:", "Use an HTTPS checkout URL.")]),
@@ -150,9 +158,12 @@ export async function registerGalleryItem(formData: FormData): Promise<GalleryMu
   const price = optionalTextSchema.safeParse(formData.get("price"));
   const purchaseUrl = optionalHttpsUrlSchema.safeParse(formData.get("purchaseUrl"));
   const excerpt = optionalTextSchema.safeParse(formData.get("excerpt"));
+  const seoDescription = seoDescriptionSchema.safeParse(formData.get("seoDescription"));
+  const priceAmount = z.coerce.number().int().positive().safeParse(formData.get("priceAmount"));
+  const currency = currencySchema.safeParse(formData.get("currency"));
   const samplePaths = formData.getAll("samplePaths").filter((value): value is string => typeof value === "string" && value.length > 0);
-  if (!price.success || !purchaseUrl.success || !excerpt.success || samplePaths.some((path) => path.includes(".."))) return { status: "error", message: "Check the book details and sample pages." };
-  if (parsed.data.category === "books" && (!price.data || !purchaseUrl.data)) return { status: "error", message: "Books need a price and secure purchase URL." };
+  if (!price.success || !purchaseUrl.success || !excerpt.success || !seoDescription.success || samplePaths.some((path) => path.includes(".."))) return { status: "error", message: "Check the gallery details." };
+  if (parsed.data.category === "books" && (!priceAmount.success || !currency.success || !purchaseUrl.data)) return { status: "error", message: "Books need a positive price, ISO currency, and secure purchase URL." };
   if (!parsed.data.storagePath && !parsed.data.sourceUrl) return { status: "error", message: "Add a media file or a YouTube URL." };
   if (parsed.data.sourceUrl) {
     try {
@@ -171,13 +182,19 @@ export async function registerGalleryItem(formData: FormData): Promise<GalleryMu
     .from(galleryItems)
     .where(eq(galleryItems.category, parsed.data.category));
   const sortOrder = Number(queue?.lastOrder ?? -1) + 1;
+  const id = crypto.randomUUID();
   await db.insert(galleryItems).values({
+    id,
+    slug: immutableSlug(parsed.data.title, id),
     ...parsed.data,
     storagePath: parsed.data.storagePath || null,
     sortOrder,
     posterPath: parsed.data.posterPath || null,
     sourceUrl: parsed.data.sourceUrl || null,
     price: parsed.data.category === "books" ? price.data || null : null,
+    priceAmount: parsed.data.category === "books" && priceAmount.success ? priceAmount.data : null,
+    currency: parsed.data.category === "books" && currency.success ? currency.data : "NGN",
+    seoDescription: seoDescription.data || null,
     purchaseUrl: parsed.data.category === "books" ? purchaseUrl.data || null : null,
     excerpt: parsed.data.category === "books" ? excerpt.data || null : null,
     samplePaths: parsed.data.category === "books" ? samplePaths : [],
@@ -195,8 +212,11 @@ export async function updateGalleryItem(formData: FormData): Promise<void> {
   const price = optionalTextSchema.safeParse(formData.get("price"));
   const purchaseUrl = optionalHttpsUrlSchema.safeParse(formData.get("purchaseUrl"));
   const excerpt = optionalTextSchema.safeParse(formData.get("excerpt"));
-  if (!id.success || !title.success || !category.success || !price.success || !purchaseUrl.success || !excerpt.success) return;
-  if (category.data === "books" && (!price.data || !purchaseUrl.data)) return;
+  const seoDescription = seoDescriptionSchema.safeParse(formData.get("seoDescription"));
+  const priceAmount = z.coerce.number().int().positive().safeParse(formData.get("priceAmount"));
+  const currency = currencySchema.safeParse(formData.get("currency"));
+  if (!id.success || !title.success || !category.success || !price.success || !purchaseUrl.success || !excerpt.success || !seoDescription.success) return;
+  if (category.data === "books" && (!priceAmount.success || !currency.success || !purchaseUrl.data)) return;
 
   const db = await getDbClient();
   const result = await db
@@ -205,6 +225,9 @@ export async function updateGalleryItem(formData: FormData): Promise<void> {
       title: title.data,
       category: category.data,
       price: category.data === "books" ? price.data || null : null,
+      priceAmount: category.data === "books" && priceAmount.success ? priceAmount.data : null,
+      currency: category.data === "books" && currency.success ? currency.data : "NGN",
+      seoDescription: seoDescription.data || null,
       purchaseUrl: category.data === "books" ? purchaseUrl.data || null : null,
       excerpt: category.data === "books" ? excerpt.data || null : null,
       updatedAt: new Date(),
@@ -213,7 +236,7 @@ export async function updateGalleryItem(formData: FormData): Promise<void> {
     .returning({ id: galleryItems.id });
   if (result.length === 0) return;
   revalidatePath("/admin/gallery");
-  revalidatePath("/gallery");
+  invalidateGallery(id.data);
 }
 
 export async function updateGalleryStatus(formData: FormData): Promise<void> {
@@ -223,10 +246,13 @@ export async function updateGalleryStatus(formData: FormData): Promise<void> {
   const rejectionReason = z.string().trim().max(500).parse(formData.get("rejectionReason") ?? "");
   const db = await getDbClient();
   const existing = await db
-    .select({ id: galleryItems.id })
+    .select({ id: galleryItems.id, category: galleryItems.category, priceAmount: galleryItems.priceAmount, currency: galleryItems.currency, purchaseUrl: galleryItems.purchaseUrl })
     .from(galleryItems)
     .where(and(eq(galleryItems.id, id)));
   if (existing.length === 0) return;
+  if (status === "approved" && existing[0].category === "books" && (!existing[0].priceAmount || !/^[A-Z]{3}$/.test(existing[0].currency) || !existing[0].purchaseUrl)) {
+    throw new Error("Books require a structured price, ISO currency, and purchase URL before approval.");
+  }
 
   await db
     .update(galleryItems)
@@ -239,6 +265,5 @@ export async function updateGalleryStatus(formData: FormData): Promise<void> {
     })
     .where(eq(galleryItems.id, id));
   revalidatePath("/admin/gallery");
-  revalidatePath("/gallery");
-  revalidatePath("/");
+  invalidateGallery(id);
 }

@@ -1,10 +1,12 @@
 import { asc, desc, eq } from "drizzle-orm";
+import { unstable_cache } from "next/cache";
+import { CACHE_TAGS } from "@/lib/cache-tags";
 import { getDbClient } from "@/lib/db/client";
 import { portfolioItems } from "@/lib/db/schema";
 import { parsePortfolioLink } from "@/lib/portfolio-links";
 import { getGalleryPublicUrl } from "@/lib/supabase-admin";
 
-export async function getApprovedPortfolioItems() {
+async function queryApprovedPortfolioItems() {
   const db = await getDbClient();
   const rows = await db
     .select()
@@ -24,6 +26,8 @@ export async function getApprovedPortfolioItems() {
     credits: item.credits,
   }));
 }
+
+export const getApprovedPortfolioItems = unstable_cache(queryApprovedPortfolioItems, ["approved-portfolio-v1"], { revalidate: 3600, tags: [CACHE_TAGS.portfolio] });
 
 export async function getAdminPortfolioItems() {
   const db = await getDbClient();

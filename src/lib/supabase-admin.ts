@@ -9,7 +9,17 @@ function requiredEnv(name: string): string {
 }
 
 function getSupabaseUrl(): string {
-  return process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL ?? requiredEnv("SUPABASE_URL");
+  const configured = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (configured) return configured;
+  const databaseUrl = process.env.DIRECT_DATABASE_URL ?? process.env.DATABASE_URL ?? process.env.SUPABASE_DATABASE_URL;
+  if (databaseUrl) {
+    const parsed = new URL(databaseUrl);
+    const directMatch = parsed.hostname.match(/^db\.([a-z0-9]+)\.supabase\.co$/i);
+    const pooledMatch = decodeURIComponent(parsed.username).match(/^postgres\.([a-z0-9]+)$/i);
+    const projectRef = directMatch?.[1] ?? pooledMatch?.[1];
+    if (projectRef) return `https://${projectRef}.supabase.co`;
+  }
+  return requiredEnv("SUPABASE_URL");
 }
 
 export function getSupabaseAdminClient(): SupabaseClient {

@@ -9,6 +9,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "gallery:seed": "node scripts/seed-gallery.mjs",
+    "db:backup": "powershell -ExecutionPolicy Bypass -File scripts/backup-database.ps1",
+    "db:restore": "powershell -ExecutionPolicy Bypass -File scripts/restore-database.ps1",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -17,10 +19,10 @@
     "@marsidev/react-turnstile": "^1.5.3",
     "@sentry/nextjs": "^10.57.0",
     "@supabase/supabase-js": "^2.115.0",
-    "drizzle-orm": "^0.44.2",
+    "drizzle-orm": "^0.45.2",
     "framer-motion": "^12.40.0",
     "lucide-react": "^1.17.0",
-    "next": "16.2.6",
+    "next": "^16.3.4",
     "postgres": "^3.4.5",
     "react": "19.2.4",
     "react-dom": "19.2.4",
@@ -34,7 +36,7 @@
     "@types/react-dom": "^19",
     "drizzle-kit": "^0.31.4",
     "eslint": "^9",
-    "eslint-config-next": "16.2.6",
+    "eslint-config-next": "^16.3.4",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

@@ -4,6 +4,7 @@ import { ScriptHero } from "@/components/script-hero";
 import { team } from "@/lib/content";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/about" },
   title: "About",
   description: "Meet musician, producer, arranger, and mentor Tami Bedford.",
   openGraph: {

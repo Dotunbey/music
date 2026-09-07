@@ -10,9 +10,10 @@ import {
 } from "@/lib/gallery";
 import { interactiveStateClasses } from "@/lib/ui";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/gallery" },
   title: "Gallery",
   description:
     "Tam's Gallery: a minimalist home for Tami Bedford music, poetry, books, short films, and mixed creative projects.",

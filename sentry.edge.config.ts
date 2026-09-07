@@ -1,12 +1,2 @@
-import { init } from "@sentry/nextjs";
-
-const dsn = process.env.SENTRY_DSN;
-const environment = process.env.SENTRY_ENVIRONMENT ?? process.env.NODE_ENV;
-
-if (dsn) {
-  init({
-    dsn,
-    environment,
-    tracesSampleRate: 0.1,
-  });
-}
+import * as Sentry from "@sentry/nextjs";
+Sentry.init({ dsn: process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN, environment: process.env.SENTRY_ENVIRONMENT || process.env.VERCEL_ENV, enabled: Boolean(process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN), tracesSampleRate: process.env.NODE_ENV === "production" ? 0.05 : 0 });

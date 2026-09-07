@@ -1,4 +1,4 @@
-import { index, integer, pgEnum, pgTable, text, timestamp, uuid, check } from "drizzle-orm/pg-core";
+import { index, integer, pgEnum, pgTable, text, timestamp, uniqueIndex, uuid, check } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
 export const inquiryTypeEnum = pgEnum("inquiry_type", [
@@ -125,10 +125,14 @@ export const galleryItems = pgTable(
     category: galleryCategoryEnum("category").notNull(),
     mediaType: galleryMediaTypeEnum("media_type").notNull(),
     title: text("title").notNull(),
+    slug: text("slug").notNull(),
+    seoDescription: text("seo_description"),
     storagePath: text("storage_path"),
     posterPath: text("poster_path"),
     sourceUrl: text("source_url"),
     price: text("price"),
+    priceAmount: integer("price_amount"),
+    currency: text("currency").notNull().default("NGN"),
     purchaseUrl: text("purchase_url"),
     excerpt: text("excerpt"),
     samplePaths: text("sample_paths").array().notNull().default(sql`ARRAY[]::text[]`),
@@ -145,7 +149,9 @@ export const galleryItems = pgTable(
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  ({ category, status, sortOrder, createdAt }) => ({
+  ({ category, status, sortOrder, createdAt, slug, updatedAt }) => ({
+    slugUnique: uniqueIndex("gallery_items_slug_unique").on(slug),
+    approvedLookupIndex: index("gallery_items_approved_lookup_idx").on(status, category, updatedAt),
     categoryOrderIndex: index("gallery_items_category_order_idx").on(
       category,
       sortOrder,

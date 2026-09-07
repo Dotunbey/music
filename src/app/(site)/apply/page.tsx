@@ -13,6 +13,7 @@ type ApplyPageProps = {
 };
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/apply" },
   title: "Apply",
   description:
     "Apply for Tami Bedford piano, choral, organ, or music production sessions.",

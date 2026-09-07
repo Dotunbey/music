@@ -1,7 +1,7 @@
 import type { Config } from "drizzle-kit";
 
 const databaseUrl =
-  process.env.DATABASE_URL ?? process.env.SUPABASE_DATABASE_URL;
+  process.env.DIRECT_DATABASE_URL ?? process.env.DATABASE_URL ?? process.env.SUPABASE_DATABASE_URL;
 
 if (!databaseUrl) {
   console.warn(
