@@ -1,5 +1,6 @@
 import { asc, desc, eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
+import { connection } from "next/server";
 import { BookOpen, Clapperboard, Feather, Music2, type LucideIcon } from "lucide-react";
 import type { GalleryItem as PublicGalleryItem } from "@/lib/content";
 import { getDbClient } from "@/lib/db/client";
@@ -119,6 +120,8 @@ async function queryApprovedGalleryItems() {
 const getCachedApprovedGalleryItems = unstable_cache(queryApprovedGalleryItems, ["approved-gallery-v2"], { revalidate: 3600, tags: [CACHE_TAGS.gallery, CACHE_TAGS.homepageGallery, CACHE_TAGS.sitemap] });
 
 export async function getApprovedGalleryItems() {
+  // Builds must not require a live database; the query itself stays cached.
+  await connection();
   const databaseUrl = process.env.DATABASE_URL ?? process.env.SUPABASE_DATABASE_URL;
   if (process.env.NODE_ENV === "development" && (!databaseUrl || databaseUrl.trim() === "[SENSITIVE]")) {
     return [];

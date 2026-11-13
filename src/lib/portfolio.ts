@@ -1,5 +1,6 @@
 import { asc, desc, eq } from "drizzle-orm";
 import { unstable_cache } from "next/cache";
+import { connection } from "next/server";
 import { CACHE_TAGS } from "@/lib/cache-tags";
 import { getDbClient } from "@/lib/db/client";
 import { portfolioItems } from "@/lib/db/schema";
@@ -32,7 +33,12 @@ async function queryApprovedPortfolioItems() {
   }));
 }
 
-export const getApprovedPortfolioItems = unstable_cache(queryApprovedPortfolioItems, ["approved-portfolio-v1"], { revalidate: 3600, tags: [CACHE_TAGS.portfolio] });
+const getCachedApprovedPortfolioItems = unstable_cache(queryApprovedPortfolioItems, ["approved-portfolio-v1"], { revalidate: 3600, tags: [CACHE_TAGS.portfolio] });
+
+export async function getApprovedPortfolioItems() {
+  await connection();
+  return getCachedApprovedPortfolioItems();
+}
 
 export async function getAdminPortfolioItems() {
   const db = await getDbClient();
