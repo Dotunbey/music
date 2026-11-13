@@ -90,7 +90,7 @@ export const sessions: Session[] = [
     price: "₦50,000",
     cadence: "per month",
     format: "4 weekly online sessions + full access to materials",
-    image: "/images/piano-keys.jpg",
+    image: "/images/piano-session.jpeg",
     icon: Piano,
     summary:
       "Build practical piano fluency for Gospel and Contemporary music through a structured path from fundamentals to confident accompaniment.",
@@ -132,7 +132,7 @@ export const sessions: Session[] = [
     price: "₦50,000",
     cadence: "per month",
     format: "4 weekly online sessions + full access to materials",
-    image: "/images/service-vocal.jpg",
+    image: "/images/choral-session.jpeg",
     icon: Users,
     summary:
       "Develop practical choir musicianship through harmony, blend, part learning, and confident group vocal direction.",
@@ -216,7 +216,7 @@ export const sessions: Session[] = [
     price: "₦50,000",
     cadence: "per month",
     format: "4 weekly online sessions + full access to materials",
-    image: "/images/production-session.jpg",
+    image: "/images/music-production.jpeg",
     icon: SlidersHorizontal,
     summary:
       "Move from rough ideas to organized sessions, confident recording, and release-ready production habits.",
@@ -255,7 +255,7 @@ export const sessions: Session[] = [
 export const services = [
   {
     title: "Vocal Production",
-    image: "/images/service-vocal.jpg",
+    image: "/images/vocal-recording.jpeg",
     icon: Mic2,
     deliverables: [
       "Vocal recording",
@@ -266,7 +266,7 @@ export const services = [
   },
   {
     title: "Vocal Arrangement",
-    image: "/images/creation-hands.jpg",
+    image: "/images/vocal-arrangement.jpeg",
     icon: Users,
     deliverables: [
       "Background vocal arrangements",
@@ -277,7 +277,7 @@ export const services = [
   },
   {
     title: "Music Production",
-    image: "/images/studio-production.png",
+    image: "/images/music-production.jpeg",
     icon: Headphones,
     deliverables: [
       "Songs and instrumentals",

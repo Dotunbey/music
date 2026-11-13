@@ -22,7 +22,7 @@ export default function AboutPage() {
 
   return (
     <>
-      <ScriptHero title="About" image="/images/creation-hands.jpg" />
+      <ScriptHero title="About" image="/images/creation-hands.jpg" imageQuality={90} />
 
       <section className="gallery-wall relative overflow-hidden px-5 py-24 text-cream md:px-8 md:py-36">
         <div className="relative mx-auto grid max-w-6xl gap-10 md:grid-cols-[0.9fr_1.1fr] md:items-center">

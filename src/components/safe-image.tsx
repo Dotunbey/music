@@ -9,6 +9,7 @@ type SafeImageProps = {
   alt: string;
   fill?: boolean;
   priority?: boolean;
+  quality?: number;
   className?: string;
   sizes?: string;
   "data-parallax"?: string;

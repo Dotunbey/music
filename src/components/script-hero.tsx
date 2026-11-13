@@ -6,7 +6,7 @@ import { SafeImage } from "./safe-image";
  * over a darkened image. Generous line-height and top padding keep the tall
  * script glyphs clear of the fixed header (no clipping).
  */
-export function ScriptHero({ title, image }: { title: string; image: string }) {
+export function ScriptHero({ title, image, imageQuality = 75 }: { title: string; image: string; imageQuality?: number }) {
   return (
     <section className="grain relative isolate flex min-h-[58svh] items-center justify-center overflow-hidden bg-ink px-5 pt-24 pb-10 text-cream md:px-8">
       <MotionImageFrame className="absolute inset-0" parallax={28}>
@@ -15,6 +15,7 @@ export function ScriptHero({ title, image }: { title: string; image: string }) {
           alt=""
           fill
           priority
+          quality={imageQuality}
           sizes="100vw"
           className="animate-ken-burns object-cover object-center [filter:brightness(0.6)_contrast(1.05)_saturate(0.8)]"
         />

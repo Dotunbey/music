@@ -61,8 +61,8 @@ export const metadata: Metadata = {
     ? { index: true, follow: true }
     : { index: false, follow: false },
   icons: {
-    icon: "/favicon.ico",
-    apple: [{ url: "/images/tami-bedford.jpeg", sizes: "180x180", type: "image/jpeg" }],
+    icon: "/favicon.ico?v=brand-logo",
+    apple: [{ url: "/images/tami-bedford-apple-icon.png", sizes: "180x180", type: "image/png" }],
   },
 };
 

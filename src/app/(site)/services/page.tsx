@@ -31,7 +31,7 @@ export const revalidate = 3600;
 export default function ServicesPage() {
   return (
     <>
-      <ScriptHero title="Tami Services" image="/images/studio-production.png" />
+      <ScriptHero title="Tami's Services" image="/images/studio-production.png" />
 
       <section className="gallery-wall relative overflow-hidden px-5 py-24 text-cream md:px-8 md:py-36">
         <div className="mx-auto max-w-7xl">

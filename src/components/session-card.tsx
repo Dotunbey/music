@@ -21,7 +21,7 @@ export function SessionCard({ session }: SessionCardProps) {
           alt=""
           fill
           sizes="(min-width: 1280px) 25vw, (min-width: 768px) 50vw, 100vw"
-          className="object-cover transition duration-700 group-hover:scale-105"
+          className={`object-cover transition duration-700 group-hover:scale-105 ${session.slug === "choral" ? "object-[50%_80%]" : "object-center"}`}
         />
       </div>
       <div className="p-6">

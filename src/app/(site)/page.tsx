@@ -30,7 +30,7 @@ export default function Home() {
       <section className="grain relative isolate min-h-[92svh] overflow-hidden bg-ink px-5 pb-28 pt-28 text-cream md:px-8">
         <MotionImageFrame className="absolute inset-0" parallax={30}>
           <SafeImage
-            src="/images/hero-lesson.png"
+            src="/images/creation-hands.jpg"
             alt=""
             fill
             priority
