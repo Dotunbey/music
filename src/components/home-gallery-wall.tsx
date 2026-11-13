@@ -187,7 +187,7 @@ export function HomeGalleryWall({ items }: { items: HomeGalleryItem[] }) {
             <X aria-hidden="true" />
           </button>
           <div
-            className="my-auto w-full max-w-5xl overflow-hidden rounded-sm border border-cream/15 bg-cream text-ink shadow-soft"
+            className="my-auto w-full max-w-5xl overflow-hidden rounded-sm border border-cream/15 bg-white text-cream shadow-soft"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="relative flex max-h-[72svh] min-h-64 items-center justify-center overflow-hidden bg-black">
@@ -212,11 +212,11 @@ export function HomeGalleryWall({ items }: { items: HomeGalleryItem[] }) {
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-red-700">{activeItem.category.replace("_", " ")}</p>
                 <h3 className="mt-1 font-display text-2xl font-black sm:text-3xl">{activeItem.title}</h3>
                 {activeItem.price ? <p className="mt-2 font-bold text-red-700">{activeItem.price}</p> : null}
-                {activeItem.excerpt ? <p className="mt-3 max-w-xl text-sm leading-6 text-ink/70">{activeItem.excerpt}</p> : null}
+                {activeItem.excerpt ? <p className="mt-3 max-w-xl text-sm leading-6 text-cream/70">{activeItem.excerpt}</p> : null}
               </div>
               <div className="flex flex-col gap-2 sm:flex-row">
                 {activeItem.href ? (
-                  <a href={activeItem.href} target="_blank" rel="noopener noreferrer" className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-ink/20 px-4 text-xs font-bold uppercase ${interactiveStateClasses}`}>
+                  <a href={activeItem.href} target="_blank" rel="noopener noreferrer" className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-cream/20 px-4 text-xs font-bold uppercase ${interactiveStateClasses}`}>
                     Open original <ExternalLink className="h-4 w-4" aria-hidden="true" />
                   </a>
                 ) : null}

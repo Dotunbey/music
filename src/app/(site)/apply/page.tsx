@@ -100,7 +100,7 @@ export default async function ApplyPage({ searchParams }: ApplyPageProps) {
                   </div>
                   <Link
                     href="/sessions"
-                    className={`inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-md border border-cream/24 px-4 text-sm font-bold uppercase text-cream hover:border-red-500 hover:text-white ${interactiveStateClasses}`}
+                    className={`inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-md border border-cream/24 px-4 text-sm font-bold uppercase text-cream hover:border-red-500 hover:text-red-700 ${interactiveStateClasses}`}
                   >
                     Change Session
                     <ArrowRight aria-hidden="true" className="h-4 w-4" />

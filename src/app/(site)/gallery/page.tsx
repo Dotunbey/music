@@ -56,7 +56,7 @@ async function GalleryContent({
         <section
           key={category.slug}
           id={category.slug}
-          className="gallery-wall relative scroll-mt-24 overflow-hidden px-5 py-10 text-ink md:px-8 md:py-14"
+          className="gallery-wall relative scroll-mt-24 overflow-hidden px-5 py-10 text-cream md:px-8 md:py-14"
         >
           <div className="relative mx-auto max-w-7xl">
             <h2 className="font-display text-4xl font-black leading-none md:text-5xl">
@@ -73,7 +73,7 @@ async function GalleryContent({
               />
             )
             : (
-              <p className="mt-12 border-t border-ink/10 pt-5 text-xs font-bold uppercase tracking-[0.16em] text-ink/45">
+              <p className="mt-12 border-t border-cream/10 pt-5 text-xs font-bold uppercase tracking-[0.16em] text-cream/45">
                 New work will appear here.
               </p>
             )}
@@ -97,7 +97,7 @@ async function GalleryContent({
             href={contact.youtube}
             target="_blank"
             rel="noopener noreferrer"
-            className={`motion-sheen inline-flex min-h-12 items-center justify-center gap-2 overflow-hidden rounded-md border border-cream/25 px-5 py-3 text-sm font-bold uppercase text-cream hover:border-red-500 hover:text-white ${interactiveStateClasses}`}
+            className={`motion-sheen inline-flex min-h-12 items-center justify-center gap-2 overflow-hidden rounded-md border border-cream/25 px-5 py-3 text-sm font-bold uppercase text-cream hover:border-red-500 hover:text-red-700 ${interactiveStateClasses}`}
           >
             Visit YouTube
             <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
@@ -106,7 +106,7 @@ async function GalleryContent({
             href={`mailto:${contact.email}?subject=${encodeURIComponent(
               "Gallery inquiry",
             )}`}
-            className={`motion-sheen inline-flex min-h-12 items-center justify-center gap-2 overflow-hidden rounded-md border border-cream/25 px-5 py-3 text-sm font-bold uppercase text-cream hover:border-red-500 hover:text-white ${interactiveStateClasses}`}
+            className={`motion-sheen inline-flex min-h-12 items-center justify-center gap-2 overflow-hidden rounded-md border border-cream/25 px-5 py-3 text-sm font-bold uppercase text-cream hover:border-red-500 hover:text-red-700 ${interactiveStateClasses}`}
           >
             Email Us
             <ArrowRight aria-hidden="true" className="h-4 w-4" />

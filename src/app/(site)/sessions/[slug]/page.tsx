@@ -62,22 +62,22 @@ export default async function SessionDetailPage({
         image={session.image}
       />
 
-      <section className="bg-cream px-5 py-16 text-ink md:px-8 md:py-20">
+      <section className="bg-white px-5 py-16 text-cream md:px-8 md:py-20">
         <div
           className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.78fr_1.22fr]"
           data-stagger
         >
           <aside
-            className="rounded-lg border border-ink/10 bg-white p-6 shadow-soft lg:sticky lg:top-28 lg:self-start"
+            className="rounded-lg border border-cream/10 bg-white p-6 shadow-soft lg:sticky lg:top-28 lg:self-start"
             data-reveal="card"
           >
             <p className="font-display text-5xl font-black text-red-700">
               {session.price}
             </p>
-            <p className="mt-1 text-sm font-bold uppercase text-ink/82">
+            <p className="mt-1 text-sm font-bold uppercase text-cream/82">
               {session.cadence}
             </p>
-            <p className="mt-5 leading-7 text-ink/82">{session.format}</p>
+            <p className="mt-5 leading-7 text-cream/82">{session.format}</p>
             <div className="mt-7">
               <ActionLink href={`/apply?track=${session.slug}`} className="w-full">
                 Apply Now
@@ -87,7 +87,7 @@ export default async function SessionDetailPage({
           </aside>
 
           <div
-            className="rounded-lg border border-ink/10 bg-white p-6 shadow-soft md:p-8"
+            className="rounded-lg border border-cream/10 bg-white p-6 shadow-soft md:p-8"
             data-reveal="card"
           >
             <SectionHeading title="Who this is for." tone="dark" />
@@ -95,14 +95,14 @@ export default async function SessionDetailPage({
               {session.whoFor.map((item) => (
                 <div
                   key={item}
-                  className="flex gap-3 border-t border-ink/12 pt-4"
+                  className="flex gap-3 border-t border-cream/12 pt-4"
                   data-reveal="card"
                 >
                   <CheckCircle2
                     aria-hidden="true"
                     className="mt-1 h-5 w-5 shrink-0 text-red-700"
                   />
-                  <p className="font-bold leading-7 text-ink/82">{item}</p>
+                  <p className="font-bold leading-7 text-cream/82">{item}</p>
                 </div>
               ))}
             </div>

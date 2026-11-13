@@ -46,15 +46,15 @@ function MiniPlacard({
 }) {
   if (numbered) {
     return (
-      <div className="flex items-center justify-center border-t border-ink/10 p-3">
-        <span className="font-script text-3xl leading-none text-ink/70">
+      <div className="flex items-center justify-center border-t border-cream/10 p-3">
+        <span className="font-script text-3xl leading-none text-cream/70">
           {title}
         </span>
       </div>
     );
   }
   return (
-    <div className="flex items-center justify-between gap-3 border-t border-ink/10 p-4">
+    <div className="flex items-center justify-between gap-3 border-t border-cream/10 p-4">
       <h3 className="font-display text-lg font-black leading-none">{title}</h3>
       {meta ? (
         <span className="shrink-0 text-[11px] font-bold uppercase tracking-wide text-red-700">
@@ -77,7 +77,7 @@ function CardBody({
   if (item.type === "text") {
     return (
       <div className="flex min-h-[18rem] flex-col justify-between">
-        <p className="p-6 font-display text-xl font-medium italic leading-relaxed text-ink/80">
+        <p className="p-6 font-display text-xl font-medium italic leading-relaxed text-cream/80">
           &ldquo;{item.excerpt}&rdquo;
         </p>
         <MiniPlacard title={item.title} meta={item.meta} numbered={numbered} />
@@ -393,7 +393,7 @@ export function GalleryGrid({
             <button
               type="button"
               onClick={close}
-              className={`absolute right-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-full border border-cream/25 bg-ink/50 text-cream hover:border-red-500 hover:text-white ${interactiveStateClasses}`}
+              className={`absolute right-4 top-4 z-10 grid h-11 w-11 place-items-center rounded-full border border-cream/25 bg-ink/50 text-cream hover:border-red-500 hover:text-red-700 ${interactiveStateClasses}`}
               aria-label="Close"
             >
               <X aria-hidden="true" />
@@ -407,7 +407,7 @@ export function GalleryGrid({
                     e.stopPropagation();
                     go(-1);
                   }}
-                  className={`absolute left-3 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-cream/25 bg-ink/50 text-cream hover:border-red-500 hover:text-white md:left-6 ${interactiveStateClasses}`}
+                  className={`absolute left-3 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-cream/25 bg-ink/50 text-cream hover:border-red-500 hover:text-red-700 md:left-6 ${interactiveStateClasses}`}
                   aria-label="Previous"
                 >
                   <ChevronLeft aria-hidden="true" />
@@ -418,7 +418,7 @@ export function GalleryGrid({
                     e.stopPropagation();
                     go(1);
                   }}
-                  className={`absolute right-3 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-cream/25 bg-ink/50 text-cream hover:border-red-500 hover:text-white md:right-6 ${interactiveStateClasses}`}
+                  className={`absolute right-3 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-cream/25 bg-ink/50 text-cream hover:border-red-500 hover:text-red-700 md:right-6 ${interactiveStateClasses}`}
                   aria-label="Next"
                 >
                   <ChevronRight aria-hidden="true" />

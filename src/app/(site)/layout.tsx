@@ -9,7 +9,7 @@ export default function SiteLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <div className="public-site flex min-h-screen flex-col">
       <MotionRuntime />
       <SiteHeader />
       <a
@@ -22,6 +22,6 @@ export default function SiteLayout({
         {children}
       </main>
       <SiteFooter />
-    </>
+    </div>
   );
 }

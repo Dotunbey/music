@@ -1,35 +1,42 @@
 @import "tailwindcss";
 
 :root {
-  /* Warm muted-greige gallery palette. "ink" is a mid warm-taupe "wall" (kept
-     dark enough that cream text stays legible); "cream" is a warm ivory. */
-  --ink: #524b42;
-  --charcoal: #5c554b;
-  --smoke: #6a6358;
-  --cream: #f3ece0;
-  --muted: #cabfad;
-  --red: #d97757;
-  --brass: #c9a25f;
-  --sage: #7f8d76;
+  /* White editorial base with graphite type. Existing semantic colour names
+     remain so every public route inherits the new palette consistently. */
+  --background: #fbfbfa;
+  --foreground: #171715;
+  --red-300: #f0bba4;
+  --red-400: #e8a184;
+  --red-500: #e08a6b;
+  --red-600: #b54834;
+  --red-700: #933522;
+  --ink: #fbfbfa;
+  --charcoal: #f3f3f1;
+  --smoke: #e8e8e4;
+  --cream: #171715;
+  --muted: #6f706c;
+  --red: #b54834;
+  --brass: #8b6b32;
+  --sage: #60705d;
 }
 
 @theme inline {
-  --color-background: #524b42;
-  --color-foreground: #f3ece0;
-  --color-ink: #524b42;
-  --color-charcoal: #5c554b;
-  --color-smoke: #6a6358;
-  --color-cream: #f3ece0;
-  --color-muted: #cabfad;
-  --color-red: #d97757;
-  --color-red-300: #f0bba4;
-  --color-red-400: #e8a184;
-  --color-red-500: #e08a6b;
-  --color-red-600: #d97757;
-  --color-red-700: #bf6242;
-  --color-brass: #c9a25f;
-  --color-sage: #7f8d76;
-  --shadow-soft: 0 24px 80px rgba(0, 0, 0, 0.24);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ink: var(--ink);
+  --color-charcoal: var(--charcoal);
+  --color-smoke: var(--smoke);
+  --color-cream: var(--cream);
+  --color-muted: var(--muted);
+  --color-red: var(--red);
+  --color-red-300: var(--red-300);
+  --color-red-400: var(--red-400);
+  --color-red-500: var(--red-500);
+  --color-red-600: var(--red-600);
+  --color-red-700: var(--red-700);
+  --color-brass: var(--brass);
+  --color-sage: var(--sage);
+  --shadow-soft: 0 24px 80px rgba(24, 24, 20, 0.12);
   --ease-fluid: cubic-bezier(0.16, 1, 0.3, 1);
   --animate-slide-down: slide-down 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
   --font-sans: "Manrope", "Manrope Fallback", ui-sans-serif, system-ui, sans-serif;
@@ -62,8 +69,8 @@ body {
   margin: 0;
   overflow-x: clip;
   background:
-    radial-gradient(circle at 12% 18%, rgba(201, 162, 95, 0.1), transparent 30rem),
-    linear-gradient(180deg, var(--ink), var(--charcoal));
+    radial-gradient(circle at 12% 18%, rgba(139, 107, 50, 0.045), transparent 30rem),
+    linear-gradient(180deg, #ffffff, var(--ink));
   color: var(--cream);
   font-family: var(--font-body), "Manrope", ui-sans-serif, system-ui, sans-serif;
 }
@@ -96,8 +103,8 @@ iframe {
 }
 
 ::selection {
-  background: var(--red);
-  color: white;
+  background: rgba(181, 72, 52, 0.22);
+  color: #171715;
 }
 
 .font-display {
@@ -114,8 +121,8 @@ iframe {
 
 .surface-grid {
   background-image:
-    linear-gradient(rgba(247, 239, 227, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(247, 239, 227, 0.06) 1px, transparent 1px);
+    linear-gradient(rgba(23, 23, 21, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 23, 21, 0.055) 1px, transparent 1px);
   background-size: 48px 48px;
 }
 
@@ -478,16 +485,16 @@ iframe {
 .nav-glass:focus-visible,
 .nav-glass[data-active="true"] {
   color: var(--cream);
-  background: rgba(247, 239, 227, 0.12);
-  border-color: rgba(247, 239, 227, 0.28);
+  background: rgba(255, 255, 255, 0.66);
+  border-color: rgba(23, 23, 21, 0.12);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.32),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.08),
-    0 10px 30px rgba(0, 0, 0, 0.22);
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05),
+    0 10px 30px rgba(24, 24, 20, 0.12);
 }
 
 .nav-glass[data-active="true"] {
-  background: rgba(247, 239, 227, 0.16);
+  background: rgba(255, 255, 255, 0.78);
 }
 
 .marquee-track {
@@ -626,4 +633,96 @@ iframe {
   .card-lift:focus-within {
     transform: none;
   }
+}
+
+/* Public palette is scoped independently from the administration interface. */
+.public-site {
+  --background: #fff;
+  --foreground: #22201e;
+  --ink: #fff;
+  --charcoal: #fafafa;
+  --smoke: #eceae8;
+  --cream: #22201e;
+  --muted: #716a65;
+  --red: #634735;
+  --red-300: #b39a88;
+  --red-400: #8c6b53;
+  --red-500: #75543d;
+  --red-600: #634735;
+  --red-700: #4d3527;
+  --brass: #634735;
+  --sage: #716a65;
+  background: #fff;
+  color: var(--foreground);
+  color-scheme: light;
+}
+
+.public-site ::selection {
+  background: #ded0c4;
+  color: #33251c;
+}
+
+.public-site .gallery-wall,
+.public-site .salon-wall-scroll {
+  background: #fff;
+  color: var(--foreground);
+}
+
+.public-site .salon-wall-scroll {
+  border-color: #e9e5e1;
+  box-shadow: inset 0 1px 18px rgba(55, 40, 30, 0.025);
+}
+
+.public-site .salon-frame {
+  background: #fff;
+  color: var(--foreground);
+  box-shadow: 0 12px 28px rgba(55, 40, 30, 0.12), 0 2px 5px rgba(55, 40, 30, 0.08);
+}
+
+.public-site .salon-frame--wood { outline-color: #634735; }
+.public-site .salon-frame--brass { outline-color: #937764; }
+.public-site .salon-frame--cream { outline-color: #f1eeea; }
+.public-site .salon-placard span { color: #634735; }
+
+/* Photographic heroes keep their own foreground contrast. */
+.public-site .grain {
+  --cream: #fff;
+  color: #fff;
+}
+
+.public-site img[src*="tami-bedford-logo"] {
+  filter: brightness(0);
+}
+
+.public-site .nav-glass:hover,
+.public-site .nav-glass:focus-visible,
+.public-site .nav-glass[data-active="true"] {
+  color: #634735;
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(99, 71, 53, 0.18);
+  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgba(99, 71, 53, 0.06), 0 6px 22px rgba(55, 40, 30, 0.09);
+}
+
+.public-site :is(a, button):hover {
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  backdrop-filter: blur(16px) saturate(120%);
+}
+
+.public-site :is(a, button):focus-visible,
+.public-site :is(input, select, textarea):focus-visible {
+  outline-color: #75543d;
+}
+
+.public-site .card-lift::before { background: #634735; }
+.public-site :is(input, select, textarea) {
+  color: #22201e;
+  border-color: #d7d0ca;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.public-site :is(input, textarea)::placeholder { color: #81776f; }
+
+.public-site .card-lift:hover,
+.public-site .card-lift:focus-within {
+  box-shadow: 0 22px 54px rgba(55, 40, 30, 0.12);
 }

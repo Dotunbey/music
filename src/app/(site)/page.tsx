@@ -40,8 +40,8 @@ export default async function Home() {
             className="animate-ken-burns object-cover object-center [filter:brightness(0.88)_contrast(1.04)_saturate(0.88)]"
           />
         </MotionImageFrame>
-        <div className="absolute inset-0 bg-[radial-gradient(130%_130%_at_50%_42%,transparent,rgba(82,75,66,0.26)_68%,rgba(82,75,66,0.8))]" />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(82,75,66,0.58),transparent_30%,transparent_58%,rgba(82,75,66,0.92))]" />
+        <div className="absolute inset-0 bg-[radial-gradient(130%_130%_at_50%_42%,transparent,rgba(20,18,16,0.26)_68%,rgba(20,18,16,0.8))]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,18,16,0.58),transparent_30%,transparent_58%,rgba(20,18,16,0.92))]" />
         <div className="relative mx-auto flex min-h-[calc(92svh-13rem)] w-full max-w-7xl items-center">
           <div className="absolute inset-0 z-10 grid place-items-center px-5 text-center">
             <div>
@@ -88,7 +88,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="gallery-wall relative overflow-hidden px-5 py-24 text-ink md:px-8 md:py-36">
+      <section className="gallery-wall relative overflow-hidden px-5 py-24 text-cream md:px-8 md:py-36">
         <div className="relative mx-auto grid max-w-7xl gap-16 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
           <div>
             <h2
@@ -103,7 +103,7 @@ export default async function Home() {
                 href={`https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(
                   "Hello Tami Bedford team, I would like to ask about music production services.",
                 )}`}
-                className={`inline-flex min-h-12 items-center justify-center gap-2 rounded-md border border-ink/20 px-5 py-3 text-sm font-bold uppercase hover:border-red-600 hover:text-red-700 ${interactiveStateClasses}`}
+                className={`inline-flex min-h-12 items-center justify-center gap-2 rounded-md border border-cream/20 px-5 py-3 text-sm font-bold uppercase hover:border-red-600 hover:text-red-700 ${interactiveStateClasses}`}
               >
                 <MessageCircle aria-hidden="true" className="h-4 w-4" />
                 Message Us

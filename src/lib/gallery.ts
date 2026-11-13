@@ -116,7 +116,20 @@ async function queryApprovedGalleryItems() {
   return rows.map(toPublicItem);
 }
 
-export const getApprovedGalleryItems = unstable_cache(queryApprovedGalleryItems, ["approved-gallery-v2"], { revalidate: 3600, tags: [CACHE_TAGS.gallery, CACHE_TAGS.homepageGallery, CACHE_TAGS.sitemap] });
+const getCachedApprovedGalleryItems = unstable_cache(queryApprovedGalleryItems, ["approved-gallery-v2"], { revalidate: 3600, tags: [CACHE_TAGS.gallery, CACHE_TAGS.homepageGallery, CACHE_TAGS.sitemap] });
+
+export async function getApprovedGalleryItems() {
+  try {
+    return await getCachedApprovedGalleryItems();
+  } catch (error) {
+    if (process.env.NODE_ENV !== "development") throw error;
+
+    console.warn(
+      "Gallery data is unavailable locally; rendering the development empty state.",
+    );
+    return [];
+  }
+}
 
 export async function getApprovedGalleryItem(category: GalleryCategory, slug: string) {
   return (await getApprovedGalleryItems()).find((item) => item.category === category && item.slug === slug) ?? null;

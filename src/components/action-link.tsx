@@ -12,9 +12,9 @@ type ActionLinkProps = {
 
 const variants = {
   primary: "bg-red-600 text-white hover:bg-red-500",
-  secondary: "border border-cream/30 bg-cream text-ink hover:bg-white",
+  secondary: "border border-cream/30 bg-white/70 text-cream hover:bg-white/90",
   ghost:
-    "border border-cream/25 text-cream hover:border-red-500 hover:text-white",
+    "border border-cream/25 text-cream hover:border-red-500 hover:text-red-700",
 };
 
 export function ActionLink({

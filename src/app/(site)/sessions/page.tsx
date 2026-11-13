@@ -28,7 +28,7 @@ export default function SessionsPage() {
     <>
       <ScriptHero title="Sessions" image="/images/organ-keys.jpg" />
 
-      <section className="bg-cream px-5 py-20 text-ink md:px-8 md:py-28">
+      <section className="bg-white px-5 py-20 text-cream md:px-8 md:py-28">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4" data-stagger>
             {sessions.map((session) => (

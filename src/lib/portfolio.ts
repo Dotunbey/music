@@ -7,6 +7,11 @@ import { parsePortfolioLink } from "@/lib/portfolio-links";
 import { getGalleryPublicUrl } from "@/lib/supabase-admin";
 
 async function queryApprovedPortfolioItems() {
+  const databaseUrl = process.env.DATABASE_URL ?? process.env.SUPABASE_DATABASE_URL;
+  if (process.env.NODE_ENV === "development" && (!databaseUrl || databaseUrl.trim() === "[SENSITIVE]")) {
+    console.warn("Portfolio preview is empty locally because database credentials are unavailable.");
+    return [];
+  }
   const db = await getDbClient();
   const rows = await db
     .select()

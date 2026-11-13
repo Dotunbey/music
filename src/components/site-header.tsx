@@ -19,13 +19,28 @@ function isActive(pathname: string, href: string) {
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
+  const headerRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
   const isHome = pathname === "/";
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const reduceMotion = useReducedMotion();
 
-  const close = useCallback(() => setOpen(false), []);
+  const close = useCallback(() => {
+    setOpen(false);
+    setExpandedMenu(null);
+  }, []);
+
+  useEffect(() => {
+    function dismissOutside(event: PointerEvent) {
+      if (event.target instanceof Node && !headerRef.current?.contains(event.target)) {
+        setExpandedMenu(null);
+      }
+    }
+    document.addEventListener("pointerdown", dismissOutside);
+    return () => document.removeEventListener("pointerdown", dismissOutside);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -33,7 +48,7 @@ export function SiteHeader() {
     const panel = menuRef.current;
     if (!panel) return;
 
-    const links = panel.querySelectorAll<HTMLAnchorElement>("a");
+    const links = panel.querySelectorAll<HTMLAnchorElement | HTMLButtonElement>("a, button");
     const first = links[0];
     const last = links[links.length - 1];
 
@@ -59,15 +74,19 @@ export function SiteHeader() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [open, close]);
 
-  const linkClasses = `nav-glass rounded-full px-4 py-2.5 text-xs font-medium uppercase tracking-[0.18em] text-cream/75 hover:backdrop-blur-md hover:backdrop-saturate-150 focus-visible:backdrop-blur-md data-[active=true]:backdrop-blur-md data-[active=true]:backdrop-saturate-150 ${interactiveStateClasses}`;
+  const linkClasses = `nav-glass rounded-full px-4 py-2.5 text-xs font-medium uppercase tracking-[0.18em] text-cream/75 backdrop-blur-md backdrop-saturate-150 ${interactiveStateClasses}`;
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 border-b ${
-        isHome
-          ? "border-transparent bg-transparent"
-          : "border-cream/10 bg-ink/78 backdrop-blur-xl"
-      }`}
+      ref={headerRef}
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && expandedMenu) {
+          const toggle = headerRef.current?.querySelector<HTMLButtonElement>('button[data-dropdown-toggle][aria-expanded="true"]');
+          setExpandedMenu(null);
+          toggle?.focus();
+        }
+      }}
+      className="fixed inset-x-0 top-0 z-50 border-b border-cream/8 bg-white/72 shadow-[0_1px_20px_rgba(24,24,20,0.04)] backdrop-blur-xl backdrop-saturate-150"
     >
       <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-5 md:px-8">
         <Link
@@ -81,7 +100,7 @@ export function SiteHeader() {
             width={64}
             height={64}
             priority
-            className="h-14 w-14 object-contain"
+            className="h-14 w-14 object-contain brightness-0"
           />
         </Link>
 
@@ -93,24 +112,45 @@ export function SiteHeader() {
         >
           {navItems.map((item) =>
             item.children ? (
-              <div key={item.href} className="group relative">
+              <div key={item.href} className="relative"
+                onBlur={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget)) setExpandedMenu(null);
+                }}
+              >
+                <div
+                  data-active={isActive(pathname, item.href) ? "true" : "false"}
+                  className="nav-glass flex items-center rounded-full text-cream/75 backdrop-blur-md backdrop-saturate-150"
+                >
                 <Link
                   href={item.href}
                   data-active={isActive(pathname, item.href) ? "true" : "false"}
-                  className={`inline-flex items-center gap-1.5 ${linkClasses}`}
+                  className={`inline-flex min-h-11 items-center rounded-l-full py-2.5 pl-4 pr-1 text-xs font-medium uppercase tracking-[0.18em] ${interactiveStateClasses}`}
+                  onClick={close}
                 >
                   {item.label}
+                </Link>
+                <button
+                  type="button"
+                  data-dropdown-toggle
+                  aria-label={`Toggle ${item.label} submenu`}
+                  aria-expanded={expandedMenu === item.href}
+                  aria-controls={`desktop-submenu-${item.href.slice(1)}`}
+                  onClick={() => setExpandedMenu((current) => current === item.href ? null : item.href)}
+                  className={`grid h-11 w-9 place-items-center rounded-r-full ${interactiveStateClasses}`}
+                >
                   <ChevronDown
                     aria-hidden="true"
-                    className="h-3.5 w-3.5 transition-transform duration-300 group-hover:rotate-180 group-focus-within:rotate-180"
+                    className={`h-3.5 w-3.5 transition-transform duration-300 ${expandedMenu === item.href ? "rotate-180" : ""}`}
                   />
-                </Link>
-                <div className="pointer-events-none absolute left-1/2 top-full -translate-x-1/2 translate-y-1 pt-3 opacity-0 transition duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                </button>
+                </div>
+                <div id={`desktop-submenu-${item.href.slice(1)}`} hidden={expandedMenu !== item.href} className="absolute left-1/2 top-full -translate-x-1/2 pt-3">
                   <div className="min-w-[210px] overflow-hidden rounded-md border border-cream/12 bg-ink/95 p-2 shadow-soft backdrop-blur-xl">
                     {item.children.map((child) => (
                       <Link
                         key={child.href}
                         href={child.href}
+                        onClick={close}
                         className={`block rounded-md px-4 py-2.5 text-xs font-medium uppercase tracking-[0.16em] ${interactiveStateClasses} ${
                           isActive(pathname, child.href)
                             ? "bg-cream/10 text-cream"
@@ -129,6 +169,7 @@ export function SiteHeader() {
                 href={item.href}
                 data-active={isActive(pathname, item.href) ? "true" : "false"}
                 className={linkClasses}
+                onClick={close}
               >
                 {item.label}
               </Link>
@@ -139,7 +180,7 @@ export function SiteHeader() {
         <button
           ref={buttonRef}
           type="button"
-          className={`grid h-11 w-11 place-items-center rounded-md border border-cream/20 text-cream hover:border-red-500 hover:text-white md:hidden ${interactiveStateClasses}`}
+          className={`grid h-11 w-11 place-items-center rounded-md border border-cream/20 text-cream hover:border-red-500 hover:text-red-700 md:hidden ${interactiveStateClasses}`}
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
           aria-controls="mobile-navigation"
@@ -176,6 +217,7 @@ export function SiteHeader() {
                     ease: [0.16, 1, 0.3, 1],
                   }}
                 >
+                  <div className="mx-auto flex w-fit items-center justify-center rounded-full">
                   <Link
                     href={item.href}
                     onClick={close}
@@ -188,6 +230,21 @@ export function SiteHeader() {
                     {item.label}
                   </Link>
                   {item.children ? (
+                    <button
+                      type="button"
+                      data-dropdown-toggle
+                      aria-label={`Toggle ${item.label} submenu`}
+                      aria-expanded={expandedMenu === item.href}
+                      aria-controls={`mobile-submenu-${item.href.slice(1)}`}
+                      onClick={() => setExpandedMenu((current) => current === item.href ? null : item.href)}
+                      className={`grid h-11 w-9 place-items-center rounded-r-full ${interactiveStateClasses}`}
+                    >
+                      <ChevronDown aria-hidden="true" className={`h-4 w-4 transition-transform ${expandedMenu === item.href ? "rotate-180" : ""}`} />
+                    </button>
+                  ) : null}
+                  </div>
+                  {item.children ? (
+                    <div id={`mobile-submenu-${item.href.slice(1)}`} hidden={expandedMenu !== item.href}>
                     <div className="grid gap-1 pb-4">
                       {item.children.map((child) => (
                         <Link
@@ -203,6 +260,7 @@ export function SiteHeader() {
                           {child.label}
                         </Link>
                       ))}
+                    </div>
                     </div>
                   ) : null}
                 </motion.div>

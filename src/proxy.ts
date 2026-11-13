@@ -4,7 +4,7 @@ import { getSiteUrl } from "@/lib/site-url";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  if (process.env.VERCEL_ENV === "production") {
+  if (process.env.NODE_ENV === "production" && process.env.VERCEL_ENV === "production") {
     const canonical = new URL(getSiteUrl());
     if (request.nextUrl.host !== canonical.host) {
       const destination = request.nextUrl.clone();

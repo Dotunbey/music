@@ -31,7 +31,7 @@ export default async function ServicesPage() {
     <>
       <ScriptHero title="Tami Services" image="/images/studio-production.png" />
 
-      <section className="gallery-wall relative overflow-hidden px-5 py-24 text-ink md:px-8 md:py-36">
+      <section className="gallery-wall relative overflow-hidden px-5 py-24 text-cream md:px-8 md:py-36">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-10 lg:grid-cols-3" data-stagger>
             {services.map((service) => {
@@ -56,11 +56,11 @@ export default async function ServicesPage() {
                     <h2 className="break-words font-display text-2xl font-black leading-tight md:text-3xl">
                       {service.title}
                     </h2>
-                    <ul className="mt-6 grid gap-2 border-t border-ink/10 pt-5">
+                    <ul className="mt-6 grid gap-2 border-t border-cream/10 pt-5">
                       {service.deliverables.map((deliverable) => (
                         <li
                           key={deliverable}
-                          className="text-sm leading-7 text-ink/72"
+                          className="text-sm leading-7 text-cream/72"
                         >
                           {deliverable}
                         </li>
@@ -91,7 +91,7 @@ export default async function ServicesPage() {
             href={`mailto:${contact.email}?subject=${encodeURIComponent(
               "Service inquiry",
             )}`}
-            className={`motion-sheen mt-10 inline-flex min-h-12 items-center justify-center gap-2 overflow-hidden rounded-md border border-cream/25 px-5 py-3 text-sm font-bold uppercase text-cream hover:border-red-500 hover:text-white ${interactiveStateClasses}`}
+            className={`motion-sheen mt-10 inline-flex min-h-12 items-center justify-center gap-2 overflow-hidden rounded-md border border-cream/25 px-5 py-3 text-sm font-bold uppercase text-cream hover:border-red-500 hover:text-red-700 ${interactiveStateClasses}`}
             data-reveal="card"
           >
             Email Us
