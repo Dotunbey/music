@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { ArrowRight, MessageCircle } from "lucide-react";
 import { SafeImage } from "@/components/safe-image";
 import { PortfolioShowcase } from "@/components/portfolio-showcase";
@@ -25,8 +26,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function ServicesPage() {
-  const portfolioItems = await getApprovedPortfolioItems();
+export const revalidate = 3600;
+
+export default function ServicesPage() {
   return (
     <>
       <ScriptHero title="Tami Services" image="/images/studio-production.png" />
@@ -86,7 +88,9 @@ export default async function ServicesPage() {
       <section className="relative overflow-hidden bg-charcoal px-5 py-20 md:px-8 md:py-28">
         <div className="relative mx-auto max-w-7xl">
           <SectionHeading title="Portfolio" />
-          <PortfolioShowcase items={portfolioItems} />
+          <Suspense fallback={<div className="h-72 bg-charcoal" role="status">Loading portfolio...</div>}>
+            <ServicePortfolio />
+          </Suspense>
           <a
             href={`mailto:${contact.email}?subject=${encodeURIComponent(
               "Service inquiry",
@@ -101,4 +105,8 @@ export default async function ServicesPage() {
       </section>
     </>
   );
+}
+
+async function ServicePortfolio() {
+  return <PortfolioShowcase items={await getApprovedPortfolioItems()} />;
 }

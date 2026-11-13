@@ -1,4 +1,5 @@
 import { MessageCircle } from "lucide-react";
+import { Suspense } from "react";
 import { ActionLink } from "@/components/action-link";
 import { Marquee, ScrollCue } from "@/components/brand-motifs";
 import { MotionImageFrame } from "@/components/motion-primitives";
@@ -23,10 +24,7 @@ const marqueeItems = [
   "Vocal Production",
 ] as const;
 
-export default async function Home() {
-  const galleryItems = await getApprovedGalleryItems();
-  const homeGalleryItems = selectHomeGalleryItems(galleryItems, 8);
-
+export default function Home() {
   return (
     <>
       <section className="grain relative isolate min-h-[92svh] overflow-hidden bg-ink px-5 pb-28 pt-28 text-cream md:px-8">
@@ -153,17 +151,22 @@ export default async function Home() {
               Visit Gallery
             </ActionLink>
           </div>
-          {homeGalleryItems.length > 0 ? (
-            <HomeGalleryWall items={homeGalleryItems} />
-          ) : (
-            <p className="border-t border-cream/12 pt-5 text-xs font-bold uppercase tracking-[0.16em] text-cream/45">
-              The archive is being curated.
-            </p>
-          )}
+          <Suspense fallback={<div className="h-96 bg-charcoal" role="status">Loading gallery...</div>}>
+            <HomeGallerySelection />
+          </Suspense>
         </div>
       </section>
 
 
     </>
+  );
+}
+
+async function HomeGallerySelection() {
+  const items = selectHomeGalleryItems(await getApprovedGalleryItems(), 8);
+  return items.length > 0 ? <HomeGalleryWall items={items} /> : (
+    <p className="border-t border-cream/12 pt-5 text-xs font-bold uppercase tracking-[0.16em] text-cream/45">
+      The archive is being curated.
+    </p>
   );
 }

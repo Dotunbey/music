@@ -44,6 +44,18 @@ export function MotionRuntime() {
 
     revealElements.forEach((element) => observer.observe(element));
 
+    // Streamed sections can arrive after the initial route effect has run.
+    const streamedContent = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+          if (!(node instanceof HTMLElement)) continue;
+          if (node.matches(revealSelector)) observer.observe(node);
+          node.querySelectorAll<HTMLElement>(revealSelector).forEach((element) => observer.observe(element));
+        }
+      }
+    });
+    streamedContent.observe(document.body, { childList: true, subtree: true });
+
     const parallaxElements = Array.from(
       document.querySelectorAll<HTMLElement>(parallaxSelector),
     );
@@ -80,6 +92,7 @@ export function MotionRuntime() {
 
     return () => {
       observer.disconnect();
+      streamedContent.disconnect();
       window.removeEventListener("scroll", requestParallaxUpdate);
       window.removeEventListener("resize", requestParallaxUpdate);
       root.classList.remove("motion-ready");

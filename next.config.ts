@@ -1,4 +1,3 @@
-import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -35,7 +34,10 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withSentryConfig(nextConfig, {
+export default async function configureNext() {
+  if (process.env.NODE_ENV !== "production") return nextConfig;
+  const { withSentryConfig } = await import("@sentry/nextjs");
+  return withSentryConfig(nextConfig, {
   telemetry: false,
   widenClientFileUpload: true,
   authToken: process.env.SENTRY_AUTH_TOKEN,
@@ -43,4 +45,5 @@ export default withSentryConfig(nextConfig, {
   project: process.env.SENTRY_PROJECT,
   sourcemaps: { disable: !process.env.SENTRY_AUTH_TOKEN },
   silent: !process.env.CI,
-});
+  });
+}

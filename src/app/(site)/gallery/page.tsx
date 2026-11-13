@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { GalleryGrid } from "@/components/gallery-grid";
 import { BookGallery } from "@/components/book-gallery";
@@ -32,7 +33,12 @@ export const metadata: Metadata = {
 export default function GalleryPage() {
   const itemsPromise = getApprovedGalleryItems();
   return (
-    <GalleryContent itemsPromise={itemsPromise} />
+    <>
+      <ScriptHero title={"Tam’s Gallery"} image="/images/work-creative.png" />
+      <Suspense fallback={<div className="min-h-96 bg-white px-5 py-12 text-cream" role="status">Loading gallery...</div>}>
+        <GalleryContent itemsPromise={itemsPromise} />
+      </Suspense>
+    </>
   );
 }
 
@@ -45,8 +51,6 @@ async function GalleryContent({
 
   return (
     <>
-      <ScriptHero title={"Tam’s Gallery"} image="/images/work-creative.png" />
-
       {galleryCategoryConfig.map((category) => {
         const categoryItems = items
           .filter((item) => item.category === category.slug)

@@ -89,7 +89,7 @@ export function SiteHeader() {
       className="fixed inset-x-0 top-0 z-50 border-b border-cream/8 bg-white/72 shadow-[0_1px_20px_rgba(24,24,20,0.04)] backdrop-blur-xl backdrop-saturate-150"
     >
       <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-5 md:px-8">
-        <Link
+        <Link prefetch={true}
           href="/"
           className={`flex items-center gap-3 rounded-md text-cream ${interactiveStateClasses}`}
           onClick={close}
@@ -121,7 +121,7 @@ export function SiteHeader() {
                   data-active={isActive(pathname, item.href) ? "true" : "false"}
                   className="nav-glass flex items-center rounded-full text-cream/75 backdrop-blur-md backdrop-saturate-150"
                 >
-                <Link
+                <Link prefetch={true}
                   href={item.href}
                   data-active={isActive(pathname, item.href) ? "true" : "false"}
                   className={`inline-flex min-h-11 items-center rounded-l-full py-2.5 pl-4 pr-1 text-xs font-medium uppercase tracking-[0.18em] ${interactiveStateClasses}`}
@@ -147,7 +147,7 @@ export function SiteHeader() {
                 <div id={`desktop-submenu-${item.href.slice(1)}`} hidden={expandedMenu !== item.href} className="absolute left-1/2 top-full -translate-x-1/2 pt-3">
                   <div className="min-w-[210px] overflow-hidden rounded-md border border-cream/12 bg-ink/95 p-2 shadow-soft backdrop-blur-xl">
                     {item.children.map((child) => (
-                      <Link
+                      <Link prefetch={true}
                         key={child.href}
                         href={child.href}
                         onClick={close}
@@ -164,7 +164,7 @@ export function SiteHeader() {
                 </div>
               </div>
             ) : (
-              <Link
+              <Link prefetch={true}
                 key={item.href}
                 href={item.href}
                 data-active={isActive(pathname, item.href) ? "true" : "false"}
@@ -218,7 +218,7 @@ export function SiteHeader() {
                   }}
                 >
                   <div className="mx-auto flex w-fit items-center justify-center rounded-full">
-                  <Link
+                  <Link prefetch={true}
                     href={item.href}
                     onClick={close}
                     className={`block py-4 font-display text-2xl font-medium uppercase tracking-[0.14em] ${interactiveStateClasses} ${
@@ -247,7 +247,7 @@ export function SiteHeader() {
                     <div id={`mobile-submenu-${item.href.slice(1)}`} hidden={expandedMenu !== item.href}>
                     <div className="grid gap-1 pb-4">
                       {item.children.map((child) => (
-                        <Link
+                        <Link prefetch={true}
                           key={child.href}
                           href={child.href}
                           onClick={close}

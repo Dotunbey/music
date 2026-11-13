@@ -119,6 +119,10 @@ async function queryApprovedGalleryItems() {
 const getCachedApprovedGalleryItems = unstable_cache(queryApprovedGalleryItems, ["approved-gallery-v2"], { revalidate: 3600, tags: [CACHE_TAGS.gallery, CACHE_TAGS.homepageGallery, CACHE_TAGS.sitemap] });
 
 export async function getApprovedGalleryItems() {
+  const databaseUrl = process.env.DATABASE_URL ?? process.env.SUPABASE_DATABASE_URL;
+  if (process.env.NODE_ENV === "development" && (!databaseUrl || databaseUrl.trim() === "[SENSITIVE]")) {
+    return [];
+  }
   try {
     return await getCachedApprovedGalleryItems();
   } catch (error) {

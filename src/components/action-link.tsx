@@ -26,6 +26,7 @@ export function ActionLink({
   return (
     <Link
       href={href}
+      prefetch={true}
       className={`motion-sheen inline-flex min-h-12 items-center justify-center gap-2 overflow-hidden rounded-md px-5 py-3 text-sm font-bold uppercase ${interactiveStateClasses} ${variants[variant]} ${className}`}
     >
       <span>{children}</span>
