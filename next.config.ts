@@ -20,7 +20,7 @@ const nextConfig: NextConfig = {
   async headers() {
     const csp = [
       "default-src 'self'", "base-uri 'self'", "object-src 'none'", "frame-ancestors 'none'", "form-action 'self'",
-      `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""} https://challenges.cloudflare.com https://www.youtube.com https://www.youtube-nocookie.com`,
+      `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""} https://challenges.cloudflare.com https://www.youtube.com https://www.youtube-nocookie.com https://s.ytimg.com https://open.spotify.com`,
       "style-src 'self' 'unsafe-inline'", "font-src 'self' data:",
       "img-src 'self' data: blob: https:", "media-src 'self' blob: https://*.supabase.co",
       "frame-src https://challenges.cloudflare.com https://www.youtube.com https://www.youtube-nocookie.com https://open.spotify.com https://audiomack.com https://www.instagram.com",

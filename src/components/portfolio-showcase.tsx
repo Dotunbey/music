@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowUpRight, Play, X } from "lucide-react";
+import { ArrowUpRight, Play } from "lucide-react";
+import { PortfolioPlayer, PortfolioRecord } from "./portfolio-player";
 import type { PublicPortfolioItem } from "@/lib/portfolio";
 import { interactiveStateClasses } from "@/lib/ui";
 
@@ -18,11 +19,9 @@ export function PortfolioShowcase({ items }: { items: PublicPortfolioItem[] }) {
       <div className="mt-14 flex snap-x snap-mandatory flex-nowrap gap-5 overflow-x-auto overscroll-x-contain pb-5 [scrollbar-width:thin] md:gap-7">
         {items.map((item) => (
           <article key={item.id} className="w-44 shrink-0 snap-start overflow-hidden border border-red-600/15 bg-white sm:w-52">
-            <div className="relative isolate aspect-[9/16] overflow-hidden bg-[#634735]">
-              {item.artworkUrl ? <><img src={item.artworkUrl} alt="" className="h-full w-full object-cover grayscale transition duration-700 hover:scale-[1.03]" loading="lazy" /><span aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[#634735] mix-blend-color" /></> : <div className="grid h-full place-items-center font-display text-5xl font-black text-white/45">TB</div>}
-              <span className="absolute left-3 top-3 bg-[#4d3527]/80 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-sm">{providerLabels[item.provider]}</span>
-            </div>
+            <button type="button" aria-label={`Play ${item.title}`} disabled={!item.embedUrl && !item.mediaUrl} onClick={() => setActiveId(item.id)} className="block w-full p-3 focus-visible:outline-2 focus-visible:outline-red-600 disabled:cursor-default"><PortfolioRecord artwork={item.artworkUrl} /></button>
             <div className="p-4">
+              <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-red-700">{providerLabels[item.provider]}</p>
               <h3 className="font-display text-lg font-black leading-tight">{item.title}</h3>
               <p className="mt-2 text-[10px] font-bold uppercase leading-5 tracking-wide text-brass">{item.credits.join(" · ")}</p>
               <div className="mt-4 flex items-center justify-between gap-2">
@@ -35,12 +34,7 @@ export function PortfolioShowcase({ items }: { items: PublicPortfolioItem[] }) {
       </div>
 
       {activeItem && (activeItem.embedUrl || activeItem.mediaUrl) ? (
-        <div className="fixed inset-0 z-[60] grid place-items-center bg-ink/85 p-4 backdrop-blur-md" role="dialog" aria-modal="true" aria-label={activeItem.title} onClick={() => setActiveId(null)}>
-          <button type="button" onClick={() => setActiveId(null)} className={`absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full border border-cream/25 bg-ink/70 text-cream hover:border-red-500 ${interactiveStateClasses}`} aria-label="Close player"><X aria-hidden="true" /></button>
-          <div className={`w-full overflow-hidden rounded-lg border border-cream/15 bg-ink shadow-soft ${activeItem.contentType === "video" ? "aspect-video max-w-4xl" : "h-[352px] max-w-xl"}`} onClick={(event) => event.stopPropagation()}>
-            {activeItem.mediaUrl ? (activeItem.contentType === "video" ? <video src={activeItem.mediaUrl} poster={activeItem.artworkUrl ?? undefined} className="h-full w-full bg-black object-contain" controls autoPlay playsInline /> : <div className="grid h-full place-items-center p-6"><audio src={activeItem.mediaUrl} className="w-full" controls autoPlay /></div>) : <iframe src={activeItem.embedUrl ?? ""} title={`${activeItem.title} on ${providerLabels[activeItem.provider]}`} className="h-full w-full border-0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" allowFullScreen />}
-          </div>
-        </div>
+        <PortfolioPlayer key={activeItem.id} item={activeItem} onClose={() => setActiveId(null)} />
       ) : null}
     </>
   );
